@@ -2,16 +2,16 @@
 \providecommand{\liLaTeXPath}{C:/Users/themi/Desktop/LaTeX/liLaTeX} % l'indirizzo dove è stato salvato il file liLaTeX.tex
 \providecommand{\LogoScuolaPath}{C:/Users/themi/Desktop/LaTeX/liLaTeX/Logo_Liceo_Scientifico_Francesco_Vercelli.jpeg} % il file immagine col logo della scuola
 \providecommand{\NomeScuola}{Liceo Scientifico \textit{F.Vercelli}} % il nome della scuola
-\providecommand{\AnnoScolastico}{2024-2025} % la data della prova (facoltativa)
+\providecommand{\AnnoScolastico}{2024-2025} % l'anno scolastico di riferimento (da cambiare una volta all'anno)
 \providecommand{\Data}{} % la data della prova (facoltativa)
-\providecommand{\NomeStudente}{} % il nome dello studete con file personale
-\providecommand{\CognomeStudente}{} % il cognome dello studente con file personale
+\providecommand{\NomeStudente}{} % il nome dello studete con file personale (facoltativo)
+\providecommand{\CognomeStudente}{} % il cognome dello studente con file personale (facoltativo)
 \providecommand{\Minuti}{} % il numero di minuti di durata della prova (solo per verifiche)
-\providecommand{\Materia}{} % {Matematica, Fisica}
-\providecommand{\Titolo}{} % il nome da dare al file
-\providecommand{\MarginSize}{1.5} % il margine (in cm)
-\providecommand{\FontSize}{11} % la dimensione del testo
-\providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda laboratorio, prova laboratorio, scheda SSPM}
+\providecommand{\Materia}{} % Matematica o Fisica
+\providecommand{\Titolo}{} % il titolo del documento
+\providecommand{\MarginSize}{1.5} % il margine (in cm). Non settarlo per le immagini
+\providecommand{\FontSize}{11} % la dimensione del testo (in pt)
+\providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda SSPM, scheda laboratorio, prova laboratorio, gara olimpiadi, lezione, dimostrazione, formulario}
 
 \usepackage{etoolbox} % if-else commands come \ifdefempty{cs}{TRUE}{FALSE} e \ifdefstring{cs}{string}{TRUE}{FALSE}
 
@@ -27,6 +27,10 @@
 \ifdefstring{\TipoDoc}{scheda SSPM}{\stepcounter{TipoDocGuardCounter}}{}
 \ifdefstring{\TipoDoc}{scheda laboratorio}{\stepcounter{TipoDocGuardCounter}}{}
 \ifdefstring{\TipoDoc}{prova laboratorio}{\stepcounter{TipoDocGuardCounter}}{}
+\ifdefstring{\TipoDoc}{gara olimpiadi}{\stepcounter{TipoDocGuardCounter}}{}
+\ifdefstring{\TipoDoc}{lezione}{\stepcounter{TipoDocGuardCounter}}{}
+\ifdefstring{\TipoDoc}{dimostrazione}{\stepcounter{TipoDocGuardCounter}}{}
+\ifdefstring{\TipoDoc}{formulario}{\stepcounter{TipoDocGuardCounter}}{}
 \ifnum\value{TipoDocGuardCounter}=0 \errmessage{TipoDoc = \TipoDoc\space non e' un valore valido} \fi
 
 % sovrascrive #1 con #2 solo se #1 è vuoto
