@@ -1,4 +1,4 @@
-% flag
+% flag (per i nuovi utenti: aggiornare i primi 4 comandi)
 \providecommand{\liLaTeXPath}{C:/Users/themi/Desktop/LaTeX/liLaTeX} % l'indirizzo dove è stato salvato il file liLaTeX.tex
 \providecommand{\LogoScuolaPath}{C:/Users/themi/Desktop/LaTeX/liLaTeX/Logo_Liceo_Scientifico_Francesco_Vercelli.jpeg} % il file immagine col logo della scuola
 \providecommand{\NomeScuola}{Liceo Scientifico \textit{F.Vercelli}} % il nome della scuola
@@ -10,15 +10,13 @@
 \providecommand{\Materia}{} % {Matematica, Fisica}
 \providecommand{\Titolo}{} % il nome da dare al file
 \providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda laboratorio, prova laboratorio, scheda SSPM}
-\providecommand{\MarginSize}{} % il margine (in cm). Sovrascritto in seguito se lasciato vuoto
+\providecommand{\MarginSize}{1.5} % il margine (in cm)
 
 \usepackage{etoolbox} % if-else commands come \ifdefempty{cs}{TRUE}{FALSE} e \ifdefstring{cs}{string}{TRUE}{FALSE}
 
 % sovrascrive #1 con #2 solo se #1 è vuoto
 \newcommand{\overwriteifempty}[2]{\ifdefempty{#1}{\renewcommand{#1}{#2}}{}}
 
-% sovrascrive \MarginSize se è ancora vuoto (a 0 se \TipoDoc = immagine, a 1.5 altrimenti)
-\ifdefstring{\TipoDoc}{immagine}{\overwriteifempty{\MarginSize}{0}}{\overwriteifempty{\MarginSize}{1.5}}
 % in caso di verifica sovrascrive il titolo, se vuoto
 \ifdefstring{\TipoDoc}{verifica}{\overwriteifempty{\Titolo}{Verifica di \Materia}}{}
 \ifdefstring{\TipoDoc}{verifica recupero}{\overwriteifempty{\Titolo}{Verifica di recupero di \Materia}}{}
@@ -26,3 +24,4 @@
 
 % pacchetti
 \usepackage{graphicx}
+\ifdefstring{\TipoDoc}{immagine}{}{\usepackage[margin=\MarginSize cm]{geometry}}
