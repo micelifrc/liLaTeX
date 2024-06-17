@@ -9,11 +9,25 @@
 \providecommand{\Minuti}{} % il numero di minuti di durata della prova (solo per verifiche)
 \providecommand{\Materia}{} % {Matematica, Fisica}
 \providecommand{\Titolo}{} % il nome da dare al file
-\providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda laboratorio, prova laboratorio, scheda SSPM}
 \providecommand{\MarginSize}{1.5} % il margine (in cm)
 \providecommand{\FontSize}{11} % la dimensione del testo
+\providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda laboratorio, prova laboratorio, scheda SSPM}
 
 \usepackage{etoolbox} % if-else commands come \ifdefempty{cs}{TRUE}{FALSE} e \ifdefstring{cs}{string}{TRUE}{FALSE}
+
+% controlla se \TipoDoc è uno dei tipi conosciuti, altrimenti genera un errore di compilazione
+\newcounter{TipoDocGuardCounter}
+\ifdefstring{\TipoDoc}{plain}{\stepcounter{TipoDocGuardCounter}}{}
+\ifdefstring{\TipoDoc}{immagine}{\stepcounter{TipoDocGuardCounter}}{}
+\ifdefstring{\TipoDoc}{verifica}{\stepcounter{TipoDocGuardCounter}}{}
+\ifdefstring{\TipoDoc}{verifica recupero}{\stepcounter{TipoDocGuardCounter}}{}
+\ifdefstring{\TipoDoc}{esercizio svolto}{\stepcounter{TipoDocGuardCounter}}{}
+\ifdefstring{\TipoDoc}{lista esercizi}{\stepcounter{TipoDocGuardCounter}}{}
+\ifdefstring{\TipoDoc}{scheda}{\stepcounter{TipoDocGuardCounter}}{}
+\ifdefstring{\TipoDoc}{scheda SSPM}{\stepcounter{TipoDocGuardCounter}}{}
+\ifdefstring{\TipoDoc}{scheda laboratorio}{\stepcounter{TipoDocGuardCounter}}{}
+\ifdefstring{\TipoDoc}{prova laboratorio}{\stepcounter{TipoDocGuardCounter}}{}
+\ifnum\value{TipoDocGuardCounter}=0 \errmessage{TipoDoc = \TipoDoc\space non e' un valore valido} \fi
 
 % sovrascrive #1 con #2 solo se #1 è vuoto
 \newcommand{\overwriteifempty}[2]{\ifdefempty{#1}{\renewcommand{#1}{#2}}{}}
