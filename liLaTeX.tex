@@ -11,6 +11,7 @@
 \providecommand{\Titolo}{} % il nome da dare al file
 \providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda laboratorio, prova laboratorio, scheda SSPM}
 \providecommand{\MarginSize}{1.5} % il margine (in cm)
+\providecommand{\FontSize}{11} % la dimensione del testo
 
 \usepackage{etoolbox} % if-else commands come \ifdefempty{cs}{TRUE}{FALSE} e \ifdefstring{cs}{string}{TRUE}{FALSE}
 
@@ -23,5 +24,13 @@
 \ifdefstring{\TipoDoc}{prova laboratorio}{\overwriteifempty{\Titolo}{Prova di laboratorio di \Materia}}{}
 
 % pacchetti
-\usepackage{graphicx}
-\ifdefstring{\TipoDoc}{immagine}{}{\usepackage[margin=\MarginSize cm]{geometry}}
+\usepackage[T1]{fontenc}
+\usepackage{babel}
+\usepackage{amsmath} % serve per \text
+\usepackage{amsthm} % definisce \qedsymbol
+\usepackage{amsfonts} % serve per \mathbb
+\usepackage{mathrsfs} % per \mathscr
+\usepackage{amssymb} % per \vartriangle e simili
+\usepackage[fontsize=\FontSize pt]{fontsize} % modifica il font size
+\usepackage{graphicx} % per \includegraphics
+\ifdefstring{\TipoDoc}{immagine}{}{\usepackage[margin=\MarginSize cm]{geometry}} % i margini non vanno specificati per le immagini
