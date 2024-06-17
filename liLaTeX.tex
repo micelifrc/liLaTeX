@@ -6,11 +6,23 @@
 \providecommand{\Data}{} % la data della prova (facoltativa)
 \providecommand{\NomeStudente}{} % il nome dello studete con file personale
 \providecommand{\CognomeStudente}{} % il cognome dello studente con file personale
+\providecommand{\Minuti}{} % il numero di minuti di durata della prova (solo per verifiche)
 \providecommand{\Materia}{} % {Matematica, Fisica}
 \providecommand{\Titolo}{} % il nome da dare al file
-\providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda laboratorio, scheda SSPM}
-\providecommand{\MarginSize}{} % il margine (in cm)
+\providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda laboratorio, prova laboratorio, scheda SSPM}
+\providecommand{\MarginSize}{} % il margine (in cm). Sovrascritto in seguito se lasciato vuoto
 
+\usepackage{etoolbox} % if-else commands come \ifdefempty{cs}{TRUE}{FALSE} e \ifdefstring{cs}{string}{TRUE}{FALSE}
+
+% sovrascrive #1 con #2 solo se #1 è vuoto
+\newcommand{\overwriteifempty}[2]{\ifdefempty{#1}{\renewcommand{#1}{#2}}{}}
+
+% sovrascrive \MarginSize se è ancora vuoto (a 0 se \TipoDoc = immagine, a 1.5 altrimenti)
+\ifdefstring{\TipoDoc}{immagine}{\overwriteifempty{\MarginSize}{0}}{\overwriteifempty{\MarginSize}{1.5}}
+% in caso di verifica sovrascrive il titolo, se vuoto
+\ifdefstring{\TipoDoc}{verifica}{\overwriteifempty{\Titolo}{Verifica di \Materia}}{}
+\ifdefstring{\TipoDoc}{verifica recupero}{\overwriteifempty{\Titolo}{Verifica di recupero di \Materia}}{}
+\ifdefstring{\TipoDoc}{prova laboratorio}{\overwriteifempty{\Titolo}{Prova di laboratorio di \Materia}}{}
 
 % pacchetti
 \usepackage{graphicx}
