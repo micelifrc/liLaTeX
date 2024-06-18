@@ -1,10 +1,11 @@
-%%%% flags (per i nuovi utenti: aggiornare le prime 5 flags)
+%%%%%%%%%%%%%%%% FLAG (per i nuovi utenti: aggiornare le prime 5 flags)
 
 \providecommand{\liLaTeXPath}{C:/Users/themi/Desktop/LaTeX/liLaTeX} % l'indirizzo dove è stato salvato il file liLaTeX.tex
 \providecommand{\LogoScuolaPath}{C:/Users/themi/Desktop/LaTeX/liLaTeX/Logo_Liceo_Scientifico_Francesco_Vercelli.jpeg} % il file immagine col logo della scuola
 \providecommand{\NomeScuola}{Liceo Scientifico \textit{F.Vercelli}} % il nome della scuola
 \providecommand{\CittaScuola}{Asti} % la città in cui si trova la scuola
 \providecommand{\AnnoScolastico}{2024-2025} % l'anno scolastico di riferimento (da cambiare una volta all'anno)
+\providecommand{\PuntiBaseVerifica}{10} % Numero di punti di base in una verifica. Cancella se non dai nessun punto base
 \providecommand{\Data}{} % la data della prova (facoltativa)
 \providecommand{\NomeStudente}{} % il nome dello studete con file personale (facoltativo)
 \providecommand{\CognomeStudente}{} % il cognome dello studente con file personale (facoltativo)
@@ -51,7 +52,7 @@
 \ifdefstring{\TipoDoc}{verifica recupero}{\stepcounter{TipoDocVerificaCounter}}{}
 \ifdefstring{\TipoDoc}{prova laboratorio}{\stepcounter{TipoDocVerificaCounter}}{}
 
-%%%% pacchetti
+%%%%%%%%%%%%%%%% PACCHETTI
 
 \usepackage[T1]{fontenc} % per riconoscere caratteri come è
 \usepackage{babel} % supporto per l'italiano (o per le altre lingue)
@@ -74,7 +75,7 @@
 \usepackage{witharrows} % usato per \[\begin{WithArrows}...\end{WithArrows}\]
 \usepackage{pdfpages} % usato per \includepdf
 
-%%%% impaginazione
+%%%%%%%%%%%%%%%% IMPAGINAZIONE
 
 \usepackage{fancyhdr} % pacchetto per l'impaginazione
 \usepackage{refcount}% contiene il comando \getpagerefnumber usato per contare il numero di pagine nel documento (serve per l'impaginazione)
@@ -126,3 +127,170 @@
 \else
 	\ifdefstring{\NumPages}{0}{\pagestyle{empty}}{\pagestyle{plain}}
 \fi
+
+%%%%%%%%%%%%%%%% TABELLA VOTI
+
+\usepackage{adjustbox} % necessario per l'ambiente \adjustbox, utile per disegnare la tabella dei voti
+
+% iteratori utili per \TabellaVoti
+\newcounter{TabellaVotiEsNumIter}
+\newcounter{TabellaVotiLetterIter}
+\newcounter{TabellaVotiPervBarIter}
+
+% assume valori 0-1 per determinare se al termine della colonna attuale dobbiamo disegnare una riga verticale nella prima riga (ovvero se la colonna si riferisce all'ultimo punto dell'attuale esercizio)
+\newcommand\TabellaVotiHeaderJump{1}
+
+% Chiama \TabellaVoti a fine verifica per creare la tabella per mettere i punti.
+% Il seguente esempio mostra come creare la tabella per una verifica con 6 esercizi (di cui l'es. 3 è diviso in 2 punti e l'es. 5 è diviso in 3 punti) in cui ciascun esercizio vale 30 punti (equamente distribuiti fra i vari punti dell'esercizio):
+% \TabellaVoti{{30}{30}{15,15}{30}{10,10,10}{30}}
+% La funzione principale per crare \TabellaVoti
+\newcommand\TabellaVoti[1]{
+	\pgfmathsetmacro\TabellaVotiTabellaWidth{18}
+	\pgfmathsetmacro\TabellaVotiHeight{1}
+	\pgfmathsetmacro\TabellaVotiPtBaseWidth{2}
+	\TabellaVotiInizializzaContenitori[\PuntiBaseVerifica]#1 % leggi i dati in input. È importante che sia #1 e non {#1}
+	\ifnum\TabellaVotiDrawLettersRow>0 \def\t{2} \else \def\t{1} \fi % decidi se disegnare anche la riga delle lettere
+	\vspace*{\fill} % spostati a fondo pagina
+	{\Large\begin{center}
+	\makebox[0cm]{ % elimina i margini
+	\begin{adjustbox}{minipage=\TabellaVotiTabellaWidth cm, center} % permette di disegnare in un'area estesa orizzontalmente (larga \TabellaVotiTabellaWidth)
+	\begin{tikzpicture}
+	\pgfmathsetmacro\ltot{\TabellaVotiTabellaWidth-\TabellaVotiPtBaseWidth} % il punto più a destra raggiunto dalla tabella (quello più a sinistra è -\TabellaVotiPtBaseWidth
+	\pgfmathsetmacro\l{divide(\ltot,\theTabellaVotiNumLett+1)} % la larghezza di ciascuna colonna (diversa da quelle di Pt.base)
+	% disegna le righe orizzontali
+	\foreach \y in {-2,...,\t} {\draw (-\TabellaVotiPtBaseWidth,\y*\TabellaVotiHeight) -- ++(\TabellaVotiTabellaWidth,0);}
+	\draw[ultra thick] (-\TabellaVotiPtBaseWidth,0) -- ++(\TabellaVotiTabellaWidth,0);
+	% le due righe verticali più a sinistra e le due più a destra
+	\draw (-\TabellaVotiPtBaseWidth,-2*\TabellaVotiHeight) -- (-\TabellaVotiPtBaseWidth,\t*\TabellaVotiHeight);
+	\draw (\ltot,-2*\TabellaVotiHeight) -- (\ltot,\t*\TabellaVotiHeight);
+	\draw[ultra thick] (0,-2*\TabellaVotiHeight) -- (0,\t*\TabellaVotiHeight);
+	\draw[ultra thick] (\ltot-\l,-2*\TabellaVotiHeight) -- (\ltot-\l,\t*\TabellaVotiHeight);
+	% scriviamo dentro alla prima e all'ultima colonna
+	\node (W) at (-.5*\TabellaVotiPtBaseWidth,\t*\TabellaVotiHeight-.5*\TabellaVotiHeight) {Pt.base};
+	\node (W) at (\ltot-.5*\l,\t*\TabellaVotiHeight-.5*\TabellaVotiHeight) {\textbf{Tot.}};
+	\node (W) at (\ltot-.5*\l,-.5*\TabellaVotiHeight) {\theTabellaVotiPuntiTot};
+	\node (W) at (-.5*\TabellaVotiPtBaseWidth,-.5*\TabellaVotiHeight) {\PuntiBaseVerifica};
+	\node (W) at (-.5*\TabellaVotiPtBaseWidth,-1.5*\TabellaVotiHeight) {\PuntiBaseVerifica};
+	% alcuni counter utili per il successivo loop
+	\setcounter{TabellaVotiEsNumIter}{1} % un iteratore per tenere traccia dell'attuale esercizio
+	\setcounter{TabellaVotiLetterIter}{0} % un iteratore per tenere traccia dell'attuale lettera
+	\setcounter{TabellaVotiPervBarIter}{0} % un iteratore per tenere traccia dell'altezza a cui abbiamo tracciato l'ultima barra verticale nella prima riga (dove è iniziato l'attuale esercizio)
+	\renewcommand\TabellaVotiHeaderJump{1}
+	% le colonne coi punti dei vari esercizi
+	\foreach \x in {1,...,\theTabellaVotiNumLett} {
+		\stepcounter{TabellaVotiLetterIter} % incrementa l'iteratore della lettera
+		\ifnum\csname TabellaVotiBarraPerLettera:\theTabellaVotiNumTabelle:\x\endcsname=1
+			% se la colonna attuale è l'ultima dell'attuale esercizio
+			\renewcommand\TabellaVotiHeaderJump{1} % la riga verticale deve raggiungere anche la prima riga
+			\node (W) at (.5*\value{TabellaVotiPervBarIter}*\l+.5*\x*\l,\t*\TabellaVotiHeight-.5*\TabellaVotiHeight) {Es.\textbf{\theTabellaVotiEsNumIter}}; % scrivi il numero dell'esercizio nella prima riga
+			\ifnum\value{TabellaVotiLetterIter}>1
+				% se non è l'unica colonna di questo esercizio, scrivi la lettera dell'esercizio (se esiste la riga delle lettere)
+				\ifnum\t>0 \node (W) at (\x*\l-.5*\l,.5*\TabellaVotiHeight) {\textbf{\alph{TabellaVotiLetterIter}.}}; \fi
+			\fi
+			% aggiorna gli iteratori
+			\setcounter{TabellaVotiPervBarIter}{\x} % segnamo che abbiamo appena tracciato una riga verticale nella prima riga (ci servirà per stabilire la posizione in cui scrivere il nodo nella prima riga per il prossimo esercizio)
+			\stepcounter{TabellaVotiEsNumIter} % scriviamo che siamo al prossimo esercizio
+			\setcounter{TabellaVotiLetterIter}{0} % dal momento che siamo in un nuovo esercizio, dobbiamo resettare le lettere
+		\else
+			% se la colonna attuale NON è l'ultima dell'attuale esercizio, come prima cosa scriviamo la lettera dell'attuale colonna (se esiste la riga delle lettere)
+			\ifnum\t>0 \node (W) at (\x*\l-.5*\l,.5*\TabellaVotiHeight) {\textbf{\alph{TabellaVotiLetterIter}.}}; \fi
+			\renewcommand\TabellaVotiHeaderJump{0} % la riga verticale NON deve raggiungere la prima riga
+		\fi
+		\ifnum\x<\theTabellaVotiNumLett
+			% disegna la riga verticale a destra dell'attuale esercizio
+			\draw (\x*\l,-2*\TabellaVotiHeight) -- ++(0,2*\TabellaVotiHeight+\t*\TabellaVotiHeight-\TabellaVotiHeight+\TabellaVotiHeaderJump*\TabellaVotiHeight);
+		\fi
+		\node (W) at (\x*\l-.5*\l,-.5*\TabellaVotiHeight) {\getTabellaVotiPuntiPerLettera[\x]}; % scriviamo quanti punti vale l'esercizio nella colonna
+		\draw[line width=2pt] (\ltot,-2*\TabellaVotiHeight) rectangle ++(-\l,\TabellaVotiHeight); % la casella in basso a destra viene ripassata
+	}
+	\end{tikzpicture}
+	\end{adjustbox}}
+	\end{center}}
+	\begin{center}
+	{\Huge \setlength\fboxsep{5mm}\boxed{\hspace*{-3mm}\textbf{Voto:} \hspace*{30mm}}} % il box in cui scrivere il voto
+	\ifdefstring{\TipoDoc}{verifica recupero}{{\Large\hspace*{10mm}\vspace*{-\baselineskip}
+		\begin{tabular}{l}
+		Debito saldato:\\
+		$\mkern2mu\framebox[16mm]{\huge \textbf{SI}}\mkern15mu\framebox[16mm]{\huge \textbf{NO}}$
+		\end{tabular}\\\vspace*{4mm}
+	}}{} % per segnare se lo studente ha superato il debito
+	\end{center}
+}
+
+% valori utili durante la lettura dei dati dall'input per \TabellaVoti
+\newcommand\TabellaVotiDrawLettersRow{0} % può essere 0 (falso) o 1 (vero)
+\newcounter{TabellaVotiNumLett} % quante lettere ci sono in tutto (se ad es. ci sono es: 1a,1b,2 TabellaVotiNumLett=3)
+\newcounter{TabellaVotiPuntiTot} % quanti sono i punti totali per la verifica (idealmente 100)
+\newcounter{TabellaVotiNumTabelle} % indica quale tabella di \TabellaVoti stiamo scrivendo (se è la prima, o se ne abbiamo già scritte precedentemente). Questo ci permette di creare più tabelle nello stesso documento.
+\newcommand\TabellaVotiInizializzaContenitoriIterOpenNum{0} % usata nella lettura dei dati. Indica se stiamo già leggendo un numero
+
+% funzioni per la gestione dell'array TabellaVotiPuntiPerLettera (quanti punti venono assegnati in ogni colonna della tabella)
+\newcommand\storedataTabellaVotiPuntiPerLettera[1][0]{
+	\expandafter\newcommand\csname TabellaVotiPuntiPerLettera:\theTabellaVotiNumTabelle:\theTabellaVotiNumLett\endcsname{#1}
+}
+\newcommand\getTabellaVotiPuntiPerLettera[1][0]{\csname TabellaVotiPuntiPerLettera:\theTabellaVotiNumTabelle:#1\endcsname}
+
+% funzioni per la gestione dell'array TabellaVotiBarraPerLettera (valori 0-1 per decidere se si tratta dell'ultima colonna relativa ad un esercizio)
+\newcommand\storedataTabellaVotiBarraPerLettera[1][0]{
+	\expandafter\newcommand\csname TabellaVotiBarraPerLettera:\theTabellaVotiNumTabelle:\theTabellaVotiNumLett\endcsname{#1}
+}
+
+\makeatletter
+% La funzione più esterna nella lettura dell'input per \TabellaVoti
+\newcommand\TabellaVotiInizializzaContenitori[1][0]{
+	\stepcounter{TabellaVotiNumTabelle}
+	\renewcommand\TabellaVotiDrawLettersRow{0}
+	\setcounter{TabellaVotiNumLett}{0}
+	\setcounter{TabellaVotiPuntiTot}{#1}
+	\@ifnextchar\bgroup{\TabellaVotiInizializzaContenitoriIter}{}
+}
+
+% Una funzione di iterazione nella lettura dell'input per \TabellaVoti. Viene chiamata una volta per ciascun esercizio. La suddivisione fra gli esercizi viene fatta a "blocchi" (racchiusi fra {}), ma la lettura dentro a queste {} avviene un carattere alla volta
+\newcommand\TabellaVotiInizializzaContenitoriIter[1]{
+	\TabellaVotiInizializzaContenitoriIterComma,#1
+	\@ifnextchar\bgroup{\TabellaVotiInizializzaContenitoriIter}{}
+}
+
+% Usata all'interno della lettura dell'input per \TabellaVoti quando leggiamo un separatore (una virgola) dall'input
+\newcommand\TabellaVotiInizializzaContenitoriIterComma[2][0]{
+	\ifnum#1=1 \renewcommand\TabellaVotiDrawLettersRow{1} \fi
+	\renewcommand\TabellaVotiInizializzaContenitoriIterOpenNum{0}
+	\stepcounter{TabellaVotiNumLett}
+	\TabellaVotiInizializzaContenitoriIterDigit
+}
+
+% Usata all'interno della lettura dell'input per \TabellaVoti quando leggiamo una cifra dall'input
+\newcommand\TabellaVotiInizializzaContenitoriIterDigit[1]{
+	\ifnum\TabellaVotiInizializzaContenitoriIterOpenNum=0
+		\storedataTabellaVotiPuntiPerLettera[#1]
+		\renewcommand\TabellaVotiInizializzaContenitoriIterOpenNum{1}
+	\else
+		\expandafter\g@addto@macro\csname TabellaVotiPuntiPerLettera:\theTabellaVotiNumTabelle:\theTabellaVotiNumLett\endcsname{#1}
+	\fi
+	\@ifnextcharisdigitelse{
+		\TabellaVotiInizializzaContenitoriIterDigit
+	}{
+		\addtocounter{TabellaVotiPuntiTot}{\csname TabellaVotiPuntiPerLettera:\theTabellaVotiNumTabelle:\theTabellaVotiNumLett\endcsname}
+		\@ifnextchar,{
+			\storedataTabellaVotiBarraPerLettera[0]
+			\TabellaVotiInizializzaContenitoriIterComma[1]
+		}{
+			\storedataTabellaVotiBarraPerLettera[1]
+		}
+	}
+}
+
+% se il prossimo carattere nel buffer è una cifra esegue #1. Altrimenti esegue #2.
+\def\@ifnextcharisdigitelse#1#2{%
+  \@ifnextchar0{#1}%
+  {\@ifnextchar1{#1}%
+  {\@ifnextchar2{#1}%
+  {\@ifnextchar3{#1}%
+  {\@ifnextchar4{#1}%
+  {\@ifnextchar5{#1}%
+  {\@ifnextchar6{#1}%
+  {\@ifnextchar7{#1}%
+  {\@ifnextchar8{#1}%
+  {\@ifnextchar9{#1}%
+  {#2}}}}}}}}}}}
+\makeatother
