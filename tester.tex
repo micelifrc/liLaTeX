@@ -1,6 +1,6 @@
 \documentclass[italian, a4paper]{article}
 %\documentclass[crop,tikz,dvipsnames]{standalone} % per le immagini
-\newcommand{\TipoDoc}{patata}
+\newcommand{\TipoDoc}{plain}
 \newcommand{\Materia}{Matematica}
 \newcommand{\Minuti}{90}
 \input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
@@ -13,4 +13,25 @@ Esempio di verifica
 \[\forall \varepsilon\in\mathbb{R}\,\left\lvert f(x+\varepsilon)-f(x)\right\rvert<\mathscr{S}\]
 
 \[A\widehat{B}C=120^\circ-\int_{x=0}^\infty\frac{1}{x^2}+{5\choose2}-\sum_{i=1}^{N}\frac{i(i+1)}{2}-\overline{x}\]
+
+\[\qedsymbol\tccentigrade\euro\]
+\euro
+
+\begin{figure}[!ht]\centering
+\captionbox{Logo della scuola 1}[.4 \textwidth]{\includegraphics{\LogoScuolaPath}}
+\captionbox*{Logo della scuola 2}[.4 \textwidth]{\begin{tikzpicture}\draw[fill=yellow](0,0)circle(2);\end{tikzpicture}}
+\end{figure}
+
+\begin{tabular}{lll}
+A1 & A2 & \multirow{2}{*}{AB3} \\
+\multicolumn{2}{c}{B12} & 
+\end{tabular}
+
+\textcolor{ForestGreen}{Prova in verde}
+
+\[\begin{WithArrows}
+2x^2-6=0\\
+2(x-\sqrt{3})(x+\sqrt{3})=0
+\end{WithArrows}\]
+
 \end{document}
