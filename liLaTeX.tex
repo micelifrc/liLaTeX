@@ -1,19 +1,31 @@
-% flag (per i nuovi utenti: aggiornare i primi 4 comandi)
+%%%% flags (per i nuovi utenti: aggiornare le prime 5 flags)
+
 \providecommand{\liLaTeXPath}{C:/Users/themi/Desktop/LaTeX/liLaTeX} % l'indirizzo dove è stato salvato il file liLaTeX.tex
 \providecommand{\LogoScuolaPath}{C:/Users/themi/Desktop/LaTeX/liLaTeX/Logo_Liceo_Scientifico_Francesco_Vercelli.jpeg} % il file immagine col logo della scuola
 \providecommand{\NomeScuola}{Liceo Scientifico \textit{F.Vercelli}} % il nome della scuola
+\providecommand{\CittaScuola}{Asti} % la città in cui si trova la scuola
 \providecommand{\AnnoScolastico}{2024-2025} % l'anno scolastico di riferimento (da cambiare una volta all'anno)
 \providecommand{\Data}{} % la data della prova (facoltativa)
 \providecommand{\NomeStudente}{} % il nome dello studete con file personale (facoltativo)
 \providecommand{\CognomeStudente}{} % il cognome dello studente con file personale (facoltativo)
+\providecommand{\NomeClasse}{} % il nome della classe (facoltativo)
 \providecommand{\Minuti}{} % il numero di minuti di durata della prova (solo per verifiche)
 \providecommand{\Materia}{} % Matematica o Fisica
 \providecommand{\Titolo}{} % il titolo del documento
 \providecommand{\MarginSize}{1.5} % il margine (in cm). Non settarlo per le immagini
 \providecommand{\FontSize}{11} % la dimensione del testo (in pt)
 \providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda SSPM, scheda laboratorio, prova laboratorio, gara olimpiadi, lezione, dimostrazione, formulario}
+\providecommand{\NumPages}{} % può essere posto a 0 se non vogliamo numerare le pagine oppure a 1 se vogliamo numerarle. Se non specificato, le pagine vengono numerate se e solo se ce n'è più di una (nel caso serve compilare due volte)
 
 \usepackage{etoolbox} % if-else commands come \ifdefempty{cs}{TRUE}{FALSE} e \ifdefstring{cs}{string}{TRUE}{FALSE}
+
+% sovrascrive #1 con #2 solo se #1 è vuoto
+\newcommand{\overwriteifempty}[2]{\ifdefempty{#1}{\renewcommand{#1}{#2}}{}}
+
+% in caso di verifica sovrascrive il titolo, se vuoto
+\ifdefstring{\TipoDoc}{verifica}{\overwriteifempty{\Titolo}{Verifica di \Materia}}{}
+\ifdefstring{\TipoDoc}{verifica recupero}{\overwriteifempty{\Titolo}{Verifica di recupero di \Materia}}{}
+\ifdefstring{\TipoDoc}{prova laboratorio}{\overwriteifempty{\Titolo}{Prova di laboratorio di \Materia}}{}
 
 % controlla se \TipoDoc è uno dei tipi conosciuti, altrimenti genera un errore di compilazione
 \newcounter{TipoDocGuardCounter}
@@ -33,15 +45,14 @@
 \ifdefstring{\TipoDoc}{formulario}{\stepcounter{TipoDocGuardCounter}}{}
 \ifnum\value{TipoDocGuardCounter}=0 \errmessage{TipoDoc = \TipoDoc\space non e' un valore valido} \fi
 
-% sovrascrive #1 con #2 solo se #1 è vuoto
-\newcommand{\overwriteifempty}[2]{\ifdefempty{#1}{\renewcommand{#1}{#2}}{}}
+% 1 se \TipoDoc è un qualche tipo di verifica, 0 altrimenti
+\newcounter{TipoDocVerificaCounter}
+\ifdefstring{\TipoDoc}{verifica}{\stepcounter{TipoDocVerificaCounter}}{}
+\ifdefstring{\TipoDoc}{verifica recupero}{\stepcounter{TipoDocVerificaCounter}}{}
+\ifdefstring{\TipoDoc}{prova laboratorio}{\stepcounter{TipoDocVerificaCounter}}{}
 
-% in caso di verifica sovrascrive il titolo, se vuoto
-\ifdefstring{\TipoDoc}{verifica}{\overwriteifempty{\Titolo}{Verifica di \Materia}}{}
-\ifdefstring{\TipoDoc}{verifica recupero}{\overwriteifempty{\Titolo}{Verifica di recupero di \Materia}}{}
-\ifdefstring{\TipoDoc}{prova laboratorio}{\overwriteifempty{\Titolo}{Prova di laboratorio di \Materia}}{}
+%%%% pacchetti
 
-% pacchetti
 \usepackage[T1]{fontenc} % per riconoscere caratteri come è
 \usepackage{babel} % supporto per l'italiano (o per le altre lingue)
 \usepackage{amsmath} % comandi matematici
@@ -57,7 +68,61 @@
 \usepackage{graphicx} % per \includegraphics
 \usepackage{caption} % per \caption* e \captionbox
 \usepackage[dvipsnames]{xcolor} % pacchetto dei colori
-\usepackage{tikz}
+\usepackage{tikz} % tikz è il pacchetto per le immagini. Definisce tikzfigure
 \usetikzlibrary{decorations.pathmorphing,patterns} % per springs e brackets
+\usepackage{pgfplots} % pacchetto per plot
 \usepackage{witharrows} % usato per \[\begin{WithArrows}...\end{WithArrows}\]
 \usepackage{pdfpages} % usato per \includepdf
+
+%%%% impaginazione
+
+\usepackage{fancyhdr} % pacchetto per l'impaginazione
+\usepackage{refcount}% contiene il comando \getpagerefnumber usato per contare il numero di pagine nel documento (serve per l'impaginazione)
+\usepackage{lastpage} % definisce il parametro LastPage, che indica l'ultima pagina del file. Serve per l'impaginazione
+
+% specifica il valore di \NumPages se non è stato specificato dall'utente. Funziona solo a partire dalla seconda compilazione. È comunque settato come 0 per le immagini
+\ifnum\getpagerefnumber{LastPage}>1\relax \overwriteifempty{\NumPages}{1} \else \overwriteifempty{\NumPages}{0} \fi
+\ifdefstring{\TipoDoc}{immagine}{\renewcommand{\NumPages}{0}}
+
+% crea l'impaginazione per le verifiche
+\fancypagestyle{VerificaPageStyle}{%
+	\fancyhf{} % resetta impaginazioni residue
+    \renewcommand{\headrulewidth}{0pt} % rimuovi la linea in cima alla pagina
+    \renewcommand{\footrulewidth}{0pt} % rimuovi la linea in fondo alla pagina
+	\pgfmathsetmacro\FontSizeSkip{1.2*\FontSize} % lo spazio verticale da lasciare
+    \chead{ % la tabella in cima alle pagine dispari
+    	\ifodd\thepage\fontsize{\FontSize}{\FontSizeSkip}\selectfont
+    	\pgfmathsetmacro\NomeCognomeLogoWidth{2} % la dimensione del logo
+    	\pgfmathsetmacro\NomeCognomeTabellaWidth{21-2*\MarginSize-\NomeCognomeLogoWidth} % la dimensione della tabella
+	\pgfmathsetmacro\NomeCognomeTabellaLeftWidth{.5*\NomeCognomeTabellaWidth-.25*\NomeCognomeLogoWidth-.3+2} % la larghezza della parte a sinistra della tabella
+	\pgfmathsetmacro\NomeCognomeTabellaRightWidth{.5*\NomeCognomeTabellaWidth-.25*\NomeCognomeLogoWidth-.3-2} % la larghezza della parte a destra della tabella
+    	\begingroup\renewcommand\arraystretch{1.5}\begin{center} % lo spazio fra le righe in tabella
+    	\Titolo\ifdefempty{\Minuti}{}{\hspace*{1cm}(\textbf{\Minuti} minuti)}\\\vspace{3mm} % la riga con titolo e numero di minuti per la verifica
+		\begin{minipage}{\NomeCognomeTabellaWidth cm}\begin{center}
+	\boxed{\begin{tabular}[t]{p{\NomeCognomeTabellaLeftWidth cm}p{\NomeCognomeTabellaRightWidth cm}}
+	COGNOME: \ifdefempty{\CognomeStudente}{\dotfill}{\CognomeStudente} & CLASSE: \NomeClasse \\
+	NOME: \ifdefempty{\NomeStudente}{\dotfill}{\NomeStudente} & \NomeScuola \\
+	\CittaScuola,\ifdefempty{\Data}{\dotfill}{\Data} & a.s. \AnnoScolastico \\
+	\end{tabular}}\end{center}
+	\end{minipage}\begin{minipage}{\NomeCognomeLogoWidth cm}
+	\includegraphics[height=2cm]{\LogoScuolaPath}
+	\end{minipage}\end{center}
+	\endgroup
+    \fi} % intestazione nell'head (solo pagine dispari)
+    \cfoot{\ifdefstring{\NumPages}{0}{}{\fontsize{\FontSize}{\FontSizeSkip}\selectfont\thepage}} % scrivi il numero della pagina in fondo (centrato)
+}
+
+\ifnum\value{TipoDocVerificaCounter}=1 % se il file è un file di verifica
+\makeatletter % contiene comandi del tipo @, quidni va racchiuso fra \makeatletter e \makeatother
+	\pagestyle{VerificaPageStyle}
+	% questa parte definisce dove posizionare il testo rispetto all'impaginazione
+	\ifdefstring{\NumPages}{0}{\textheight=25.2cm}{\textheight=24.2cm} % Lo spazio verticale riservato per il testo
+	\pgfmathsetmacro\HeaderPts{10*\FontSize-20}
+	\pgfmathsetmacro\HeaderPtsDiff{25}
+	\pgfmathsetmacro\ExtraHeaderPts{\HeaderPts-\HeaderPtsDiff}
+	\patchcmd\@outputpage{\headsep}{\ifodd\count\z@ \HeaderPts pt\else \HeaderPtsDiff pt\fi}{}{}
+	\patchcmd\@outputpage{\global\@colht\textheight}{\global\advance\textheight by \ifodd\count\z@ +\ExtraHeaderPts pt \else -\ExtraHeaderPts pt \fi\global\@colht\textheight}{}{}
+\makeatother
+\else
+	\ifdefstring{\NumPages}{0}{\pagestyle{empty}}{\pagestyle{plain}}
+\fi
