@@ -18,7 +18,7 @@
 \providecommand{\colText}{black} % il colore di esercizi, teoremi e dimostrazioni
 \providecommand{\colDim}{blue} % il colore di dimostrazioni e soluzioni
 \providecommand{\colSI}{} % il colore delle unità di misura (definito in seguito come arancione)
-\providecommand{\NumPages}{} % può essere posto a 0 se non vogliamo numerare le pagine oppure a 1 se vogliamo numerarle
+\providecommand{\EnumPages}{} % può essere posto a 0 se non vogliamo numerare le pagine oppure a 1 se vogliamo numerarle
 \providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda SSPM, scheda laboratorio, prova laboratorio, gara olimpiadi, lezione, dimostrazione, formulario}
 %NOTA: le flag possono essere sovrascritte dall'utente di volta in volta specificando dei \newcommand in preambolo prima di includere il pacchetto liLaTeX
 %Alcune flag, se non specificate dall'utente, vengono ridefinite in questo file nella sezione denominata "SOVRASCRITTURA DELLE FLAG"
@@ -59,7 +59,7 @@
 % sovrascrive #1 con #2 solo se #1 è vuoto
 \newcommand{\OverwriteFlagIfEmpty}[2]{\ifdefempty{#1}{\renewcommand{#1}{#2}}{}}
 
-% in caso di verifica sovrascrive il titolo, se vuoto
+% in caso di verifica sovrascrive il \Titolo, se vuoto
 \ifdefstring{\TipoDoc}{verifica}{\OverwriteFlagIfEmpty{\Titolo}{Verifica di \Materia}}{}
 \ifdefstring{\TipoDoc}{verifica recupero}{\OverwriteFlagIfEmpty{\Titolo}{Verifica di recupero di \Materia}}{}
 \ifdefstring{\TipoDoc}{prova laboratorio}{\OverwriteFlagIfEmpty{\Titolo}{Prova di laboratorio di \Materia}}{}
@@ -80,7 +80,7 @@
 \ifdefstring{\TipoDoc}{lezione}{\stepcounter{TipoDocGuardCounter}}{}
 \ifdefstring{\TipoDoc}{dimostrazione}{\stepcounter{TipoDocGuardCounter}}{}
 \ifdefstring{\TipoDoc}{formulario}{\stepcounter{TipoDocGuardCounter}}{}
-\ifnum\value{TipoDocGuardCounter}=0 \errmessage{TipoDoc = \TipoDoc\space non e' un valore valido} \fi
+\ifnum\value{TipoDocGuardCounter}=0 \errmessage{TipoDoc = \TipoDoc\space non e' un valore valido} \fi % il messaggio di errore di compilazione
 
 % 1 se \TipoDoc è un qualche tipo di verifica, 0 altrimenti
 \newcounter{TipoDocVerificaCounter}
@@ -88,12 +88,12 @@
 \ifdefstring{\TipoDoc}{verifica recupero}{\stepcounter{TipoDocVerificaCounter}}{}
 \ifdefstring{\TipoDoc}{prova laboratorio}{\stepcounter{TipoDocVerificaCounter}}{}
 
+% specifica il valore di \EnumPages se non è stato specificato dall'utente. Funziona solo a partire dalla seconda compilazione.
+\ifnum\getpagerefnumber{LastPage}>1\relax \OverwriteFlagIfEmpty{\EnumPages}{1} \else \OverwriteFlagIfEmpty{\EnumPages}{0} \fi
+\ifdefstring{\TipoDoc}{immagine}{\renewcommand{\EnumPages}{0}} % le immagini non devono mai avere la numerazione delle pagine
+
 
 %%%%%%%%%%%%%%%% IMPAGINAZIONE
-
-% specifica il valore di \NumPages se non è stato specificato dall'utente. Funziona solo a partire dalla seconda compilazione. È comunque settato come 0 per le immagini
-\ifnum\getpagerefnumber{LastPage}>1\relax \OverwriteFlagIfEmpty{\NumPages}{1} \else \OverwriteFlagIfEmpty{\NumPages}{0} \fi
-\ifdefstring{\TipoDoc}{immagine}{\renewcommand{\NumPages}{0}}
 
 % crea l'impaginazione per le verifiche
 \fancypagestyle{VerificaPageStyle}{%
@@ -101,33 +101,40 @@
     \renewcommand{\headrulewidth}{0pt} % rimuovi la linea in cima alla pagina
     \renewcommand{\footrulewidth}{0pt} % rimuovi la linea in fondo alla pagina
 	\pgfmathsetmacro\FontSizeSkip{1.2*\FontSize} % lo spazio verticale da lasciare
-    \chead{ % la tabella in cima alle pagine dispari
+    \chead{
     	\ifodd\thepage\fontsize{\FontSize}{\FontSizeSkip}\selectfont
+    	\pgfmathsetmacro\NomeCognomeWidthDiffInTab{5} % la differenza di dimensione fra le due colonne di testo nella tabella. Diminuisci se non ci sta il nome della tua scuola
     	\pgfmathsetmacro\NomeCognomeLogoWidth{2} % la dimensione del logo
     	\pgfmathsetmacro\NomeCognomeTabellaWidth{21-2*\MarginSize-\NomeCognomeLogoWidth} % la dimensione della tabella
-	\pgfmathsetmacro\NomeCognomeTabellaLeftWidth{.5*\NomeCognomeTabellaWidth-.25*\NomeCognomeLogoWidth-.3+2} % la larghezza della parte a sinistra della tabella
-	\pgfmathsetmacro\NomeCognomeTabellaRightWidth{.5*\NomeCognomeTabellaWidth-.25*\NomeCognomeLogoWidth-.3-2} % la larghezza della parte a destra della tabella
+	\pgfmathsetmacro\NomeCognomeTabellaLeftWidth{.5*\NomeCognomeTabellaWidth-.75+.5*\NomeCognomeWidthDiffInTab} % la larghezza della parte a sinistra della tabella
+	\pgfmathsetmacro\NomeCognomeTabellaRightWidth{.5*\NomeCognomeTabellaWidth-.75-.5*\NomeCognomeWidthDiffInTab} % la larghezza della parte a destra della tabella
     	\begingroup\renewcommand\arraystretch{1.5}\begin{center} % lo spazio fra le righe in tabella
     	\Titolo\ifdefempty{\Minuti}{}{\hspace*{1cm}(\textbf{\Minuti} minuti)}\\\vspace{3mm} % la riga con titolo e numero di minuti per la verifica
-		\begin{minipage}{\NomeCognomeTabellaWidth cm}\begin{center}
-	\boxed{\begin{tabular}[t]{p{\NomeCognomeTabellaLeftWidth cm}p{\NomeCognomeTabellaRightWidth cm}}
-	COGNOME: \ifdefempty{\CognomeStudente}{\dotfill}{\CognomeStudente} & CLASSE: \NomeClasse \\
-	NOME: \ifdefempty{\NomeStudente}{\dotfill}{\NomeStudente} & \NomeScuola \\
-	\CittaScuola,\ifdefempty{\Data}{\dotfill}{\Data} & a.s. \AnnoScolastico \\
-	\end{tabular}}\end{center}
-	\end{minipage}\begin{minipage}{\NomeCognomeLogoWidth cm}
-	\includegraphics[height=2cm]{\LogoScuolaPath}
-	\end{minipage}\end{center}
-	\endgroup
-    \fi} % intestazione nell'head (solo pagine dispari)
-    \cfoot{\ifdefstring{\NumPages}{0}{}{\fontsize{\FontSize}{\FontSizeSkip}\selectfont\thepage}} % scrivi il numero della pagina in fondo (centrato)
+		\begin{minipage}{\NomeCognomeTabellaWidth cm}
+			\begin{center}
+			\boxed{
+				\begin{tabular}[t]{p{\NomeCognomeTabellaLeftWidth cm}p{\NomeCognomeTabellaRightWidth cm}}% la tabella in cima alle pagine dispari
+					COGNOME: \ifdefempty{\CognomeStudente}{\dotfill}{\CognomeStudente} & CLASSE: \NomeClasse \\
+					NOME: \ifdefempty{\NomeStudente}{\dotfill}{\NomeStudente} & \NomeScuola \\
+					\CittaScuola,\ifdefempty{\Data}{\dotfill}{\Data} & a.s. \AnnoScolastico \\
+				\end{tabular}
+			}
+			\end{center}
+		\end{minipage}\begin{minipage}{\NomeCognomeLogoWidth cm} % questa parte deve rimanere su un'unica riga
+			\begin{center}\includegraphics[height=2cm]{\LogoScuolaPath}\end{center}
+		\end{minipage}
+		\end{center}
+		\endgroup
+    	\fi
+    } % intestazione nell'head (solo pagine dispari)
+    \cfoot{\ifdefstring{\EnumPages}{0}{}{\fontsize{\FontSize}{\FontSizeSkip}\selectfont\thepage}} % scrivi il numero della pagina in fondo (centrato)
 }
 
 \ifnum\value{TipoDocVerificaCounter}=1 % se il file è un file di verifica
 \makeatletter % contiene comandi del tipo @, quidni va racchiuso fra \makeatletter e \makeatother
 	\pagestyle{VerificaPageStyle}
 	% questa parte definisce dove posizionare il testo rispetto all'impaginazione
-	\ifdefstring{\NumPages}{0}{\textheight=25.2cm}{\textheight=24.2cm} % Lo spazio verticale riservato per il testo
+	\ifdefstring{\EnumPages}{0}{\textheight=25.2cm}{\textheight=24.2cm} % Lo spazio verticale riservato per il testo
 	\pgfmathsetmacro\HeaderPts{10*\FontSize-20}
 	\pgfmathsetmacro\HeaderPtsDiff{25}
 	\pgfmathsetmacro\ExtraHeaderPts{\HeaderPts-\HeaderPtsDiff}
@@ -135,7 +142,7 @@
 	\patchcmd\@outputpage{\global\@colht\textheight}{\global\advance\textheight by \ifodd\count\z@ +\ExtraHeaderPts pt \else -\ExtraHeaderPts pt \fi\global\@colht\textheight}{}{}
 \makeatother
 \else
-	\ifdefstring{\NumPages}{0}{\pagestyle{empty}}{\pagestyle{plain}}
+	\ifdefstring{\EnumPages}{0}{\pagestyle{empty}}{\pagestyle{plain}}
 \fi
 
 
@@ -150,9 +157,8 @@
 \newcommand\TabellaVotiHeaderJump{1}
 
 % Chiama \TabellaVoti a fine verifica per creare la tabella per mettere i punti.
-% Il seguente esempio mostra come creare la tabella per una verifica con 6 esercizi (di cui l'es. 3 è diviso in 2 punti e l'es. 5 è diviso in 3 punti) in cui ciascun esercizio vale 30 punti (equamente distribuiti fra i vari punti dell'esercizio):
-% \TabellaVoti{{30}{30}{15,15}{30}{10,10,10}{30}}
-% La funzione principale per crare \TabellaVoti
+% Il seguente esempio mostra come creare la tabella per una verifica con 5 esercizi (di cui l'es. 3 è diviso in 2 punti e l'es. 5 è diviso in 3 punti) in cui ciascun esercizio vale 18 punti (equamente distribuiti fra i vari punti dell'esercizio):
+% \TabellaVoti{{18}{18}{9,9}{18}{6,6,6}}
 \newcommand\TabellaVoti[1]{
 	\pgfmathsetmacro\TabellaVotiTabellaWidth{18}
 	\pgfmathsetmacro\TabellaVotiHeight{1}
@@ -446,17 +452,18 @@
 %%%%%%%%%%%%%%%% SI
 
 % pone \colSI = black se il testo è da stampare e come orange altrimenti
-\definecolor{coppercolor}{RGB}{184, 115, 51} % colore del rame
+\definecolor{coppercolor}{RGB}{184, 115, 51} % colore del rame. Usato per colorare le unità di misura nei testi che non vengono stampati
 \ifnum\value{TipoDocVerificaCounter}=1 \OverwriteFlagIfEmpty{\colSI}{black} \else
-\ifdefstring{\TipoDoc}{scheda}{\OverwriteFlagIfEmpty{\colSI}{black}}{}
-\ifdefstring{\TipoDoc}{scheda SSPM}{\OverwriteFlagIfEmpty{\colSI}{black}}{}
-\ifdefstring{\TipoDoc}{scheda laboratorio}{\OverwriteFlagIfEmpty{\colSI}{black}}{}
-\ifdefstring{\TipoDoc}{gara olimpiadi}{\OverwriteFlagIfEmpty{\colSI}{black}}{}
-\OverwriteFlagIfEmpty{\colSI}{coppercolor}
+	\ifdefstring{\TipoDoc}{scheda}{\OverwriteFlagIfEmpty{\colSI}{black}}{}
+	\ifdefstring{\TipoDoc}{scheda SSPM}{\OverwriteFlagIfEmpty{\colSI}{black}}{}
+	\ifdefstring{\TipoDoc}{scheda laboratorio}{\OverwriteFlagIfEmpty{\colSI}{black}}{}
+	\ifdefstring{\TipoDoc}{gara olimpiadi}{\OverwriteFlagIfEmpty{\colSI}{black}}{}
+	\OverwriteFlagIfEmpty{\colSI}{coppercolor}
 \fi
 
-\newcommand{\SI}[1]{\textcolor{\colSI}{\mathrm{#1}}} % per unità di misura. Per scrive metri scrivi \SI{m}
-\newcommand{\SIf}[2]{\SI{\frac{#1}{#2}}} % unità di misura in frazione. Per scrivere metri al secondo quadrato scrivi \SIf{m}{s^2}
+\newcommand{\SI}[1]{\textcolor{\colSI}{\mathrm{#1}}} % scrivi le unità di misura. Per scrive metri scrivi \SI{m} per scrivere joule puoi scrivere \SI{J} oppure \SI{Nm}
+\newcommand{\SIf}[2]{\SI{\frac{#1}{#2}}} % unità di misura in frazione. Per scrivere metri al secondo quadrato scrivi \SIf{m}{s^2} oppure \SI{m/s^2}
+\newcommand{\oC}{\textcolor{\colSI}{\tccentigrade}}
 
 
 %%%%%%%%%%%%%%%% ALTRE DEFINIZIONI UTILI
@@ -466,16 +473,17 @@
 \newcommand{\vc}[1]{\overrightarrow{#1}} % il vettore (in senso fisico)
 \newcommand{\vcp}[3][-5]{\overrightarrow{#2}_{\hspace*{#1pt}#3}} % il vettore (fisico) con pedice
 
-% vettore in senso matematico (esempio su come implementare una funzione con un numero arbitrario di input)
+% vettore in senso matematico, con numero arbitrario di input. Chiama come \vettore{x}{y}{z}...
+% questo è un semplice esempio su come implementare una funzione con un numero arbitrario di input
 \makeatletter
 \newcommand{\vettore}{\begin{pmatrix}\vettoreIter}
 \newcommand{\vettoreIter}[1]{#1\@ifnextchar\bgroup{\\\vettoreIter}{\end{pmatrix}}}
 \makeatother
 
-\newcommand{\seq}[1][]{\stackrel{#1}{=}} % uguaglianza con commento
-\newcommand{\scong}[1][]{\stackrel{#1}{\cong}} % congruenza con commento
-\newcommand{\lr}[1][]{\stackrel{#1}{\Longrightarrow}} % implicazioni con commento
-\newcommand{\lrt}[1][]{\lr[\text{#1}]}
+\newcommand{\seq}[1][]{\stackrel{#1}{=}} % uguaglianza con commento. Chiama come \seq[commento] (il commento è in ambiente math)
+\newcommand{\scong}[1][]{\stackrel{#1}{\cong}} % congruenza con commento. Chiama come \scong[commento] (il commento è in ambiente math)
+\newcommand{\lr}[1][]{\stackrel{#1}{\Longrightarrow}} % implicazioni con commento. Chiama come \lr[commento] (il commento è in ambiente math)
+\newcommand{\lrt}[1][]{\lr[\text{#1}]} % analogo a \lr, ma il commento è un testo (anziché un ambiente math)
 
 \newcommand{\qsep}[1]{\quad #1 \quad} % separatore fra dei \quad
 \newcommand{\qsr}[2]{\qsep{\stackrel{#2}{#1}}} % separatore fra dei \stackrel
