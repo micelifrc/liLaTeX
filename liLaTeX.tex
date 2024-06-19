@@ -21,7 +21,36 @@
 \providecommand{\colDim}{blue} % il colore di dimostrazioni e soluzioni
 \providecommand{\colSI}{} % il colore delle unità di misura
 
-\usepackage{etoolbox} % if-else commands come \ifdefempty{cs}{TRUE}{FALSE} e \ifdefstring{cs}{string}{TRUE}{FALSE}
+%%%%%%%%%%%%%%%% PACCHETTI
+
+\usepackage[T1]{fontenc} % per riconoscere caratteri come è
+\usepackage{babel} % supporto per l'italiano (o per le altre lingue)
+\usepackage{etoolbox} % if-else commands come \ifdefempty{cs}{T}{F} e \ifdefstring{cs}{string}{T}{F}
+\usepackage{amsmath} % comandi matematici
+\usepackage{mathrsfs} % per \mathscr
+\usepackage{amssymb} % per \varepsilon e simili
+\usepackage{amsthm} % definisce \qedsymbol
+\usepackage{enumitem} % serve per noitemsep e nolistsep negli itemize e enumerate
+\usepackage{multirow} % per l'opzione \multirow{n}{*}{testo} in tabular
+\usepackage{mathcomp} % contiene il comando \tccentigrade (per i gradi centrigradi)
+\usepackage{eurosym} % contiene il comando \euro (da usare fuori dall'ambiente matematico)
+\usepackage{dsfont} % per definire \mathbb{1}, che abbiamo chiamato \bUNO
+\usepackage[fontsize=\FontSize pt]{fontsize} % modifica il font size
+\ifdefstring{\TipoDoc}{immagine}{}{\usepackage[margin=\MarginSize cm]{geometry}} % margini
+\usepackage{graphicx} % per \includegraphics
+\usepackage{caption} % per \caption* e \captionbox
+\usepackage[dvipsnames]{xcolor} % pacchetto dei colori
+\usepackage{tikz} % tikz è il pacchetto per le immagini. Definisce tikzfigure
+\usetikzlibrary{decorations.pathmorphing,patterns} % per springs e brackets
+\usepackage{pgfplots} % pacchetto per plot
+\usepackage{fancyhdr} % pacchetto per l'impaginazione
+\usepackage{refcount}% contiene il comando \getpagerefnumber usato per contare il numero di pagine nel documento (serve per l'impaginazione)
+\usepackage{lastpage} % definisce il parametro LastPage, che indica l'ultima pagina del file. Serve per l'impaginazione
+\usepackage{adjustbox} % necessario per l'ambiente \adjustbox, utile per disegnare la tabella dei voti
+\usepackage{witharrows} % usato per \[\begin{WithArrows}...\end{WithArrows}\] Da includere dopo xcolor
+\usepackage{pdfpages} % usato per \includepdf
+
+%%%%%%%%%%%%%%%% SOVRASCRITTURA DELLE FLAG
 
 % sovrascrive #1 con #2 solo se #1 è vuoto
 \newcommand{\overwriteifempty}[2]{\ifdefempty{#1}{\renewcommand{#1}{#2}}{}}
@@ -55,35 +84,7 @@
 \ifdefstring{\TipoDoc}{verifica recupero}{\stepcounter{TipoDocVerificaCounter}}{}
 \ifdefstring{\TipoDoc}{prova laboratorio}{\stepcounter{TipoDocVerificaCounter}}{}
 
-%%%%%%%%%%%%%%%% PACCHETTI
-
-\usepackage[T1]{fontenc} % per riconoscere caratteri come è
-\usepackage{babel} % supporto per l'italiano (o per le altre lingue)
-\usepackage{amsmath} % comandi matematici
-\usepackage{mathrsfs} % per \mathscr
-\usepackage{amssymb} % per \varepsilon e simili
-\usepackage{amsthm} % definisce \qedsymbol
-\usepackage{enumitem} % serve per noitemsep e nolistsep negli itemize e enumerate
-\usepackage{multirow} % per l'opzione \multirow{n}{*}{testo} in tabular
-\usepackage{mathcomp} % contiene il comando \tccentigrade (per i gradi centrigradi)
-\usepackage{eurosym} % contiene il comando \euro (da usare fuori dall'ambiente matematico)
-\usepackage{dsfont} % per definire \mathbb{1}, che abbiamo chiamato \bUNO
-\usepackage[fontsize=\FontSize pt]{fontsize} % modifica il font size
-\ifdefstring{\TipoDoc}{immagine}{}{\usepackage[margin=\MarginSize cm]{geometry}} % margini
-\usepackage{graphicx} % per \includegraphics
-\usepackage{caption} % per \caption* e \captionbox
-\usepackage[dvipsnames]{xcolor} % pacchetto dei colori
-\usepackage{tikz} % tikz è il pacchetto per le immagini. Definisce tikzfigure
-\usetikzlibrary{decorations.pathmorphing,patterns} % per springs e brackets
-\usepackage{pgfplots} % pacchetto per plot
-\usepackage{witharrows} % usato per \[\begin{WithArrows}...\end{WithArrows}\]
-\usepackage{pdfpages} % usato per \includepdf
-
 %%%%%%%%%%%%%%%% IMPAGINAZIONE
-
-\usepackage{fancyhdr} % pacchetto per l'impaginazione
-\usepackage{refcount}% contiene il comando \getpagerefnumber usato per contare il numero di pagine nel documento (serve per l'impaginazione)
-\usepackage{lastpage} % definisce il parametro LastPage, che indica l'ultima pagina del file. Serve per l'impaginazione
 
 % specifica il valore di \NumPages se non è stato specificato dall'utente. Funziona solo a partire dalla seconda compilazione. È comunque settato come 0 per le immagini
 \ifnum\getpagerefnumber{LastPage}>1\relax \overwriteifempty{\NumPages}{1} \else \overwriteifempty{\NumPages}{0} \fi
@@ -133,8 +134,6 @@
 \fi
 
 %%%%%%%%%%%%%%%% TABELLA VOTI
-
-\usepackage{adjustbox} % necessario per l'ambiente \adjustbox, utile per disegnare la tabella dei voti
 
 % iteratori utili per \TabellaVoti
 \newcounter{TabellaVotiEsNumIter}
