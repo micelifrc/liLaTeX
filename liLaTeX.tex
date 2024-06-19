@@ -16,7 +16,7 @@
 \providecommand{\MarginSize}{1.5} % il margine (in cm). Non settarlo per le immagini
 \providecommand{\FontSize}{11} % la dimensione del testo (in pt)
 \providecommand{\colText}{black} % il colore di esercizi, teoremi e dimostrazioni
-\providecommand{\colDim}{blue} % il colore di dimostrazioni e soluzioni
+\providecommand{\colSol}{blue} % il colore di dimostrazioni e soluzioni
 \providecommand{\colSI}{} % il colore delle unità di misura (definito in seguito come arancione)
 \providecommand{\EnumPages}{} % può essere posto a 0 se non vogliamo numerare le pagine oppure a 1 se vogliamo numerarle
 \providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda SSPM, scheda laboratorio, prova laboratorio, gara olimpiadi, lezione, dimostrazione, formulario}
@@ -91,6 +91,281 @@
 % specifica il valore di \EnumPages se non è stato specificato dall'utente. Funziona solo a partire dalla seconda compilazione.
 \ifnum\getpagerefnumber{LastPage}>1\relax \OverwriteFlagIfEmpty{\EnumPages}{1} \else \OverwriteFlagIfEmpty{\EnumPages}{0} \fi
 \ifdefstring{\TipoDoc}{immagine}{\renewcommand{\EnumPages}{0}} % le immagini non devono mai avere la numerazione delle pagine
+
+
+%%%%%%%%%%%%%%%% ESERCIZI E SOLUZIONI
+
+\renewcommand{\qedsymbol}{$\blacksquare$}
+\theoremstyle{definition}
+\newtheorem{ExEmb}{Esercizio}
+\newtheorem*{ExEmb*}{Esercizio}
+\newtheorem{ExsecEmb}{Esercizio}[section]
+\newtheorem{ProblEmb}[ExEmb]{Problema}
+\newtheorem{teoEmb}{Teorema}
+\newtheorem*{teoEmb*}{Teorema}
+\newtheorem{lemmaEmb}[teoEmb]{Lemma}
+\newtheorem*{lemmaEmb*}{Lemma}
+\newtheorem{corEmb}[teoEmb]{Corollario}
+\newtheorem*{corEmb*}{Corollario}
+\newtheorem{SolEmb}{Soluzione}
+\newtheorem*{SolEmb*}{Soluzione}
+\newtheorem{DimEmb}[SolEmb]{Dimostrazione}
+\newtheorem*{DimEmb*}{Dimostrazione}
+\theoremstyle{definition}
+\newtheorem{Def}{Definizione}
+\newtheorem*{Def*}{Definizione}
+
+% questi sono gli ambienti da utilizzare
+\newenvironment{Ex}[1][]{\color{\colText}\begin{ExEmb}[#1]}{\end{ExEmb}}
+\newenvironment{Ex*}[1][]{\color{\colText}\begin{ExEmb*}[#1]}{\end{ExEmb*}}
+\newenvironment{ExSec}[1][]{\color{\colText}\begin{ExSecEmb}[#1]}{\end{ExSecEmb}}
+\newenvironment{Probl}[1][]{\color{\colText}\begin{ProblEmb}[#1]}{\end{ProblEmb}}
+\newenvironment{teo}[1][]{\color{\colText}\begin{teoEmb}[#1]}{\end{teoEmb}}
+\newenvironment{teo*}[1][]{\color{\colText}\begin{teoEmb*}[#1]}{\end{teoEmb*}}
+\newenvironment{lemma}[1][]{\color{\colText}\begin{lemmaEmb}[#1]}{\end{lemmaEmb}}
+\newenvironment{lemma*}[1][]{\color{\colText}\begin{lemmaEmb*}[#1]}{\end{lemmaEmb*}}
+\newenvironment{cor}[1][]{\color{\colText}\begin{corEmb}[#1]}{\end{corEmb}}
+\newenvironment{cor*}[1][]{\color{\colText}\begin{corEmb*}[#1]}{\end{corEmb*}}
+\newenvironment{Sol}[1][]{\color{\colSol}\begin{SolEmb}[#1]}{\end{SolEmb}}
+\newenvironment{Sol*}[1][]{\color{\colSol}\begin{SolEmb*}[#1]}{\end{SolEmb*}}
+\newenvironment{Dim}[1][]{\color{\colSol}\begin{DimEmb}[#1]}{\hfill\qedsymbol\end{DimEmb}}
+\newenvironment{Dim*}[1][]{\color{\colSol}\begin{DimEmb*}[#1]}{\hfill\qedsymbol\end{DimEmb*}}
+
+\newcommand{\setCounter}[2]{
+	\ifthenelse{\equal{#1}{Ex}}{\setcounter{ExEmb}{#2-1}}{}
+	\ifthenelse{\equal{#1}{ExSec}}{\setcounter{ExSecEmb}{#2-1}}{}
+	\ifthenelse{\equal{#1}{Probl}}{\setcounter{ExEmb}{#2-1}}{}
+	\ifthenelse{\equal{#1}{teo}}{\setcounter{teoEmb}{#2-1}}{}
+	\ifthenelse{\equal{#1}{lemma}}{\setcounter{teoEmb}{#2-1}}{}
+	\ifthenelse{\equal{#1}{cor}}{\setcounter{teoEmb}{#2-1}}{}
+	\ifthenelse{\equal{#1}{Sol}}{\setcounter{SolEmb}{#2-1}}{}
+	\ifthenelse{\equal{#1}{Dim}}{\setcounter{SolEmb}{#2-1}}{}
+}
+
+% da usare nell'ambiente WithArrows (dentro a \[...\]) (analogo ad align*). Serve compilare due volte.
+\newcommand{\Arrowline}[2][cyan]{\Arrow[tikz={font={\mdseries},#1}]{$#2$}}
+
+
+%%%%%%%%%%%%%%%% MATHCAL E SIMILI
+
+\providecommand{\colInc}{red} % colore per le incognite (\u sta per unknown, ovvero incognita in inglese. Infatti il i comandi come \ux verranno utilizzati prevalentemente per evidenziare le incognite nelle equazioni e nei relativi sistemi)
+\newcommand{\ua}[1][\colInc]{\textcolor{#1}{\ra}}
+\newcommand{\ub}[1][\colInc]{\textcolor{#1}{\rb}}
+\newcommand{\uc}[1][\colInc]{\textcolor{#1}{\rc}}
+\newcommand{\ud}[1][\colInc]{\textcolor{#1}{\rd}}
+\newcommand{\ue}[1][\colInc]{\textcolor{#1}{\re}}
+\newcommand{\uf}[1][\colInc]{\textcolor{#1}{\rf}}
+\newcommand{\ug}[1][\colInc]{\textcolor{#1}{\rg}}
+\newcommand{\uh}[1][\colInc]{\textcolor{#1}{\rh}}
+\newcommand{\ui}[1][\colInc]{\textcolor{#1}{\ri}}
+\newcommand{\uj}[1][\colInc]{\textcolor{#1}{\rj}}
+\newcommand{\uk}[1][\colInc]{\textcolor{#1}{\rk}}
+\newcommand{\ul}[1][\colInc]{\textcolor{#1}{\rl}}
+\newcommand{\um}[1][\colInc]{\textcolor{#1}{\rm}}
+\newcommand{\un}[1][\colInc]{\textcolor{#1}{\rn}}
+\newcommand{\uo}[1][\colInc]{\textcolor{#1}{\ro}}
+\newcommand{\up}[1][\colInc]{\textcolor{#1}{\rp}}
+\newcommand{\uq}[1][\colInc]{\textcolor{#1}{\rq}}
+\newcommand{\ur}[1][\colInc]{\textcolor{#1}{\rr}}
+\newcommand{\us}[1][\colInc]{\textcolor{#1}{\rs}}
+\newcommand{\ut}[1][\colInc]{\textcolor{#1}{\rt}}
+\newcommand{\uu}[1][\colInc]{\textcolor{#1}{\ru}}
+\newcommand{\uv}[1][\colInc]{\textcolor{#1}{\rv}}
+\newcommand{\uw}[1][\colInc]{\textcolor{#1}{\rw}}
+\newcommand{\ux}[1][\colInc]{\textcolor{#1}{\rx}}
+\newcommand{\uy}[1][\colInc]{\textcolor{#1}{\ry}}
+\newcommand{\uz}[1][\colInc]{\textcolor{#1}{\rz}}
+\newcommand{\ra}{\mathrm{a}}
+\newcommand{\rb}{\mathrm{b}}
+\newcommand{\rc}{\mathrm{c}}
+\newcommand{\rd}{\mathrm{d}}
+\newcommand{\re}{\mathrm{e}}
+\newcommand{\rf}{\mathrm{f}}
+\newcommand{\rg}{\mathrm{g}}
+\newcommand{\rh}{\mathrm{h}}
+\newcommand{\ri}{\mathrm{i}}
+\newcommand{\rj}{\mathrm{j}}
+\newcommand{\rk}{\mathrm{k}}
+\newcommand{\rl}{\mathrm{l}}
+\renewcommand{\rm}{\mathrm{m}}
+\newcommand{\rn}{\mathrm{n}}
+\newcommand{\ro}{\mathrm{o}}
+\newcommand{\rp}{\mathrm{p}}
+\renewcommand{\rq}{\mathrm{q}}
+\newcommand{\rr}{\mathrm{r}}
+\newcommand{\rs}{\mathrm{s}}
+\newcommand{\rt}{\mathrm{t}}
+\newcommand{\ru}{\mathrm{u}}
+\newcommand{\rv}{\mathrm{v}}
+\newcommand{\rw}{\mathrm{w}}
+\newcommand{\rx}{\mathrm{x}}
+\newcommand{\ry}{\mathrm{y}}
+\newcommand{\rz}{\mathrm{z}}
+\newcommand{\rA}{\mathrm{A}}
+\newcommand{\rB}{\mathrm{B}}
+\newcommand{\rC}{\mathrm{C}}
+\newcommand{\rD}{\mathrm{D}}
+\newcommand{\rE}{\mathrm{E}}
+\newcommand{\rF}{\mathrm{F}}
+\newcommand{\rG}{\mathrm{G}}
+\newcommand{\rH}{\mathrm{H}}
+\newcommand{\rI}{\mathrm{I}}
+\newcommand{\rJ}{\mathrm{J}}
+\newcommand{\rK}{\mathrm{K}}
+\newcommand{\rL}{\mathrm{L}}
+\newcommand{\rM}{\mathrm{M}}
+\newcommand{\rN}{\mathrm{N}}
+\newcommand{\rO}{\mathrm{O}}
+\newcommand{\rP}{\mathrm{P}}
+\newcommand{\rQ}{\mathrm{Q}}
+\newcommand{\rR}{\mathrm{R}}
+\newcommand{\rS}{\mathrm{S}}
+\newcommand{\rT}{\mathrm{T}}
+\newcommand{\rU}{\mathrm{U}}
+\newcommand{\rV}{\mathrm{V}}
+\newcommand{\rW}{\mathrm{W}}
+\newcommand{\rX}{\mathrm{X}}
+\newcommand{\rY}{\mathrm{Y}}
+\newcommand{\rZ}{\mathrm{Z}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\cB}{\mathcal{B}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\cD}{\mathcal{D}}
+\newcommand{\cE}{\mathcal{E}}
+\newcommand{\cF}{\mathcal{F}}
+\newcommand{\cG}{\mathcal{G}}
+\newcommand{\cH}{\mathcal{H}}
+\newcommand{\cI}{\mathcal{I}}
+\newcommand{\cJ}{\mathcal{J}}
+\newcommand{\cK}{\mathcal{K}}
+\newcommand{\cL}{\mathcal{L}}
+\newcommand{\cM}{\mathcal{M}}
+\newcommand{\cN}{\mathcal{N}}
+\newcommand{\cO}{\mathcal{O}}
+\newcommand{\cP}{\mathcal{P}}
+\newcommand{\cQ}{\mathcal{Q}}
+\newcommand{\cR}{\mathcal{R}}
+\newcommand{\cS}{\mathcal{S}}
+\newcommand{\cT}{\mathcal{T}}
+\newcommand{\cU}{\mathcal{U}}
+\newcommand{\cV}{\mathcal{V}}
+\newcommand{\cW}{\mathcal{W}}
+\newcommand{\cX}{\mathcal{X}}
+\newcommand{\cY}{\mathcal{Y}}
+\newcommand{\cZ}{\mathcal{Z}}
+\newcommand{\bA}{\mathbb{A}}
+\newcommand{\bB}{\mathbb{B}}
+\newcommand{\bC}{\mathbb{C}}
+\newcommand{\bD}{\mathbb{D}}
+\newcommand{\bE}{\mathbb{E}}
+\newcommand{\bF}{\mathbb{F}}
+\newcommand{\bG}{\mathbb{G}}
+\newcommand{\bH}{\mathbb{H}}
+\newcommand{\bI}{\mathbb{I}}
+\newcommand{\bJ}{\mathbb{J}}
+\newcommand{\bK}{\mathbb{K}}
+\newcommand{\bL}{\mathbb{L}}
+\newcommand{\bM}{\mathbb{M}}
+\newcommand{\bN}{\mathbb{N}}
+\newcommand{\bO}{\mathbb{O}}
+\newcommand{\bP}{\mathbb{P}}
+\newcommand{\bQ}{\mathbb{Q}}
+\newcommand{\bR}{\mathbb{R}}
+\newcommand{\bS}{\mathbb{S}}
+\newcommand{\bT}{\mathbb{T}}
+\newcommand{\bU}{\mathbb{U}}
+\newcommand{\bV}{\mathbb{V}}
+\newcommand{\bW}{\mathbb{W}}
+\newcommand{\bX}{\mathbb{X}}
+\newcommand{\bY}{\mathbb{Y}}
+\newcommand{\bZ}{\mathbb{Z}}
+\newcommand{\bUNO}{\mathds{1}}
+\renewcommand{\i}{\imath}
+\renewcommand{\j}{\jmath}
+
+
+%%%%%%%%%%%%%%%% SI
+
+% pone \colSI = black se il testo è da stampare e come orange altrimenti
+\definecolor{coppercolor}{RGB}{184, 115, 51} % colore del rame. Usato per colorare le unità di misura nei testi che non vengono stampati
+\ifnum\value{TipoDocVerificaCounter}=1 \OverwriteFlagIfEmpty{\colSI}{black} \else
+	\ifdefstring{\TipoDoc}{scheda}{\OverwriteFlagIfEmpty{\colSI}{black}}{}
+	\ifdefstring{\TipoDoc}{scheda SSPM}{\OverwriteFlagIfEmpty{\colSI}{black}}{}
+	\ifdefstring{\TipoDoc}{scheda laboratorio}{\OverwriteFlagIfEmpty{\colSI}{black}}{}
+	\ifdefstring{\TipoDoc}{gara olimpiadi}{\OverwriteFlagIfEmpty{\colSI}{black}}{}
+	\OverwriteFlagIfEmpty{\colSI}{coppercolor}
+\fi
+
+\newcommand{\SI}[1]{\textcolor{\colSI}{\mathrm{#1}}} % scrivi le unità di misura. Per scrive metri scrivi \SI{m} per scrivere joule puoi scrivere \SI{J} oppure \SI{Nm}
+\newcommand{\SIf}[2]{\SI{\frac{#1}{#2}}} % unità di misura in frazione. Per scrivere metri al secondo quadrato scrivi \SIf{m}{s^2} oppure \SI{m/s^2}
+\newcommand{\ns}[1]{\cdot10^{#1}} % il comando per la notazione scientifica
+\newcommand{\oC}{\textcolor{\colSI}{\tccentigrade}} % gradi Celsius
+
+
+%%%%%%%%%%%%%%%% ALTRE DEFINIZIONI UTILI
+
+% parentesi. Chiama come \pare{testo} o come \pare[L]{testo} dove L indica il tipo di parentesi da usare. Le opzioni sono t,q,g,v,f,c
+\newcommand\pare[2][t]{
+	\ifthenelse{\equal{#1}{q}}{\left[ #2 \right]}{
+	\ifthenelse{\equal{#1}{g}}{\left\{ #2 \right\}}{
+	\ifthenelse{\equal{#1}{v}}{\left\lvert #2 \right\rvert}{
+	\ifthenelse{\equal{#1}{f}}{\left\lfloor #2 \right\rfloor}{
+	\ifthenelse{\equal{#1}{c}}{\left\lceil #2 \right\rceil}{
+	\left( #2 \right) }}}}}
+}
+
+\newcommand{\ang}[3]{#1\widehat{#2}#3} % l'angolo
+\newcommand{\bin}[2]{{#1 \choose #2}} % il binomiale di #1 su #2
+\newcommand{\vc}[1]{\overrightarrow{#1}} % il vettore (in senso fisico)
+\newcommand{\vcp}[3][-5]{\overrightarrow{#2}_{\hspace*{#1pt}#3}} % il vettore (fisico) con pedice
+
+% vettore in senso matematico, con numero arbitrario di input. Chiama come \vett{x}{y}{z}...
+% questo è un semplice esempio su come implementare una funzione con un numero arbitrario di input
+\makeatletter
+\newcommand{\vett}{\begin{pmatrix}\vettIter}
+\newcommand{\vettIter}[1]{#1\@ifnextchar\bgroup{\\\vettIter}{\end{pmatrix}}}
+\makeatother
+
+\newcommand{\seq}[1][]{\stackrel{#1}{=}} % uguaglianza con commento. Chiama come \seq[commento] (il commento è in ambiente math)
+\newcommand{\scong}[1][]{\stackrel{#1}{\cong}} % congruenza con commento. Chiama come \scong[commento] (il commento è in ambiente math)
+\newcommand{\lr}[1][]{\stackrel{#1}{\Longrightarrow}} % implicazioni con commento. Chiama come \lr[commento] (il commento è in ambiente math)
+\newcommand{\lrt}[1][]{\lr[\text{#1}]} % analogo a \lr, ma il commento è un testo (anziché un ambiente math)
+
+\newcommand{\qsep}[1]{\quad #1 \quad} % separatore fra dei \quad
+\newcommand{\qsr}[2]{\qsep{\stackrel{#2}{#1}}} % separatore fra dei \stackrel
+\newcommand{\qqe}{\qqsep{\text{e}}} % separa scrivendo un "e" fra le parti separate
+\newcommand{\qlr}[1][]{\qsep{\lrt[#1]}} % separa con un'implicazione
+% analoghi ai precenti usando \qquad anziché \quad
+\newcommand{\qqsep}[1]{\qquad #1 \qquad}
+\newcommand{\qqsr}[2]{\qqsep{\stackrel{#2}{#1}}}
+\newcommand{\qe}{\qsep{\text{e}}}
+\newcommand{\qqlr}[1][]{\qqsep{\lrt[#1]}}
+
+
+%%%%%%%%%%%%%%%% STRUMENTI PER GEOMETRIA
+
+% ridefiniamo il modo di fare le rette parallele
+\makeatletter
+\renewcommand{\parallel}{\mathrel{\mathpalette\new@parallel\relax}}
+\newcommand{\new@parallel}[2]{%
+  \begingroup
+  \sbox\z@{$#1T$}% get the height of an uppercase letter
+  \resizebox{!}{\ht\z@}{\raisebox{\depth}{$\m@th#1/\mkern-5mu/$}}%
+  \endgroup
+}
+
+\newcommand{\eqreq}{\textcolor{red}{\textbf{Attenzione!} Per risolvere il problema devi impostare e risolvere un'opportuna equazione o un sistema di equazioni. Soluzioni trovate ``a tentativi'' e solo verificate non sono considerate accettabili.}}
+
+% implicazioni per la geometria. Usa come \Impl[nome teo]{{Hp1}{Hp2}...}{th}
+\newcommand{\Impl}[3][]{\[\left.\begin{array}{l}\ImplIter#2\end{array}\right\}\,\lrt[#1]\,\text{#3}\]}
+\makeatletter
+\newcommand{\ImplIter}[1]{{\text{#1}}\@ifnextchar\bgroup{\\\ImplIter}{}}
+\makeatother
+
+% i tre criteri di congruenza e i due criteri di similitudine. Da usare come \cc[num crit]{Tr1}{Tr2}{Hp1}{Hp2}{Hp3} e \cs[num crit]{Tr1}{Tr2}{Hp1}{Hp2}
+% ad esempio usa come \cc[3]{ABC}{A'B'C'}{$AB \cong A'B'$}{$BC \cong B'C'$}{$CA \cong C'A'$}
+\newcommand{\cc}[6][1]{Consideriamo i triangoli $#2$ e $#3$:\Impl[$#1^o$cc]{{#4}{#5}{#6}}{$#2 \cong #3$}}
+\newcommand{\cs}[5][1]{Consideriamo i triangoli $#2$ e $#3$:\Impl[$#1^o$cs]{{#4}{#5}}{$#2 \sim #3$}}
 
 
 %%%%%%%%%%%%%%%% IMPAGINAZIONE
@@ -311,227 +586,3 @@
   {\@ifnextchar9{#1}%
   {#2}}}}}}}}}}}
 \makeatother
-
-
-%%%%%%%%%%%%%%%% ESERCIZI E SOLUZIONI
-
-
-
-
-%%%%%%%%%%%%%%%% MATHCAL E SIMILI
-
-\providecommand{\colInc}{red} % colore per le incognite (\u sta per unknown, ovvero incognita in inglese. Infatti il i comandi come \ux verranno utilizzati prevalentemente per evidenziare le incognite nelle equazioni e nei relativi sistemi)
-\newcommand{\ua}[1][\colInc]{\textcolor{#1}{\ra}}
-\newcommand{\ub}[1][\colInc]{\textcolor{#1}{\rb}}
-\newcommand{\uc}[1][\colInc]{\textcolor{#1}{\rc}}
-\newcommand{\ud}[1][\colInc]{\textcolor{#1}{\rd}}
-\newcommand{\ue}[1][\colInc]{\textcolor{#1}{\re}}
-\newcommand{\uf}[1][\colInc]{\textcolor{#1}{\rf}}
-\newcommand{\ug}[1][\colInc]{\textcolor{#1}{\rg}}
-\newcommand{\uh}[1][\colInc]{\textcolor{#1}{\rh}}
-\newcommand{\ui}[1][\colInc]{\textcolor{#1}{\ri}}
-\newcommand{\uj}[1][\colInc]{\textcolor{#1}{\rj}}
-\newcommand{\uk}[1][\colInc]{\textcolor{#1}{\rk}}
-\newcommand{\ul}[1][\colInc]{\textcolor{#1}{\rl}}
-\newcommand{\um}[1][\colInc]{\textcolor{#1}{\rm}}
-\newcommand{\un}[1][\colInc]{\textcolor{#1}{\rn}}
-\newcommand{\uo}[1][\colInc]{\textcolor{#1}{\ro}}
-\newcommand{\up}[1][\colInc]{\textcolor{#1}{\rp}}
-\newcommand{\uq}[1][\colInc]{\textcolor{#1}{\rq}}
-\newcommand{\ur}[1][\colInc]{\textcolor{#1}{\rr}}
-\newcommand{\us}[1][\colInc]{\textcolor{#1}{\rs}}
-\newcommand{\ut}[1][\colInc]{\textcolor{#1}{\rt}}
-\newcommand{\uu}[1][\colInc]{\textcolor{#1}{\ru}}
-\newcommand{\uv}[1][\colInc]{\textcolor{#1}{\rv}}
-\newcommand{\uw}[1][\colInc]{\textcolor{#1}{\rw}}
-\newcommand{\ux}[1][\colInc]{\textcolor{#1}{\rx}}
-\newcommand{\uy}[1][\colInc]{\textcolor{#1}{\ry}}
-\newcommand{\uz}[1][\colInc]{\textcolor{#1}{\rz}}
-\newcommand{\ra}{\mathrm{a}}
-\newcommand{\rb}{\mathrm{b}}
-\newcommand{\rc}{\mathrm{c}}
-\newcommand{\rd}{\mathrm{d}}
-\newcommand{\re}{\mathrm{e}}
-\newcommand{\rf}{\mathrm{f}}
-\newcommand{\rg}{\mathrm{g}}
-\newcommand{\rh}{\mathrm{h}}
-\newcommand{\ri}{\mathrm{i}}
-\newcommand{\rj}{\mathrm{j}}
-\newcommand{\rk}{\mathrm{k}}
-\newcommand{\rl}{\mathrm{l}}
-\renewcommand{\rm}{\mathrm{m}}
-\newcommand{\rn}{\mathrm{n}}
-\newcommand{\ro}{\mathrm{o}}
-\newcommand{\rp}{\mathrm{p}}
-\renewcommand{\rq}{\mathrm{q}}
-\newcommand{\rr}{\mathrm{r}}
-\newcommand{\rs}{\mathrm{s}}
-\newcommand{\rt}{\mathrm{t}}
-\newcommand{\ru}{\mathrm{u}}
-\newcommand{\rv}{\mathrm{v}}
-\newcommand{\rw}{\mathrm{w}}
-\newcommand{\rx}{\mathrm{x}}
-\newcommand{\ry}{\mathrm{y}}
-\newcommand{\rz}{\mathrm{z}}
-\newcommand{\rA}{\mathrm{A}}
-\newcommand{\rB}{\mathrm{B}}
-\newcommand{\rC}{\mathrm{C}}
-\newcommand{\rD}{\mathrm{D}}
-\newcommand{\rE}{\mathrm{E}}
-\newcommand{\rF}{\mathrm{F}}
-\newcommand{\rG}{\mathrm{G}}
-\newcommand{\rH}{\mathrm{H}}
-\newcommand{\rI}{\mathrm{I}}
-\newcommand{\rJ}{\mathrm{J}}
-\newcommand{\rK}{\mathrm{K}}
-\newcommand{\rL}{\mathrm{L}}
-\newcommand{\rM}{\mathrm{M}}
-\newcommand{\rN}{\mathrm{N}}
-\newcommand{\rO}{\mathrm{O}}
-\newcommand{\rP}{\mathrm{P}}
-\newcommand{\rQ}{\mathrm{Q}}
-\newcommand{\rR}{\mathrm{R}}
-\newcommand{\rS}{\mathrm{S}}
-\newcommand{\rT}{\mathrm{T}}
-\newcommand{\rU}{\mathrm{U}}
-\newcommand{\rV}{\mathrm{V}}
-\newcommand{\rW}{\mathrm{W}}
-\newcommand{\rX}{\mathrm{X}}
-\newcommand{\rY}{\mathrm{Y}}
-\newcommand{\rZ}{\mathrm{Z}}
-\newcommand{\cA}{\mathcal{A}}
-\newcommand{\cB}{\mathcal{B}}
-\newcommand{\cC}{\mathcal{C}}
-\newcommand{\cD}{\mathcal{D}}
-\newcommand{\cE}{\mathcal{E}}
-\newcommand{\cF}{\mathcal{F}}
-\newcommand{\cG}{\mathcal{G}}
-\newcommand{\cH}{\mathcal{H}}
-\newcommand{\cI}{\mathcal{I}}
-\newcommand{\cJ}{\mathcal{J}}
-\newcommand{\cK}{\mathcal{K}}
-\newcommand{\cL}{\mathcal{L}}
-\newcommand{\cM}{\mathcal{M}}
-\newcommand{\cN}{\mathcal{N}}
-\newcommand{\cO}{\mathcal{O}}
-\newcommand{\cP}{\mathcal{P}}
-\newcommand{\cQ}{\mathcal{Q}}
-\newcommand{\cR}{\mathcal{R}}
-\newcommand{\cS}{\mathcal{S}}
-\newcommand{\cT}{\mathcal{T}}
-\newcommand{\cU}{\mathcal{U}}
-\newcommand{\cV}{\mathcal{V}}
-\newcommand{\cW}{\mathcal{W}}
-\newcommand{\cX}{\mathcal{X}}
-\newcommand{\cY}{\mathcal{Y}}
-\newcommand{\cZ}{\mathcal{Z}}
-\newcommand{\bA}{\mathbb{A}}
-\newcommand{\bB}{\mathbb{B}}
-\newcommand{\bC}{\mathbb{C}}
-\newcommand{\bD}{\mathbb{D}}
-\newcommand{\bE}{\mathbb{E}}
-\newcommand{\bF}{\mathbb{F}}
-\newcommand{\bG}{\mathbb{G}}
-\newcommand{\bH}{\mathbb{H}}
-\newcommand{\bI}{\mathbb{I}}
-\newcommand{\bJ}{\mathbb{J}}
-\newcommand{\bK}{\mathbb{K}}
-\newcommand{\bL}{\mathbb{L}}
-\newcommand{\bM}{\mathbb{M}}
-\newcommand{\bN}{\mathbb{N}}
-\newcommand{\bO}{\mathbb{O}}
-\newcommand{\bP}{\mathbb{P}}
-\newcommand{\bQ}{\mathbb{Q}}
-\newcommand{\bR}{\mathbb{R}}
-\newcommand{\bS}{\mathbb{S}}
-\newcommand{\bT}{\mathbb{T}}
-\newcommand{\bU}{\mathbb{U}}
-\newcommand{\bV}{\mathbb{V}}
-\newcommand{\bW}{\mathbb{W}}
-\newcommand{\bX}{\mathbb{X}}
-\newcommand{\bY}{\mathbb{Y}}
-\newcommand{\bZ}{\mathbb{Z}}
-\newcommand{\bUNO}{\mathds{1}}
-\renewcommand{\i}{\imath}
-\renewcommand{\j}{\jmath}
-
-
-%%%%%%%%%%%%%%%% SI
-
-% pone \colSI = black se il testo è da stampare e come orange altrimenti
-\definecolor{coppercolor}{RGB}{184, 115, 51} % colore del rame. Usato per colorare le unità di misura nei testi che non vengono stampati
-\ifnum\value{TipoDocVerificaCounter}=1 \OverwriteFlagIfEmpty{\colSI}{black} \else
-	\ifdefstring{\TipoDoc}{scheda}{\OverwriteFlagIfEmpty{\colSI}{black}}{}
-	\ifdefstring{\TipoDoc}{scheda SSPM}{\OverwriteFlagIfEmpty{\colSI}{black}}{}
-	\ifdefstring{\TipoDoc}{scheda laboratorio}{\OverwriteFlagIfEmpty{\colSI}{black}}{}
-	\ifdefstring{\TipoDoc}{gara olimpiadi}{\OverwriteFlagIfEmpty{\colSI}{black}}{}
-	\OverwriteFlagIfEmpty{\colSI}{coppercolor}
-\fi
-
-\newcommand{\SI}[1]{\textcolor{\colSI}{\mathrm{#1}}} % scrivi le unità di misura. Per scrive metri scrivi \SI{m} per scrivere joule puoi scrivere \SI{J} oppure \SI{Nm}
-\newcommand{\SIf}[2]{\SI{\frac{#1}{#2}}} % unità di misura in frazione. Per scrivere metri al secondo quadrato scrivi \SIf{m}{s^2} oppure \SI{m/s^2}
-\newcommand{\oC}{\textcolor{\colSI}{\tccentigrade}}
-
-
-%%%%%%%%%%%%%%%% ALTRE DEFINIZIONI UTILI
-
-% parentesi. Chiama come \pare{testo} o come \pare[L]{testo} dove L indica il tipo di parentesi da usare. Le opzioni sono t,q,g,v,f,c
-\newcommand\pare[2][t]{
-	\ifthenelse{\equal{#1}{q}}{\left[ #2 \right]}{
-	\ifthenelse{\equal{#1}{g}}{\left\{ #2 \right\}}{
-	\ifthenelse{\equal{#1}{v}}{\left\lvert #2 \right\rvert}{
-	\ifthenelse{\equal{#1}{f}}{\left\lfloor #2 \right\rfloor}{
-	\ifthenelse{\equal{#1}{c}}{\left\lceil #2 \right\rceil}{
-	\left( #2 \right) }}}}}
-}
-
-\newcommand{\ang}[3]{#1\widehat{#2}#3} % l'angolo
-\newcommand{\bin}[2]{{#1 \choose #2}} % il binomiale di #1 su #2
-\newcommand{\vc}[1]{\overrightarrow{#1}} % il vettore (in senso fisico)
-\newcommand{\vcp}[3][-5]{\overrightarrow{#2}_{\hspace*{#1pt}#3}} % il vettore (fisico) con pedice
-
-% vettore in senso matematico, con numero arbitrario di input. Chiama come \vett{x}{y}{z}...
-% questo è un semplice esempio su come implementare una funzione con un numero arbitrario di input
-\makeatletter
-\newcommand{\vett}{\begin{pmatrix}\vettIter}
-\newcommand{\vettIter}[1]{#1\@ifnextchar\bgroup{\\\vettIter}{\end{pmatrix}}}
-\makeatother
-
-\newcommand{\seq}[1][]{\stackrel{#1}{=}} % uguaglianza con commento. Chiama come \seq[commento] (il commento è in ambiente math)
-\newcommand{\scong}[1][]{\stackrel{#1}{\cong}} % congruenza con commento. Chiama come \scong[commento] (il commento è in ambiente math)
-\newcommand{\lr}[1][]{\stackrel{#1}{\Longrightarrow}} % implicazioni con commento. Chiama come \lr[commento] (il commento è in ambiente math)
-\newcommand{\lrt}[1][]{\lr[\text{#1}]} % analogo a \lr, ma il commento è un testo (anziché un ambiente math)
-
-\newcommand{\qsep}[1]{\quad #1 \quad} % separatore fra dei \quad
-\newcommand{\qsr}[2]{\qsep{\stackrel{#2}{#1}}} % separatore fra dei \stackrel
-\newcommand{\qqe}{\qqsep{\text{e}}} % separa scrivendo un "e" fra le parti separate
-\newcommand{\qlr}[1][]{\qsep{\lrt[#1]}} % separa con un'implicazione
-% analoghi ai precenti usando \qquad anziché \quad
-\newcommand{\qqsep}[1]{\qquad #1 \qquad}
-\newcommand{\qqsr}[2]{\qqsep{\stackrel{#2}{#1}}}
-\newcommand{\qe}{\qsep{\text{e}}}
-\newcommand{\qqlr}[1][]{\qqsep{\lrt[#1]}}
-
-
-%%%%%%%%%%%%%%%% STRUMENTI PER GEOMETRIA
-
-% ridefiniamo il modo di fare le rette parallele
-\makeatletter
-\renewcommand{\parallel}{\mathrel{\mathpalette\new@parallel\relax}}
-\newcommand{\new@parallel}[2]{%
-  \begingroup
-  \sbox\z@{$#1T$}% get the height of an uppercase letter
-  \resizebox{!}{\ht\z@}{\raisebox{\depth}{$\m@th#1/\mkern-5mu/$}}%
-  \endgroup
-}
-
-% implicazioni per la geometria. Usa come \Impl[nome teo]{{Hp1}{Hp2}...}{th}
-\newcommand{\Impl}[3][]{\[\left.\begin{array}{l}\ImplIter#2\end{array}\right\}\,\lrt[#1]\,\text{#3}\]}
-\makeatletter
-\newcommand{\ImplIter}[1]{{\text{#1}}\@ifnextchar\bgroup{\\\ImplIter}{}}
-\makeatother
-
-% i tre criteri di congruenza e i due criteri di similitudine. Da usare come \cc[num crit]{Tr1}{Tr2}{Hp1}{Hp2}{Hp3} e \cs[num crit]{Tr1}{Tr2}{Hp1}{Hp2}
-% ad esempio usa come \cc[3]{ABC}{A'B'C'}{$AB \cong A'B'$}{$BC \cong B'C'$}{$CA \cong C'A'$}
-\newcommand{\cc}[6][1]{Consideriamo i triangoli $#2$ e $#3$:\Impl[$#1^o$cc]{{#4}{#5}{#6}}{$#2 \cong #3$}}
-\newcommand{\cs}[5][1]{Consideriamo i triangoli $#2$ e $#3$:\Impl[$#1^o$cs]{{#4}{#5}}{$#2 \sim #3$}}
