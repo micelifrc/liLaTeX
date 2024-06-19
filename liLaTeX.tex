@@ -464,13 +464,30 @@
 \newcommand{\vettoreIter}[1]{#1\@ifnextchar\bgroup{\\\vettoreIter}{\end{pmatrix}}}
 \makeatother
 
-\newcommand{\qsep}[1]{\quad #1 \quad} % separatore fra dei \quad
-\newcommand{\qqsep}[1]{\qquad #1 \qquad} % separatore fra dei \qquad
-\newcommand{\qsr}[2]{\qsep{\stackrel{#2}{#1}}} % separatore fra dei \stackrel
-\newcommand{\qqsr}[2]{\qqsep{\stackrel{#2}{#1}}} % separatore fra dei \stackrel
-\newcommand{\qe}{\qsep{\text{e}}}
-\newcommand{\qqe}{\qqsep{\text{e}}}
-\newcommand{\qlr}{\qsep{\Longrightarrow}}
-\newcommand{\qqlr}{\qqsep{\Longrightarrow}}
+\newcommand{\seq}[1][]{\stackrel{#1}{=}} % uguaglianza con commento
+\newcommand{\scong}[1][]{\stackrel{#1}{\cong}} % congruenza con commento
 \newcommand{\lr}[1][]{\stackrel{#1}{\Longrightarrow}} % implicazioni con commento
 \newcommand{\lrt}[1][]{\lr[\text{#1}]}
+
+\newcommand{\qsep}[1]{\quad #1 \quad} % separatore fra dei \quad
+\newcommand{\qsr}[2]{\qsep{\stackrel{#2}{#1}}} % separatore fra dei \stackrel
+\newcommand{\qqe}{\qqsep{\text{e}}} % separa scrivendo un "e" fra le parti separate
+\newcommand{\qlr}[1][]{\qsep{\lrt[#1]}} % separa con un'implicazione
+% analoghi ai precenti usando \qquad anziché \quad
+\newcommand{\qqsep}[1]{\qquad #1 \qquad}
+\newcommand{\qqsr}[2]{\qqsep{\stackrel{#2}{#1}}}
+\newcommand{\qe}{\qsep{\text{e}}}
+\newcommand{\qqlr}[1][]{\qqsep{\lrt[#1]}}
+
+%%%%%%%%%%%%%%%% STRUMENTI PER IMPLICAZIONI NELLE DIMOSTRAZIONI
+
+% implicazioni per la geometria. Usa come \Impl[nome teo]{{Hp1}{Hp2}...}{th}
+\newcommand{\Impl}[3][]{\[\left.\begin{array}{l}\ImplIter#2\end{array}\right\}\,\lrt[#1]\,\text{#3}\]}
+\makeatletter
+\newcommand{\ImplIter}[1]{{\text{#1}}\@ifnextchar\bgroup{\\\ImplIter}{}}
+\makeatother
+
+% i tre criteri di congruenza e i due criteri di similitudine. Da usare come \cc[num crit]{Tr1}{Tr2}{Hp1}{Hp2}{Hp3} e \cs[num crit]{Tr1}{Tr2}{Hp1}{Hp2}
+% ad esempio usa come \cc[3]{ABC}{A'B'C'}{$AB \cong A'B'$}{$BC \cong B'C'$}{$CA \cong C'A'$}
+\newcommand{\cc}[6][1]{Consideriamo i triangoli $#2$ e $#3$:\Impl[$#1^o$cc]{{#4}{#5}{#6}}{$#2 \cong #3$}}
+\newcommand{\cs}[5][1]{Consideriamo i triangoli $#2$ e $#3$:\Impl[$#1^o$cs]{{#4}{#5}}{$#2 \sim #3$}}
