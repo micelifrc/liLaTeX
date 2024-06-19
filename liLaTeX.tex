@@ -313,6 +313,11 @@
 \makeatother
 
 
+%%%%%%%%%%%%%%%% ESERCIZI E SOLUZIONI
+
+
+
+
 %%%%%%%%%%%%%%%% MATHCAL E SIMILI
 
 \providecommand{\colInc}{red} % colore per le incognite (\u sta per unknown, ovvero incognita in inglese. Infatti il i comandi come \ux verranno utilizzati prevalentemente per evidenziare le incognite nelle equazioni e nei relativi sistemi)
@@ -447,6 +452,8 @@
 \newcommand{\bY}{\mathbb{Y}}
 \newcommand{\bZ}{\mathbb{Z}}
 \newcommand{\bUNO}{\mathds{1}}
+\renewcommand{\i}{\imath}
+\renewcommand{\j}{\jmath}
 
 
 %%%%%%%%%%%%%%%% SI
@@ -468,16 +475,26 @@
 
 %%%%%%%%%%%%%%%% ALTRE DEFINIZIONI UTILI
 
+% parentesi. Chiama come \pare{testo} o come \pare[L]{testo} dove L indica il tipo di parentesi da usare. Le opzioni sono t,q,g,v,f,c
+\newcommand\pare[2][t]{
+	\ifthenelse{\equal{#1}{q}}{\left[ #2 \right]}{
+	\ifthenelse{\equal{#1}{g}}{\left\{ #2 \right\}}{
+	\ifthenelse{\equal{#1}{v}}{\left\lvert #2 \right\rvert}{
+	\ifthenelse{\equal{#1}{f}}{\left\lfloor #2 \right\rfloor}{
+	\ifthenelse{\equal{#1}{c}}{\left\lceil #2 \right\rceil}{
+	\left( #2 \right) }}}}}
+}
+
 \newcommand{\ang}[3]{#1\widehat{#2}#3} % l'angolo
 \newcommand{\bin}[2]{{#1 \choose #2}} % il binomiale di #1 su #2
 \newcommand{\vc}[1]{\overrightarrow{#1}} % il vettore (in senso fisico)
 \newcommand{\vcp}[3][-5]{\overrightarrow{#2}_{\hspace*{#1pt}#3}} % il vettore (fisico) con pedice
 
-% vettore in senso matematico, con numero arbitrario di input. Chiama come \vettore{x}{y}{z}...
+% vettore in senso matematico, con numero arbitrario di input. Chiama come \vett{x}{y}{z}...
 % questo è un semplice esempio su come implementare una funzione con un numero arbitrario di input
 \makeatletter
-\newcommand{\vettore}{\begin{pmatrix}\vettoreIter}
-\newcommand{\vettoreIter}[1]{#1\@ifnextchar\bgroup{\\\vettoreIter}{\end{pmatrix}}}
+\newcommand{\vett}{\begin{pmatrix}\vettIter}
+\newcommand{\vettIter}[1]{#1\@ifnextchar\bgroup{\\\vettIter}{\end{pmatrix}}}
 \makeatother
 
 \newcommand{\seq}[1][]{\stackrel{#1}{=}} % uguaglianza con commento. Chiama come \seq[commento] (il commento è in ambiente math)
@@ -496,7 +513,17 @@
 \newcommand{\qqlr}[1][]{\qqsep{\lrt[#1]}}
 
 
-%%%%%%%%%%%%%%%% STRUMENTI PER IMPLICAZIONI NELLE DIMOSTRAZIONI
+%%%%%%%%%%%%%%%% STRUMENTI PER GEOMETRIA
+
+% ridefiniamo il modo di fare le rette parallele
+\makeatletter
+\renewcommand{\parallel}{\mathrel{\mathpalette\new@parallel\relax}}
+\newcommand{\new@parallel}[2]{%
+  \begingroup
+  \sbox\z@{$#1T$}% get the height of an uppercase letter
+  \resizebox{!}{\ht\z@}{\raisebox{\depth}{$\m@th#1/\mkern-5mu/$}}%
+  \endgroup
+}
 
 % implicazioni per la geometria. Usa come \Impl[nome teo]{{Hp1}{Hp2}...}{th}
 \newcommand{\Impl}[3][]{\[\left.\begin{array}{l}\ImplIter#2\end{array}\right\}\,\lrt[#1]\,\text{#3}\]}
