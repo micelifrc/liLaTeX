@@ -18,6 +18,7 @@
 \providecommand{\colText}{black} % il colore di esercizi, teoremi e dimostrazioni
 \providecommand{\colSol}{blue} % il colore di dimostrazioni e soluzioni
 \providecommand{\colSI}{} % il colore delle unità di misura (definito in seguito come arancione)
+\providecommand{\inputTikz}{1} % 0-1 dice se importare anche il file coi comandi tikz
 \providecommand{\EnumPages}{1} % può essere posto a 0 se non vogliamo numerare le pagine oppure a 1 se vogliamo numerarle
 \providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda SSPM, scheda laboratorio, prova laboratorio, gara olimpiadi, lezione, dimostrazione, formulario}
 %NOTA: le flag possono essere sovrascritte dall'utente di volta in volta specificando dei \newcommand in preambolo prima di includere il pacchetto liLaTeX
@@ -595,3 +596,7 @@
   {\@ifnextchar9{#1}%
   {#2}}}}}}}}}}}
 \makeatother
+
+
+% importa il file tikz
+\ifnum\inputTikz>0 \input{\liLaTeXPath/liLaTeXtikz.tex} \fi
