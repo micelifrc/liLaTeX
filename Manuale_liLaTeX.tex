@@ -336,7 +336,7 @@ Nel caso, l'impaginazione aggiungerà (in cima alle pagine dispari) un titolo (s
 Poi verrà creata una tabella in cui gli studenti inseriscono i propri dati. Qui compare anche il logo della scuola. Si suggerisce di consultare il file \ttt{\bs verifica\_controllo\_installazione.pdf} (a cui abbiamo già fatto riferimento nella sezione \ref{controllo}), per un esempio sul suo funzionamento.
 
 \section{TABELLA VOTI}
-La tabella dei voti deve essere scritta in ogni verifica (generalmente all'inizio della verifica).
+La tabella dei voti deve essere scritta in ogni verifica (generalmente alla fine della verifica).
 
 La sua sintassi è del tipo \ttt{\bs TabellaVoti\{\{Es1\}\{Es2\}...\}} dove ogni esercizio può a sua volta essere separato in vari punti.
 
@@ -344,7 +344,7 @@ Ad esempio, se abbiamo una verifica in $5$ esercizi, ognuno dei quali vale $18$ 
 
 \TabellaVoti{{18}{18}{18}{18}{18}}
 
-Se invece il terzo esercizio è diviso in due parti (ciascuna delle quali vale $9$ punti) e il quinto esercizio è diviso in tre parti (ciascuna delle quali vale $6$ punti) la tabella dei voti viene generata col comando \textcolor{gray}{\ttt{\bs TabellaVoti\{\{18\}\{18\}\{9,9\}\{18\}\{6,6,6\}\}}}, che genera questa tabella:
+Se invece il terzo esercizio è diviso in due parti (ciascuna delle quali vale $9$ punti) e il quinto esercizio è diviso in tre parti (ciascuna delle quali vale $6$ punti) la tabella dei voti viene generata col comando \textcolor{gray}{\ttt{\bs TabellaVoti\{\{18\}\{18\}\{9,9\}\{18\}\{6,6,6\}\}}}, che genera questa tabella (automaticamente messa a fine pagina):
 
 \TabellaVoti{{18}{18}{9,9}{18}{6,6,6}}
 

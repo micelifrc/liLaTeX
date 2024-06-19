@@ -481,15 +481,7 @@
 % Il seguente esempio mostra come creare la tabella per una verifica con 5 esercizi (di cui l'es. 3 è diviso in 2 punti e l'es. 5 è diviso in 3 punti) in cui ciascun esercizio vale 18 punti (equamente distribuiti fra i vari punti dell'esercizio):
 % \TabellaVoti{{18}{18}{9,9}{18}{6,6,6}}
 \newcommand\TabellaVoti[1]{
-	\vspace*{-5mm}\begin{center}
-	{\Huge \setlength\fboxsep{5mm}\boxed{\hspace*{-3mm}\textbf{Voto:} \hspace*{30mm}}} % il box in cui scrivere il voto
-	\ifdefstring{\TipoDoc}{verifica recupero}{{\Large\hspace*{10mm}\vspace*{-\baselineskip}
-		\begin{tabular}{l}
-		Debito saldato:\\
-		$\mkern2mu\framebox[16mm]{\huge \textbf{SI}}\mkern15mu\framebox[16mm]{\huge \textbf{NO}}$
-		\end{tabular}\\\vspace*{4mm}
-	}}{} % per segnare se lo studente ha superato il debito
-	\end{center}
+	\vspace*{\fill} % spostati a fondo pagina
 	\pgfmathsetmacro\TabellaVotiTabellaWidth{18}
 	\pgfmathsetmacro\TabellaVotiHeight{1}
 	\ifdefempty{\PuntiBaseVerifica}{\pgfmathsetmacro\TabellaVotiPtBaseWidth{0}}{\pgfmathsetmacro\TabellaVotiPtBaseWidth{2}}
@@ -552,6 +544,15 @@
 	\end{tikzpicture}
 	\end{adjustbox}}
 	\end{center}}
+	\begin{center}
+	{\Huge \setlength\fboxsep{5mm}\boxed{\hspace*{-3mm}\textbf{Voto:} \hspace*{30mm}}} % il box in cui scrivere il voto
+	\ifdefstring{\TipoDoc}{verifica recupero}{{\Large\hspace*{10mm}\vspace*{-\baselineskip}
+		\begin{tabular}{l}
+		Debito saldato:\\
+		$\mkern2mu\framebox[16mm]{\huge \textbf{SI}}\mkern15mu\framebox[16mm]{\huge \textbf{NO}}$
+		\end{tabular}\\\vspace*{4mm}
+	}}{} % per segnare se lo studente ha superato il debito
+	\end{center}
 }
 
 % valori utili durante la lettura dei dati dall'input per \TabellaVoti
