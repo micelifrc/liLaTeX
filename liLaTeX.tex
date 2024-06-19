@@ -18,7 +18,7 @@
 \providecommand{\colText}{black} % il colore di esercizi, teoremi e dimostrazioni
 \providecommand{\colSol}{blue} % il colore di dimostrazioni e soluzioni
 \providecommand{\colSI}{} % il colore delle unità di misura (definito in seguito come arancione)
-\providecommand{\EnumPages}{} % può essere posto a 0 se non vogliamo numerare le pagine oppure a 1 se vogliamo numerarle
+\providecommand{\EnumPages}{1} % può essere posto a 0 se non vogliamo numerare le pagine oppure a 1 se vogliamo numerarle
 \providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda SSPM, scheda laboratorio, prova laboratorio, gara olimpiadi, lezione, dimostrazione, formulario}
 %NOTA: le flag possono essere sovrascritte dall'utente di volta in volta specificando dei \newcommand in preambolo prima di includere il pacchetto liLaTeX
 %Alcune flag, se non specificate dall'utente, vengono ridefinite in questo file nella sezione denominata "SOVRASCRITTURA DELLE FLAG"
@@ -47,8 +47,6 @@
 \usetikzlibrary{decorations.pathmorphing,patterns} % per springs e brackets
 \usepackage{pgfplots} % pacchetto per plot
 \usepackage{fancyhdr} % pacchetto per l'impaginazione
-\usepackage{refcount}% contiene il comando \getpagerefnumber usato per contare il numero di pagine nel documento (serve per l'impaginazione)
-\usepackage{lastpage} % definisce il parametro LastPage, che indica l'ultima pagina del file. Serve per l'impaginazione
 \usepackage{adjustbox} % necessario per l'ambiente \adjustbox, utile per disegnare la tabella dei voti
 \usepackage{witharrows} % usato per \[\begin{WithArrows}...\end{WithArrows}\] Da includere dopo xcolor
 \usepackage{pdfpages} % usato per \includepdf
@@ -88,9 +86,20 @@
 \ifdefstring{\TipoDoc}{verifica recupero}{\stepcounter{TipoDocVerificaCounter}}{}
 \ifdefstring{\TipoDoc}{prova laboratorio}{\stepcounter{TipoDocVerificaCounter}}{}
 
-% specifica il valore di \EnumPages se non è stato specificato dall'utente. Funziona solo a partire dalla seconda compilazione.
-\ifnum\getpagerefnumber{LastPage}>1\relax \OverwriteFlagIfEmpty{\EnumPages}{1} \else \OverwriteFlagIfEmpty{\EnumPages}{0} \fi
-\ifdefstring{\TipoDoc}{immagine}{\renewcommand{\EnumPages}{0}} % le immagini non devono mai avere la numerazione delle pagine
+\ifdefstring{\TipoDoc}{immagine}{\renewcommand{\EnumPages}{0}}{} % le immagini non devono mai avere la numerazione delle pagine
+
+
+%%%%%%%%%%%%%%%% lett
+
+% simile ad enumerate ma con le lettere. Si chiama come \begin{lettfrom}[opzioni]{primo indice}....\end{lettfrom}
+\newenvironment{lettfrom}[2][]
+{\begin{enumerate}[label=$\mathbf{\alph*.}$,#1]\setcounter{enumi}{#2-1}}
+{\end{enumerate}}
+
+% come lettfrom ma parte in automatico dall'indice 1
+\newenvironment{lett}[1][]
+{\begin{lettfrom}[#1]{1}}
+{\end{lettfrom}}
 
 
 %%%%%%%%%%%%%%%% ESERCIZI E SOLUZIONI
