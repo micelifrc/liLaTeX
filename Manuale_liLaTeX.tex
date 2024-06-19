@@ -1,0 +1,351 @@
+% compila due volte
+\documentclass[italian, a4paper]{article}
+\newcommand{\TipoDoc}{libro}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+\newcommand{\bs}{\textbackslash}
+\newcommand{\ttt}[1]{\texttt{#1}}
+\newcommand{\liLaTeX}{\ttt{liLaTeX}}
+
+\title{Manuale del pacchetto \liLaTeX}
+\author{Federico Miceli}
+\date{estate 2024}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Introduzione}
+Questo manuale descrive il pacchetto \liLaTeX. Si tratta di un pacchetto per \LaTeX\ pensato per i docenti di scuola superiore in Italia. Il prefisso \ttt{li} nel nome \liLaTeX infatti rappresenta infatti la parola \textit{liceo}. In questo senso \liLaTeX è il pacchetto LaTeX per i docenti di liceo (o più in generale di scuole superiori italiane).
+
+Il pacchetto è stato sviluppato da Federico Miceli, professore di matematica e fisica del Liceo Scientifico F.Vercelli di Asti, nel corso dell'estate 2024.
+
+\textcolor{Green}{\textbf{Può essere liberamente scaricato (gratuitamente), utilizzato e modificato secondo le proprie esigenze.}}
+
+\textcolor{red}{\textbf{È severamente vietato qualunque utilizzo commerciale e/o a scopo di lucro del pacchetto.}}
+
+\newpage
+\section{Come scaricare e inizializzare liLaTeX}\label{installazione}
+Il pacchetto \liLaTeX è liberamente scaricabile alla pagina \textit{gitHub} di Federico Miceli.
+
+La pagina in questione può essere trovata all'indirizzo
+
+\begin{center}\link{https://github.com/micelifrc/liLaTeX}\end{center}
+
+È possibile scaricare tutti i file all'interno della Repository, salvando tutti i file in una cartella denominata \liLaTeX all'interno del proprio computer. In alternativa si può decidere di scaricare solo alcuni file fondamentali. All'interno della repository ci sono questi file:
+\begin{itemize}
+\item Il file \ttt{liLaTeX.tex} è il pacchetto vero è proprio. Devi scaricarlo all'interno della tua cartella \liLaTeX.
+\item Il file \ttt{liLaTeXtikz.tex} è il pacchetto per le immagini. Devi scaricarlo e salvarlo all'interno della cartella \liLaTeX. Se non ti interessa la parte grafica del pacchetto puoi evitare di scaricare questo file.
+\item I file \ttt{Manuale\_liLaTeX.pdf} e \ttt{Manuale\_liLaTeXtikz.pdf} contengono le istruzioni per i due diversi pacchetti (rispettivamente quello base e quello grafico).
+\item La cartella \ttt{Esempi} contiene alcuni semplici file creati con \ttt{liLaTeX.tex}. Non sono file fondamentali, ma può essere utili averli sott'occhio mentre impari a usare il pacchetto \ttt{liLaTeX.tex}
+\item La cartella \ttt{Immagini} contiene svariate immagini d'esempio create con \ttt{liLaTeXtikz.tex}. Anche questi file non sono essenziali, ma possono essere utili esempi di utilizzo del pacchetto grafico.
+\item Il file \ttt{README} contiene alcune informazioni di base sul pacchetto, ma se stai leggendo questo manuale l'avrai sicuramente già letto.
+\end{itemize}
+
+Una volta scaricati i file, è necessario scaricare anche il logo della propria scuola di riferimento, e salvarlo sul computer (generalmente all'interno della cartella \liLaTeX).
+
+Prima di poter utilizzare il pacchetto devi modificare le prime righe di codice del file \ttt{liLaTeX.tex}. Nelle prime righe del file sono infatti definiti alcuni parametri specifici per il modo in cui il file \ttt{liLaTeX.tex} è stato installato sul mio computer. In particolare devi modificare le seguenti righe:
+\begin{enumerate}
+\item \ttt{\bs providecommand\{\bs liLaTeXPath\}\{C:/Users/themi/Desktop/LaTeX/liLaTeX\}}\\
+Sostituire il percorso \ttt{C:/Users/themi/Desktop/LaTeX/liLaTeX} col percorso della propria cartella \liLaTeX.
+\item \ttt{\bs providecommand\{\bs LogoScuolaPath\}\{C:/Users/themi/Desktop/LaTeX/liLaTeX/Logo\_ls\_Vercelli.jpeg}\}\\
+Sostituire il percorso \ttt{C:/Users/themi/Desktop/LaTeX/liLaTeX/Logo\_ls\_Vercelli.jpeg} con quello del logo della propria scuola.
+\item \ttt{\bs providecommand\{\bs NomeScuola\}\{Liceo Scientifico \bs textit\{F.Vercelli\}\}}\\
+Sostituire col nome della propria scuola.
+\item \ttt{\bs providecommand\{\bs CittaScuola\}\{Asti\}}\\
+Sostituire \ttt{Asti} con la città della propria scuola.
+\item \ttt{\bs providecommand\{\bs AnnoScolastico\}\{2024-2025\}}\\
+Questo idealmente va cambiato all'inizio di ogni anno scolastico.
+\item \ttt{\bs providecommand\{\bs PuntiBaseVerifica\}\{10\}}\\
+Sostituisci il \ttt{10} col numero di punti di partenza generalmente dati nelle tue verifiche (nel mio caso sono $10/100$). Se non dai punti di partenza cancella il \ttt{10}.
+\end{enumerate}
+
+Infine, se hai deciso di non scaricare il file \ttt{liLaTeXtikz.tex}, cerca la riga
+
+\begin{center}\ttt{\bs providecommand\{\bs inputTikz\}\{1\}}\end{center}
+
+all'inizio del file \liLaTeX\ e sostituisci l'\ttt{1} con uno \ttt{0}.
+
+\section{Controllo correttezza inizializzazione}\label{controllo}
+Nella cartella \ttt{Esempi} della repository di gitHub è presente un file chiamato
+
+\begin{center}\ttt{verifica\_controllo\_installazione.tex}\end{center}
+
+Prova a scaricarlo e a compilarlo.
+
+Dovresti ottenere un file analogo a quello chiamato \ttt{verifica\_controllo\_installazione.pdf} (sempre nella cartella \ttt{Esempi}).
+
+Se la tua scuola ha un nome molto lungo potresti avere alcuni problema con la tabella a inizio file. Nel caso, cerca la riga
+
+\begin{center}\ttt{\bs pgfmathsetmacro\bs NomeCognomeWidthDiffInTab\{5\}}\end{center}
+
+all'interno del file \liLaTeX\ e prova a sostituire il numero \ttt{5} con altri valori numerici. Quello è il numero che controlla le proporzioni fra le due colonne nella tabella a inizio file nelle verifiche.
+
+\section{Com'è strutturato il file \liLaTeX}
+Il file \liLaTeX\ è diviso in diverse sezioni, ciascuna delle quali è più o meno monotematica. Le sezioni sono:
+\begin{enumerate}[nolistsep]
+\item FLAG
+\item PACCHETTI
+\item SOVRASCRITTURA DELLE FLAG
+\item lett
+\item AMBIENTI
+\item MATHCAL E SIMILI
+\item SI
+\item ALTRE DEFINIZIONI UTILI
+\item STRUMENTI PER GEOMETRIA
+\item IMPAGINAZIONE
+\item TABELLA VOTI
+\end{enumerate}
+Infine, nell'ultima riga del file, viene importato il file \ttt{liLaTeXtikz.tex}.
+
+In questo manuale analizziamo una sezione per volta, descrivendo le funzioni principali di ciascuna di queste sezioni.
+
+\section{FLAG}
+La prima sezione del file \liLaTeX\ definisce una serie di FLAG. Oltre a quelle corrette in fase di inizializzazione (già descritte nella sezione \ref{installazione}), sono presenti le seguenti flag, che verranno specificate da un file all'altro:
+\begin{itemize}[nolistsep]
+\item \ttt{\bs Data}, la data in cui verrà utilizzato il file;
+\item \ttt{\bs NomeStudente} o \ttt{\bs CognomeStudente}, specifica il nome e il cognome dello studente a cui è destinato il file (se è destinato a uno studente nello specifico). Se il file è destinato all'intera classe conviene lasciarlo vuoto;
+\item i campi \ttt{\bs Materia} e \ttt{\bs Minuti} sono utili per le verifiche. Specificano la materia della verifica e il numero di minuti di durata della stessa;
+\item \ttt{\bs Titolo} il titolo del file. Se non specificato, viene inizializzato automaticamente per le verifiche;
+\item \ttt{\bs MarginSize} e \ttt{\bs FontSize} sono le dimensioni dei margini (in $\SI{cm}$) e del testo (in \ttt{pt}, che è una misura interna di \LaTeX). \ttt{\bs MarginSize} è normalmente uguale a $1.5$, mentre \ttt{FontSize} è normalmente $11$. Considera comunque che \ttt{\bs MarginSize} viene ignorato (e azzerato) se \ttt{\bs TipoDoc} è \ttt{immagine};
+\item \ttt{\bs colText}, \ttt{\bs colSol} e \ttt{\bs colSI} sono rispettivamente il colore con cui scriviamo i testi degli esercizi (o gli enunciati dei problemi), il colore con cui scriviamo le soluzioni dei problemi (o le dimostrazioni dei problemi) e il colore che usiamo per le unità di misura. Normalmente \ttt{\bs colText} è \ttt{black}, \ttt{\bs colSol} è \ttt{blue}, e \ttt{\bs colSI} è un arancione-rame (viene però cambiato in \ttt{black} per i \ttt{\bs TipoDoc} che in genere vengono stampati);
+\item \ttt{\bs inputTikz} può avere valore \ttt{0} (falso) oppure \ttt{1} (vero), e dice se vogliamo importare anche il file \ttt{liLaTeXtikz.tex};
+\item \ttt{\bs EnumPages} può avere valore \ttt{0} (falso) oppure \ttt{1} (vero). Dice se vogliamo mettere i numeri di pagina nell'impaginazione. Viene resettata come immagine se \ttt{\bs TipoDoc} è uguale a \ttt{immagine} (è l'unico caso in cui una flag viene sovrascritta anche se specificata dall'utente);
+\item \ttt{\bs TipoDoc} è il tipo di documento che vogliamo produrre. Sono supportati i tipi di documenti specificati in seguito in questa sezione.
+\end{itemize}
+
+Per modificare una flag, è necessario ridefinirla nel file prima in scrivere l'\ttt{\bs input} di \ttt{liLaTeX.tex}.
+
+Ad esempio se vogliamo scrivere che stiamo scrivendo una verifica di fisica, nel preambolo del file (dopo la \ttt{\bs documentclass} ma prima dell'\ttt{\bs input} di \ttt{liLaTeX.tex}) scriveremo le due righe:
+
+\begin{center}
+\ttt{\bs newcommand\{TipoDoc\}\{verifica\}}\\
+\ttt{\bs newcommand\{Materia\}\{Fisica\}}
+\end{center}
+
+\subsection{I valori possibili per la flag \ttt{\bs TipoDoc}}
+La flag \ttt{\bs TipoDoc} indica il tipo di documento che stiamo scrivendo. Al momento sono implementati i seguenti tipi di file (anche se non sono del tutto diversi fra loro, al momento):
+\begin{itemize}[nolistsep]
+\item \ttt{plain} se è un documento senza nulla di particolare (è il valore di default);
+\item \ttt{libro} per testi molto lunghi (come questo manuale);
+\item \ttt{immagine} se vogliamo semplicemente produrre un'immagine (utile per il pacchetto \ttt{liLaTeXtikz.tex});
+\item \ttt{verifica} per le verifiche;
+\item \ttt{verifica recupero} per le verifiche di recupero del debito (del primo o del secondo periodo);
+\item \ttt{esercizio svolto} per esercizi svolti che vogliamo condividere con gli studenti;
+\item \ttt{lista esercizi} per scrivere una lista di esercizi da assegnare (ad esempio per le vacanze estive);
+\item \ttt{scheda} per una scheda di lavoro;
+\item \ttt{scheda SSPM} per le schede di SSPM (\textit{Scuole Secondarie Potenziate in Matematica}, comunemente chiamato \textit{Liceo Matematico});
+\item \ttt{scheda laboratorio} per le schede di laboratorio di fisica;
+\item \ttt{prova laboratorio} per le prove (valutate) in laboratorio di fisica;
+\item \ttt{gara olimpiadi} per scrivere il testo di una gara (o una simulazione di gara) per le olimpiadi di matematica (me ne occupo personalmente al Vercelli di Asti);
+\item \ttt{lezione} per scrivere una lezione o un'UDA (più o meno approfondita). Può poi essere condivisa con gli studenti, o può essere utile a noi come appunti se facciamo una lezione un po' particolare che vogliamo ricordare negli anni successivi o che vogliamo condividere coi colleghi;
+\item \ttt{dimostrazione} la dimostrazione di un teorema (o di una lista di teoremi);
+\item \ttt{formulario} può essere utilizzata per scrivere piccoli formulari, eventualmente da condividere con gli studenti.
+\end{itemize}
+La lista potrà ovviamente essere estesa in futuro, man mano che il progetto \ttt{liLaTeX} viene ampliato.
+
+\section{PACCHETTI}
+In questa sezione vengono importati tutti i pacchetti esterni. Si tratta di una lista relativamente lunga, ma senza nulla di particolare da dire.
+
+Se l'utente deve aggiungere un pacchetto dovrà di volta in volta valutare se aggiungerlo direttamente al file \ttt{liLaTeX.tex} (se si tratta di un pacchetto che intende utilizzare spesso) oppure se scriverlo solo nel file in cui è utile. Nel secondo caso si suggerisce di includere il pacchetto \textit{dopo} aver importato \ttt{liLaTeX.tex} per ridurre il rischio di conflitti fra pacchetti.
+
+\textbf{Attenzione!} Evita di spostare i pacchetti all'interno del file \ttt{liLaTeX.tex}. Infatti alcuni pacchetti possono entrare fra loro in conflitto se vengono scambiati.
+
+\section{SOVRASCRITTURA DELLE FLAG}
+Alcune flag vengono inizializzate in un secondo momento (se non sono state inizializzate dall'utente all'interno del file).
+
+In particolare la flag \ttt{\bs Titolo} viene inizializzata automaticamente nel caso di verifiche (a meno che sia stata fornita dall'utente).
+
+\section{lett}
+L'ambiente \ttt{lett} viene usato in modo analogo ad \ttt{enumerate} per le liste puntate. La differenza è che indicizza con le lettere anziché coi numeri.
+
+È possibile specificare le opzioni \textcolor{gray}{\ttt{[noitemsep]}} e \textcolor{gray}{\ttt{[nolistsep]}} (come in \ttt{enumerate}).
+
+Esiste anche l'opzione \ttt{lettfrom} che ci permette di ricominciare l'indicizzazione da un punto successivo.
+
+Per esempio, consideriamo questo codice, che produce questo output (l'output è colorato in blue):\color{gray}\\
+\ttt{\bs begin\{lett\}}\\
+\ttt{\bs item Prima riga}\\
+\ttt{\bs item Seconda riga}\\
+\ttt{\bs end\{lett\}}\\
+\ttt{Testo intermedio}\\
+\ttt{\bs begin\{lettfrom\}\{3\}}\\
+\ttt{\bs item Terzo punto}\\
+\ttt{\bs end\{lettfrom\}}
+
+\color{blue}
+\begin{lett}
+\item Prima riga
+\item Seconda riga
+\end{lett}
+Testo intermedio
+\begin{lettfrom}{3}
+\item Terzo punto
+\end{lettfrom}
+\color{black}
+
+\section{AMBIENTI}
+Gli ambienti possono essere utilizzati per scrivere esercizi, teoremi, dimostrazioni, soluzioni e così via.
+
+Per scrivere un esercizio usiamo la sintassi (il titolo è facoltativo)
+
+\ttt{\bs begin\{Ex\}[titolo]....\bs end\{Ex\}}
+
+Esistono i seguenti ambienti definiti nel pacchetto \ttt{liLaTeX.tex}:
+\begin{itemize}[nolistsep]
+\item \ttt{Ex} per creare un esercizio;
+\item \ttt{Exsec} analogo ad \ttt{Ex}, ma indicizzato sulle sezioni;
+\item \ttt{Probl} per creare un problema (simile ad \ttt{Ex});
+\item \ttt{Def} per dare una definizione;
+\item \ttt{teo} per creare un teorema;
+\item \ttt{lemma} per creare un lemma;
+\item \ttt{cor} per scrivere un corollario;
+\item \ttt{Sol} per scrivere la soluzione di un esercizio;
+\item \ttt{Dim} per dare la dimostrazione di un teorema (o risolvere un esercizio dimostrativo).
+\end{itemize}
+
+Per la maggior parte di questi ambienti esiste anche una versione equivalente con l'asterisco se non vogliamo numerarli. Ad esempio possiamo usare \ttt{Def*} se non vogliamo dare una numerazione alla definizione.
+
+\subsection{Correzione della numerazione negli ambienti}
+A volte potremmo trovare un ambiente numerato in modo \textit{sbagliato} (nel senso che non è quello che vorremmo). In questi casi è possibile cambiare la numerazione dell'ambiente utilizzando il comando \ttt{\bs setCounter} (da usare subito prima di usare l'ambiente).
+
+Ad esempio, se vogliamo resettare la numerazione di \ttt{\bs Sol} in modo che il prossimo ambiente \ttt{\bs Sol} abbia numero \ttt{5} scriveremo il comando \ttt{\bs setCounter\{Sol\}\{5\}}, come qui illustrato (il testo grigio produce l'output blu):\color{gray}\\
+\ttt{\bs setCounter\{Sol\}\{5\}}\\
+\ttt{\bs begin\{Sol\}}\\
+\ttt{\bs Questa è la soluzione del problema.}\\
+\ttt{\bs end\{Sol\}}
+
+\setCounter{Sol}{5}
+\begin{Sol}
+Questa è la soluzione del problema.
+\end{Sol}
+\color{black}
+
+\subsection{L'ambiente \ttt{ArrowsEq}}
+L'ambiente \ttt{ArrowsEq} può essere utilizzato per scrivere un'equazione con delle frecce fra una riga e la successiva, per indicare cosa abbiamo fatto in ciascun passaggio.
+
+La sua sintassi è analoga a quella di \ttt{align*}. Quando andiamo a capo però, anziché usare il comando \ttt{\bs\bs}, possiamo usare il comando \ttt{\bs Arrowline[col]\{...\}} in cui spieghiamo che cosa abbiamo fatto. Considera il seguente esempio (codice in grigio, output in blu):\color{gray}\\
+\ttt{\bs begin\{ArrowsEq\}}\\
+\hspace*{5mm}\ttt{\&x=x+2\bs Arrowline\{-x\}}\\
+\hspace*{5mm}\ttt{\&0=2}\\
+\ttt{\bs end\{ArrowsEq\}}\\
+
+\color{blue}
+\begin{ArrowsEq}
+&x=x+2\Arrowline{-x}
+&0=2
+\end{ArrowsEq}
+\color{black}
+
+\section{MATHCAL E SIMILI}
+Per scrivere le lettere in ambienti \ttt{\bs mathcal}, \ttt{\bs mathrm} e \ttt{\bs mathbb} utilizziamo dei comandi abbreviati.
+
+Così un comando come \ttt{\bs rs} scrive la lettera \ttt{s} in \ttt{\bs mathrm}, mentre il comando \ttt{\bs rA} scrive la lettera \ttt{A} in \ttt{\bs mathrm}. In generale, quindi, per scrivere una lettera in \ttt{\bs mathrm} ci basta scrivere la lettera preceduta da \ttt{\bs r}.
+
+In modo analogo, per scrivere una lettera (maiuscola) in \ttt{\bs mathcal} o in \ttt{\bs mathbb} basta scrivere, rispettivamente, \ttt{\bs c} o \ttt{\bs b} prima della lettera. Per il \ttt{\bs mathbb} c'è anche la possibilità di scrivere un $1$, usando il comando \ttt{\bs bUNO}.
+
+Ci sono poi i comandi \ttt{\bs i} e \ttt{\bs j} che producono le lettere $i$ e $j$ senza il puntino.
+
+Infine, possiamo scrivere le lettere in rosso (o nel colore specificato con la flag \ttt{\bs colInc}) per indicare che le lettere così rappresentate sono incognite (unknown). Per farlo, prima della lettera scriviamo \ttt{\bs u}.
+
+Questo è l'elenco dei caratteri che si ottiene in questi modi:
+\begin{align*}
+&\uA\uB\uC\uD\uE\uF\uG\uH\uI\uJ\uK\uL\uM\uN\uO\uP\uQ\uR\uS\uT\uU\uV\uW\uX\uY\uZ \qquad \ua\ub\uc\ud\ue\uf\ug\uh\ui\uj\uk\ul\um\un\uo\up\uq\ur\us\ut\uu\uv\uw\ux\uy\uz\\
+&\rA\rB\rC\rD\rE\rF\rG\rH\rI\rJ\rK\rL\rM\rN\rO\rP\rQ\rR\rS\rT\rU\rV\rW\rX\rY\rZ \qquad \ra\rb\rc\rd\re\rf\rg\rh\ri\rj\rk\rl\rm\rn\ro\rp\rq\rr\rs\rt\ru\rv\rw\rx\ry\rz\i\j\\
+&\cA\cB\cC\cD\cE\cF\cG\cH\cI\cJ\cK\cL\cM\cN\cO\cP\cQ\cR\cS\cT\cU\cV\cW\cX\cY\cZ \qquad \bA\bB\bC\bD\bE\bF\bG\bH\bI\bJ\bK\bL\bM\bN\bO\bP\bQ\bR\bS\bT\bU\bV\bW\bX\bY\bZ\bUNO
+\end{align*}
+
+\section{SI}
+Le unità di misura vengono usate particolarmente spesso in questi file. Per scriverle possiamo usare i comandi \ttt{\bs SI\{...\}} che scriverà le unità di misura nel colore corretto. Se l'unità di misura si presenta come una frazione possiamo invece usare il comando \ttt{\bs SIf\{numeratore\}\{denominatore\}}.
+
+C'è infine il caso dei gradi Celsius, che vengono scritti col comando \ttt{\bs oC}.
+
+Un comando come \ttt{\bs SI\{J/\bs oC kg\}} produce quindi il risultato $\SI{J/\oC kg}$, mentre il comando \ttt{\bs SIf\{m\}\{\bs s\string^2\}} produce il risultato $\SIf{m}{s^2}$.
+
+Il colore utilizzato sarà quello specificato tramite la flag \ttt{\bs colSI} (nero per file da stampare, ramato per quelli da lasciare solo come pdf).
+
+\section{ALTRE DEFINIZIONI UTILI}
+In questa sezione sono presenti comandi vari che possono risultare utili per varie ragioni.
+
+Il primo comando interessante è \ttt{\bs link[colore]\{link\}} che genera un link del colore specificato (blu di defalut) che porta all'indirizzo specificato con l'input \ttt{link}.
+
+Il comando \ttt{\bs riga} tira una riga orizzontale nel foglio.
+
+C'è poi il comando \ttt{\bs pare[L]\{INT\}} che crea delle parentesi intorno ad \ttt{INT} del tipo precisato con l'input \ttt{L}. Le parentesi supportate sono:
+\begin{itemize}[nolistsep]
+\item \ttt{L=t} (default) parentesi tonde;
+\item \ttt{L=q} parentesi quadre;
+\item \ttt{L=g} parentesi graffe;
+\item \ttt{L=v} parentesi verticali (ad esempio per il valore assoluto);
+\item \ttt{L=f} floor (arrotondamento per difetto);
+\item \ttt{L=c} ceil (arrotondamento per eccesso).
+\end{itemize}
+Gli output che si ottengono sono quindi
+\[\pare[t]{\int e^{-x^2}\,\rd x} \qquad \pare[q]{\int e^{-x^2}\,\rd x} \qquad \pare[g]{\int e^{-x^2}\,\rd x} \qquad \pare[v]{\int e^{-x^2}\,\rd x} \qquad \pare[f]{\int e^{-x^2}\,\rd x} \qquad \pare[c]{\int e^{-x^2}\,\rd x}\]
+
+Il comando \ttt{\bs ang\{A\}\{B\}\{C\}} crea un angolo $\ang{A}{B}{C}$.
+
+Il comando \ttt{\bs bin\{n\}\{k\}} crea un binomiale $\bin{n}{k}$.
+
+I comandi \ttt{\bs vc\{v\}} e \ttt{\bs vcp\{w\}\{1\}} creano i due vettori $\vc{v}$ e $\vcp{w}{1}$.
+
+Il comando \ttt{\bs vett\{a\}\{b\}\{c\}} crea il vettore $\vett{a}{b}{c}$. Questo comando può prendere un numero arbitrario di input (a discrezione dell'utente).
+
+I comandi \ttt{\bs seq}, \ttt{\bs scong} e \ttt{\bs lr} creano dei simboli ($=$, $\cong$ e $\Longrightarrow$) sovrastati dall'argomento opzionale. C'è anche la versione \ttt{\bs lrt} analogo di \ttt{\bs lr}, in cui il commento è scritto fra \ttt{\bs text} (gli altri tre hanno commenti in ambiente matematico).
+
+Quindi i comandi \ttt{\bs lrt[a]}, \ttt{\bs lr[a]}, \ttt{\bs seq[x]} e \ttt{\bs scong[y]} producono gli output $\lrt[a]$, $\lr[a]$, $\seq[x]$ e $\scong[y]$.
+
+Spesso dei comandi analoghi vengono usati come separatori. I più comuni sono \ttt{\bs qe} e \ttt{\bs qlr} (o i loro analoghi \ttt{\bs qqe} e \ttt{\bs qqlr}, in cui viene lasciato maggior spazio). Ad esempio il comando in grigio genera l'output blu:\color{gray}\\
+\ttt{x \bs qe y \bs qqlr[a] z \bs qlr t}\\
+\color{blue}\[x \qe y \qqlr[a] z \qlr t\]\color{black}
+
+\section{STRUMENTI PER GEOMETRIA}
+È comune in problemi di geometri (ma non solo) chiedere esplicitamente (nel testo) di impostare un sistema per risolvere il problema (altrimenti gli studenti potrebbero trovare la soluzione a occhio, e poi lamentare il fatto che non hanno ottenuto i punti del problema, quando tecnicamente hanno trovato la soluzione corretta, e magari l'hanno pure verificata). Per scongiurare questo rischio, in questi problemi conviene usare il comando \ttt{\bs eqreq} che produce il seguente output (in rosso):\\
+\eqreq
+
+
+Spesso nelle dimostrazioni di geometria dobbiamo fare delle implicazioni. Per farlo possiamo usare il comando \ttt{\bs Impl[nome]\{\{Hp1\}\{Hp2\}...\}\{Th\}} (possiamo usare quante ipotesi vogliamo).
+
+Ad esempio il seguente comando (grigio), fuori dall'ambiente matematica, crea il seguente output (blu):\\\color{gray}\\
+\ttt{\bs Impl[crit.parall.]\{}\\
+\hspace*{5mm}\ttt{\{\$\bs ang\{A\}\{B\}\{C\}\bs cong\bs ang\{D\}\{C\}\{B\}\$\}}\\
+\hspace*{5mm}\ttt{\{\$BC\$ trasversale comune\}}\\
+\ttt{\}\{\$AB \bs parallel CD\$\}}\\
+\color{blue}
+\Impl[crit.parall.]{{$\ang{A}{B}{C}\cong\ang{D}{C}{B}$}{$BC$ trasversale comune}}{$AB \parallel CD$}
+\color{black}
+
+Dal momento che i criteri di congruenza e di similitudine sono particolarmente comuni, ho scritto anche dei comandi specifici per quelle due famiglie di criteri.
+
+Per i criteri di congruenza la sintassi è \ttt{\bs cc[nome]\{tr1\}\{tr2\}\{Hp1\}\{Hp2\}\{Hp3\}} dove \ttt{nome} è il nome dei criterio utilizzato, \ttt{tr1} e \ttt{tr2} sono i due triangoli fra loro congruenti e \ttt{HP1}, \ttt{HP2}, \ttt{HP3} sono le ipotesi confrontate. Ad esempio, il testo in blu viene generato col comando grigio:\color{gray}\\
+\ttt{\bs cc[\$3\string^o\$c.c.]\{ABC\}\{A'B'C'\}\{\$AB \bs cong A'B'\$\}\{\$BC \bs cong B'C'\$\}\{\$CA \bs cong C'A'\$\}}\\
+\color{blue}\cc[$3^o$c.c.]{ABC}{A'B'C'}{$AB \cong A'B'$}{$BC \cong B'C'$}{$CA \cong C'A'$}\color{black}
+
+\textbf{Attenzione!} Osserva che le ipotesi vengono scritte in ambiente matematico, ma che i triangoli vengono scritti in testo semplice.
+
+Per i criteri di similitudine la sintassi è identica (si chiama \ttt{\bs cs} anziché \ttt{\bs cc} e usa $2$ ipotesi anziché $3$).
+
+\section{IMPAGINAZIONE}
+L'impaginazione cambia a seconda del tipo di documento (specificato con la flag \ttt{\bs TipoDoc}) e dal valore $0-1$ dato alla flag \ttt{\bs EnumPages} (vero di default, a meno che \ttt{\bs TipoDoc=immagine}), oltre ovviamente alla misura dei margini, specificata con la flag \ttt{\bs MarginSize}.
+
+L'impaginazione utilizzata sarà \ttt{empty} oppure \ttt{plain} (a seconda del valore di \ttt{\bs EnumPages}).
+
+Se però il \ttt{TipoDOc} è specifico di una verifica, l'impaginazione è molto più elaborata.
+
+Nel caso, l'impaginazione aggiungerà (in cima alle pagine dispari) un titolo (specificato nella flag \ttt{\bs Titolo}, ma eventualmente arricchito con \ttt{\bs Minuti}).
+
+Poi verrà creata una tabella in cui gli studenti inseriscono i propri dati. Qui compare anche il logo della scuola. Si suggerisce di consultare il file \ttt{\bs verifica\_controllo\_installazione.pdf} (a cui abbiamo già fatto riferimento nella sezione \ref{controllo}), per un esempio sul suo funzionamento.
+
+\section{TABELLA VOTI}
+La tabella dei voti deve essere scritta in ogni verifica (generalmente all'inizio della verifica).
+
+La sua sintassi è del tipo \ttt{\bs TabellaVoti\{\{Es1\}\{Es2\}...\}} dove ogni esercizio può a sua volta essere separato in vari punti.
+
+Ad esempio, se abbiamo una verifica in $5$ esercizi, ognuno dei quali vale $18$ punti (e $10$ punti base, specificati con la flag \ttt{\bs PuntiBaseVerifica}) possiamo generare la tabella dei voti col comando\\\textcolor{gray}{\ttt{\bs TabellaVoti\{\{18\}\{18\}\{18\}\{18\}\{18\}\}}}, che genera questa tabella:
+
+\TabellaVoti{{18}{18}{18}{18}{18}}
+
+Se invece il terzo esercizio è diviso in due parti (ciascuna delle quali vale $9$ punti) e il quinto esercizio è diviso in tre parti (ciascuna delle quali vale $6$ punti) la tabella dei voti viene generata col comando \textcolor{gray}{\ttt{\bs TabellaVoti\{\{18\}\{18\}\{9,9\}\{18\}\{6,6,6\}\}}}, che genera questa tabella:
+
+\TabellaVoti{{18}{18}{9,9}{18}{6,6,6}}
+
+\end{document}

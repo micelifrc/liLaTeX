@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%% FLAG (per i nuovi utenti: aggiornare le prime 5 flag: \liLaTeXPath \LogoScuolaPath \NomeScuola \CittaScuola \AnnoScolastico) ed eventualmente la flag \PuntiBaseVerifica (dipende da quanti punti base date per la verifica (nel mio caso sono 10/100, quindi è inizializzato a 10)
 
 \providecommand{\liLaTeXPath}{C:/Users/themi/Desktop/LaTeX/liLaTeX} % l'indirizzo dove è stato salvato il file liLaTeX.tex
-\providecommand{\LogoScuolaPath}{C:/Users/themi/Desktop/LaTeX/liLaTeX/Logo_Liceo_Scientifico_Francesco_Vercelli.jpeg} % il file immagine col logo della scuola
+\providecommand{\LogoScuolaPath}{C:/Users/themi/Desktop/LaTeX/liLaTeX/Logo_ls_Vercelli.jpeg} % il file immagine col logo della scuola
 \providecommand{\NomeScuola}{Liceo Scientifico \textit{F.Vercelli}} % il nome della scuola
 \providecommand{\CittaScuola}{Asti} % la città in cui si trova la scuola
 \providecommand{\AnnoScolastico}{2024-2025} % l'anno scolastico di riferimento (da cambiare una volta all'anno)
@@ -20,7 +20,7 @@
 \providecommand{\colSI}{} % il colore delle unità di misura (definito in seguito come arancione)
 \providecommand{\inputTikz}{1} % 0-1 dice se importare anche il file coi comandi tikz
 \providecommand{\EnumPages}{1} % può essere posto a 0 se non vogliamo numerare le pagine oppure a 1 se vogliamo numerarle
-\providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda SSPM, scheda laboratorio, prova laboratorio, gara olimpiadi, lezione, dimostrazione, formulario}
+\providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, libro, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda SSPM, scheda laboratorio, prova laboratorio, gara olimpiadi, lezione, dimostrazione, formulario}
 %NOTA: le flag possono essere sovrascritte dall'utente di volta in volta specificando dei \newcommand in preambolo prima di includere il pacchetto liLaTeX
 %Alcune flag, se non specificate dall'utente, vengono ridefinite in questo file nella sezione denominata "SOVRASCRITTURA DELLE FLAG"
 
@@ -51,6 +51,7 @@
 \usepackage{adjustbox} % necessario per l'ambiente \adjustbox, utile per disegnare la tabella dei voti
 \usepackage{witharrows} % usato per \[\begin{WithArrows}...\end{WithArrows}\] Da includere dopo xcolor
 \usepackage{pdfpages} % usato per \includepdf
+\usepackage{hyperref} % usato per creare link come \href
 
 
 %%%%%%%%%%%%%%%% SOVRASCRITTURA DELLE FLAG
@@ -66,6 +67,7 @@
 % controlla se \TipoDoc è uno dei tipi conosciuti, altrimenti genera un errore di compilazione
 \newcounter{TipoDocGuardCounter}
 \ifdefstring{\TipoDoc}{plain}{\stepcounter{TipoDocGuardCounter}}{}
+\ifdefstring{\TipoDoc}{libro}{\stepcounter{TipoDocGuardCounter}}{}
 \ifdefstring{\TipoDoc}{immagine}{\stepcounter{TipoDocGuardCounter}}{}
 \ifdefstring{\TipoDoc}{verifica}{\stepcounter{TipoDocGuardCounter}}{}
 \ifdefstring{\TipoDoc}{verifica recupero}{\stepcounter{TipoDocGuardCounter}}{}
@@ -103,7 +105,7 @@
 {\end{lettfrom}}
 
 
-%%%%%%%%%%%%%%%% ESERCIZI E SOLUZIONI
+%%%%%%%%%%%%%%%% AMBIENTI
 
 \renewcommand{\qedsymbol}{$\blacksquare$}
 \theoremstyle{definition}
@@ -152,8 +154,10 @@
 	\ifthenelse{\equal{#1}{Dim}}{\setcounter{SolEmb}{#2-1}}{}
 }
 
+
+\newenvironment{ArrowsEq}{\[\begin{WithArrows}}{\end{WithArrows}\]}
 % da usare nell'ambiente WithArrows (dentro a \[...\]) (analogo ad align*). Serve compilare due volte.
-\newcommand{\Arrowline}[2][cyan]{\Arrow[tikz={font={\mdseries},#1}]{$#2$}}
+\newcommand{\Arrowline}[2][cyan]{\Arrow[tikz={font={\mdseries},#1}]{$#2$}\\}
 
 
 %%%%%%%%%%%%%%%% MATHCAL E SIMILI
@@ -185,6 +189,32 @@
 \newcommand{\ux}[1][\colInc]{\textcolor{#1}{\rx}}
 \newcommand{\uy}[1][\colInc]{\textcolor{#1}{\ry}}
 \newcommand{\uz}[1][\colInc]{\textcolor{#1}{\rz}}
+\newcommand{\uA}[1][\colInc]{\textcolor{#1}{\rA}}
+\newcommand{\uB}[1][\colInc]{\textcolor{#1}{\rB}}
+\newcommand{\uC}[1][\colInc]{\textcolor{#1}{\rC}}
+\newcommand{\uD}[1][\colInc]{\textcolor{#1}{\rD}}
+\newcommand{\uE}[1][\colInc]{\textcolor{#1}{\rE}}
+\newcommand{\uF}[1][\colInc]{\textcolor{#1}{\rF}}
+\newcommand{\uG}[1][\colInc]{\textcolor{#1}{\rG}}
+\newcommand{\uH}[1][\colInc]{\textcolor{#1}{\rH}}
+\newcommand{\uI}[1][\colInc]{\textcolor{#1}{\rI}}
+\newcommand{\uJ}[1][\colInc]{\textcolor{#1}{\rJ}}
+\newcommand{\uK}[1][\colInc]{\textcolor{#1}{\rK}}
+\newcommand{\uL}[1][\colInc]{\textcolor{#1}{\rL}}
+\newcommand{\uM}[1][\colInc]{\textcolor{#1}{\rM}}
+\newcommand{\uN}[1][\colInc]{\textcolor{#1}{\rN}}
+\newcommand{\uO}[1][\colInc]{\textcolor{#1}{\rO}}
+\newcommand{\uP}[1][\colInc]{\textcolor{#1}{\rP}}
+\newcommand{\uQ}[1][\colInc]{\textcolor{#1}{\rQ}}
+\newcommand{\uR}[1][\colInc]{\textcolor{#1}{\rR}}
+\newcommand{\uS}[1][\colInc]{\textcolor{#1}{\rS}}
+\newcommand{\uT}[1][\colInc]{\textcolor{#1}{\rT}}
+\newcommand{\uU}[1][\colInc]{\textcolor{#1}{\rU}}
+\newcommand{\uV}[1][\colInc]{\textcolor{#1}{\rV}}
+\newcommand{\uW}[1][\colInc]{\textcolor{#1}{\rW}}
+\newcommand{\uX}[1][\colInc]{\textcolor{#1}{\rX}}
+\newcommand{\uY}[1][\colInc]{\textcolor{#1}{\rY}}
+\newcommand{\uZ}[1][\colInc]{\textcolor{#1}{\rZ}}
 \newcommand{\ra}{\mathrm{a}}
 \newcommand{\rb}{\mathrm{b}}
 \newcommand{\rc}{\mathrm{c}}
@@ -314,6 +344,12 @@
 
 %%%%%%%%%%%%%%%% ALTRE DEFINIZIONI UTILI
 
+% un link. Chiama come \link[colore]{indirizzo}
+\newcommand{\link}[2][blue]{\href{#2}{\textcolor{#1}{#2}}}
+
+% tira una riga orizzontale
+\newcommand{\riga}{\rule{\linewidth}{0.35mm}}
+
 % parentesi. Chiama come \pare{testo} o come \pare[L]{testo} dove L indica il tipo di parentesi da usare. Le opzioni sono t,q,g,v,f,c
 \newcommand\pare[2][t]{
 	\ifthenelse{\equal{#1}{q}}{\left[ #2 \right]}{
@@ -364,7 +400,7 @@
   \endgroup
 }
 
-\newcommand{\eqreq}{\textcolor{red}{\textbf{Attenzione!} Per risolvere il problema devi impostare e risolvere un'opportuna equazione o un sistema di equazioni. Soluzioni trovate ``a tentativi'' e solo verificate non sono considerate accettabili.}}
+\newcommand{\eqreq}[1][red]{\textcolor{#1}{\textbf{Attenzione!} Per risolvere il problema devi impostare e risolvere un'opportuna equazione o un sistema di equazioni. Soluzioni trovate ``a tentativi'' e solo verificate non sono considerate accettabili.}}
 
 % implicazioni per la geometria. Usa come \Impl[nome teo]{{Hp1}{Hp2}...}{th}
 \newcommand{\Impl}[3][]{\[\left.\begin{array}{l}\ImplIter#2\end{array}\right\}\,\lrt[#1]\,\text{#3}\]}
@@ -372,10 +408,10 @@
 \newcommand{\ImplIter}[1]{{\text{#1}}\@ifnextchar\bgroup{\\\ImplIter}{}}
 \makeatother
 
-% i tre criteri di congruenza e i due criteri di similitudine. Da usare come \cc[num crit]{Tr1}{Tr2}{Hp1}{Hp2}{Hp3} e \cs[num crit]{Tr1}{Tr2}{Hp1}{Hp2}
+% i tre criteri di congruenza e i due criteri di similitudine. Da usare come \cc[nome crit]{Tr1}{Tr2}{Hp1}{Hp2}{Hp3} e \cs[nome crit]{Tr1}{Tr2}{Hp1}{Hp2}
 % ad esempio usa come \cc[3]{ABC}{A'B'C'}{$AB \cong A'B'$}{$BC \cong B'C'$}{$CA \cong C'A'$}
-\newcommand{\cc}[6][1]{Consideriamo i triangoli $#2$ e $#3$:\Impl[$#1^o$cc]{{#4}{#5}{#6}}{$#2 \cong #3$}}
-\newcommand{\cs}[5][1]{Consideriamo i triangoli $#2$ e $#3$:\Impl[$#1^o$cs]{{#4}{#5}}{$#2 \sim #3$}}
+\newcommand{\cc}[6][$1^o$c.c.]{Consideriamo i triangoli $#2$ e $#3$:\Impl[#1]{{#4}{#5}{#6}}{$#2 \cong #3$}}
+\newcommand{\cs}[5][$1^o$c.s.]{Consideriamo i triangoli $#2$ e $#3$:\Impl[#1]{{#4}{#5}}{$#2 \sim #3$}}
 
 
 %%%%%%%%%%%%%%%% IMPAGINAZIONE
@@ -445,12 +481,20 @@
 % Il seguente esempio mostra come creare la tabella per una verifica con 5 esercizi (di cui l'es. 3 è diviso in 2 punti e l'es. 5 è diviso in 3 punti) in cui ciascun esercizio vale 18 punti (equamente distribuiti fra i vari punti dell'esercizio):
 % \TabellaVoti{{18}{18}{9,9}{18}{6,6,6}}
 \newcommand\TabellaVoti[1]{
+	\vspace*{-5mm}\begin{center}
+	{\Huge \setlength\fboxsep{5mm}\boxed{\hspace*{-3mm}\textbf{Voto:} \hspace*{30mm}}} % il box in cui scrivere il voto
+	\ifdefstring{\TipoDoc}{verifica recupero}{{\Large\hspace*{10mm}\vspace*{-\baselineskip}
+		\begin{tabular}{l}
+		Debito saldato:\\
+		$\mkern2mu\framebox[16mm]{\huge \textbf{SI}}\mkern15mu\framebox[16mm]{\huge \textbf{NO}}$
+		\end{tabular}\\\vspace*{4mm}
+	}}{} % per segnare se lo studente ha superato il debito
+	\end{center}
 	\pgfmathsetmacro\TabellaVotiTabellaWidth{18}
 	\pgfmathsetmacro\TabellaVotiHeight{1}
 	\ifdefempty{\PuntiBaseVerifica}{\pgfmathsetmacro\TabellaVotiPtBaseWidth{0}}{\pgfmathsetmacro\TabellaVotiPtBaseWidth{2}}
 	\TabellaVotiInizializzaContenitori[\PuntiBaseVerifica]#1 % leggi i dati in input. È importante che sia #1 e non {#1}
 	\ifnum\TabellaVotiDrawLettersRow>0 \def\t{2} \else \def\t{1} \fi % decidi se disegnare anche la riga delle lettere
-	\vspace*{\fill} % spostati a fondo pagina
 	{\Large\begin{center}
 	\makebox[0cm]{ % elimina i margini
 	\begin{adjustbox}{minipage=\TabellaVotiTabellaWidth cm, center} % permette di disegnare in un'area estesa orizzontalmente (larga \TabellaVotiTabellaWidth)
@@ -508,15 +552,6 @@
 	\end{tikzpicture}
 	\end{adjustbox}}
 	\end{center}}
-	\begin{center}
-	{\Huge \setlength\fboxsep{5mm}\boxed{\hspace*{-3mm}\textbf{Voto:} \hspace*{30mm}}} % il box in cui scrivere il voto
-	\ifdefstring{\TipoDoc}{verifica recupero}{{\Large\hspace*{10mm}\vspace*{-\baselineskip}
-		\begin{tabular}{l}
-		Debito saldato:\\
-		$\mkern2mu\framebox[16mm]{\huge \textbf{SI}}\mkern15mu\framebox[16mm]{\huge \textbf{NO}}$
-		\end{tabular}\\\vspace*{4mm}
-	}}{} % per segnare se lo studente ha superato il debito
-	\end{center}
 }
 
 % valori utili durante la lettura dei dati dall'input per \TabellaVoti
