@@ -17,6 +17,9 @@
 \providecommand{\FontSize}{11} % la dimensione del testo (in pt)
 \providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda SSPM, scheda laboratorio, prova laboratorio, gara olimpiadi, lezione, dimostrazione, formulario}
 \providecommand{\NumPages}{} % può essere posto a 0 se non vogliamo numerare le pagine oppure a 1 se vogliamo numerarle. Se non specificato, le pagine vengono numerate se e solo se ce n'è più di una (nel caso serve compilare due volte)
+\providecommand{\colText}{black} % il colore di esercizi, teoremi e dimostrazioni
+\providecommand{\colDim}{blue} % il colore di dimostrazioni e soluzioni
+\providecommand{\colSI}{} % il colore delle unità di misura
 
 \usepackage{etoolbox} % if-else commands come \ifdefempty{cs}{TRUE}{FALSE} e \ifdefstring{cs}{string}{TRUE}{FALSE}
 
@@ -300,6 +303,33 @@
 
 %%%%%%%%%%%%%%%% MATHCAL E SIMILI
 
+\providecommand{\colInc}{red} % colore per le incognite (\u sta per unknown, ovvero incognita in inglese. Infatti il i comandi come \ux verranno utilizzati prevalentemente per evidenziare le incognite nelle equazioni e nei relativi sistemi)
+\newcommand{\ua}[1][\colInc]{\textcolor{#1}{\ra}}
+\newcommand{\ub}[1][\colInc]{\textcolor{#1}{\rb}}
+\newcommand{\uc}[1][\colInc]{\textcolor{#1}{\rc}}
+\newcommand{\ud}[1][\colInc]{\textcolor{#1}{\rd}}
+\newcommand{\ue}[1][\colInc]{\textcolor{#1}{\re}}
+\newcommand{\uf}[1][\colInc]{\textcolor{#1}{\rf}}
+\newcommand{\ug}[1][\colInc]{\textcolor{#1}{\rg}}
+\newcommand{\uh}[1][\colInc]{\textcolor{#1}{\rh}}
+\newcommand{\ui}[1][\colInc]{\textcolor{#1}{\ri}}
+\newcommand{\uj}[1][\colInc]{\textcolor{#1}{\rj}}
+\newcommand{\uk}[1][\colInc]{\textcolor{#1}{\rk}}
+\newcommand{\ul}[1][\colInc]{\textcolor{#1}{\rl}}
+\newcommand{\um}[1][\colInc]{\textcolor{#1}{\rm}}
+\newcommand{\un}[1][\colInc]{\textcolor{#1}{\rn}}
+\newcommand{\uo}[1][\colInc]{\textcolor{#1}{\ro}}
+\newcommand{\up}[1][\colInc]{\textcolor{#1}{\rp}}
+\newcommand{\uq}[1][\colInc]{\textcolor{#1}{\rq}}
+\newcommand{\ur}[1][\colInc]{\textcolor{#1}{\rr}}
+\newcommand{\us}[1][\colInc]{\textcolor{#1}{\rs}}
+\newcommand{\ut}[1][\colInc]{\textcolor{#1}{\rt}}
+\newcommand{\uu}[1][\colInc]{\textcolor{#1}{\ru}}
+\newcommand{\uv}[1][\colInc]{\textcolor{#1}{\rv}}
+\newcommand{\uw}[1][\colInc]{\textcolor{#1}{\rw}}
+\newcommand{\ux}[1][\colInc]{\textcolor{#1}{\rx}}
+\newcommand{\uy}[1][\colInc]{\textcolor{#1}{\ry}}
+\newcommand{\uz}[1][\colInc]{\textcolor{#1}{\rz}}
 \newcommand{\ra}{\mathrm{a}}
 \newcommand{\rb}{\mathrm{b}}
 \newcommand{\rc}{\mathrm{c}}
@@ -405,3 +435,42 @@
 \newcommand{\bY}{\mathbb{Y}}
 \newcommand{\bZ}{\mathbb{Z}}
 \newcommand{\bUNO}{\mathds{1}}
+
+%%%%%%%%%%%%%%%% SI
+
+% pone \colSI = black se il testo è da stampare e come orange altrimenti
+\definecolor{coppercolor}{RGB}{184, 115, 51} % colore del rame
+\ifnum\value{TipoDocVerificaCounter}=1 \overwriteifempty{\colSI}{black} \else
+\ifdefstring{\TipoDoc}{scheda}{\overwriteifempty{\colSI}{black}}{}
+\ifdefstring{\TipoDoc}{scheda SSPM}{\overwriteifempty{\colSI}{black}}{}
+\ifdefstring{\TipoDoc}{scheda laboratorio}{\overwriteifempty{\colSI}{black}}{}
+\ifdefstring{\TipoDoc}{gara olimpiadi}{\overwriteifempty{\colSI}{black}}{}
+\overwriteifempty{\colSI}{coppercolor}
+\fi
+
+\newcommand{\SI}[1]{\textcolor{\colSI}{\mathrm{#1}}} % per unità di misura. Per scrive metri scrivi \SI{m}
+\newcommand{\SIf}[2]{\SI{\frac{#1}{#2}}} % unità di misura in frazione. Per scrivere metri al secondo quadrato scrivi \SIf{m}{s^2}
+
+%%%%%%%%%%%%%%%% ALTRE DEFINIZIONI UTILI
+
+\newcommand{\ang}[3]{#1\widehat{#2}#3} % l'angolo
+\newcommand{\bin}[2]{{#1 \choose #2}} % il binomiale di #1 su #2
+\newcommand{\vc}[1]{\overrightarrow{#1}} % il vettore (in senso fisico)
+\newcommand{\vcp}[3][-5]{\overrightarrow{#2}_{\hspace*{#1pt}#3}} % il vettore (fisico) con pedice
+
+% vettore in senso matematico (esempio su come implementare una funzione con un numero arbitrario di input)
+\makeatletter
+\newcommand{\vettore}{\begin{pmatrix}\vettoreIter}
+\newcommand{\vettoreIter}[1]{#1\@ifnextchar\bgroup{\\\vettoreIter}{\end{pmatrix}}}
+\makeatother
+
+\newcommand{\qsep}[1]{\quad #1 \quad} % separatore fra dei \quad
+\newcommand{\qqsep}[1]{\qquad #1 \qquad} % separatore fra dei \qquad
+\newcommand{\qsr}[2]{\qsep{\stackrel{#2}{#1}}} % separatore fra dei \stackrel
+\newcommand{\qqsr}[2]{\qqsep{\stackrel{#2}{#1}}} % separatore fra dei \stackrel
+\newcommand{\qe}{\qsep{\text{e}}}
+\newcommand{\qqe}{\qqsep{\text{e}}}
+\newcommand{\qlr}{\qsep{\Longrightarrow}}
+\newcommand{\qqlr}{\qqsep{\Longrightarrow}}
+\newcommand{\lr}[1][]{\stackrel{#1}{\Longrightarrow}} % implicazioni con commento
+\newcommand{\lrt}[1][]{\lr[\text{#1}]}
