@@ -1,24 +1,29 @@
-\documentclass[italian, a4paper]{article}
-%\documentclass[crop, tikz, dvipsnames]{standalone} % per le immagini
-\newcommand{\TipoDoc}{plain}
+%\documentclass[italian, a4paper]{article}
+\documentclass[crop]{standalone} % per le immagini
+\newcommand{\TipoDoc}{immagine}
 \input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
 
 \begin{document}
 
 \begin{immagine}
-\pntl{A}{180}{0,0};
+\pntl{A}{180}{-2,-1};
 \pntl{B}{90}{6,3};
 \pntl{C}{0}{8,-5};
 \draw(A)--(B)--(C);
 \piedebis{D}{A}{B}{C};
 \draw[blue](B)--(D);
 \punto[col=red]{D};
-\medio[1.1]{M}{B}{C};
-\punto[col=Green]{M};
+\medio[0.3]{M}{B}{C};
+\punto[col=red]{M};
 \sumvett{D}{B}{A}{C};
 \draw[dashed,violet](A)--(D)--(C);
 \excentro{E}{A}{C}{B};
 \pntl[teal]{E}{90}{E};
+\verso[2]{K}{A}{B};
+\punto[col=orange]{K};
+\perpendicolare[4]{P}{C}{B}{A};
+\punto[col=red]{P};
+\draw[red](C)--(P);
 \end{immagine}
 
 \end{document}
