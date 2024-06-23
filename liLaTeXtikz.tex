@@ -1,4 +1,4 @@
-% Il pacchetto per tikz
+% Questo è il pacchetto liLaTeX per tikz
 
 %%%%%%%%%%%%%%%% AMBIENTE immagine
 
@@ -14,3 +14,61 @@
 \newenvironment{immaginecap*}[2][]
 {\def\immaginecapCaption{#2}\begin{figure}[!ht]\centering\begin{tikzpicture}[#1]}
 {\end{tikzpicture}\caption*{\immaginecapCaption}\end{figure}}
+
+
+%%%%%%%%%%%%%%%% KEY MANAGER
+
+% da chiamare all'inizio di qualunque comando con dei parametri opzionali come \setkeyfld{parametri opzionali}. Dovrebbe essere sempre la seconda riga di qualunque newcommand con parametri opzionali
+\newcommand\setkeyfld[1]{
+	% passiamo alla key directory keyfld, e ridefiniamo come #1 tutti le keys specificate in #1
+	\tikzset{keyfld/.cd,#1}%
+	% definiamo un soprannome \kv per il path alle keys. In questo modo, per riferirci al VALORE di una chiave chiamata K dovremo scrivere \kv{K}, anziché la più lunga /tikz/keyfld/K. Quindi K indica la chiave, mentre \kv{K} indica il suo valore
+	\def\kv##1{\pgfkeysvalueof{/tikz/keyfld/##1}}
+}
+
+% ifkeyequal{keyname}{value to compare}{do if equal}{do if different}
+\newcommand\ifkeyequal[4]{
+	\edef\ifkeyequalkey{\kv{#1}} 
+	\edef\ifkeyequalcomp{#2}
+	\ifdefequal{\ifkeyequalkey}{\ifkeyequalcomp}{#3}{#4}
+}
+% \ifkeyempty{keyname}{do if empty}{do if non-empty}
+\newcommand\ifkeyempty[3]{\ifkeyequal{#1}{\pgfkeysnovalue}{#2}{#3}}
+
+% aggiorna il valore della key #1 al valore #2. Chiama ad esempio come \setkeyvalue{color}{blue} o come \setkeyvalue{h}{\kv{b}}
+\newcommand\setkeyvalue[2]{\tikzset{keyfld/.cd,#1=#2}}
+% aggiorna il valore della key #1 al valore #2 solo se #1 è empty
+\newcommand\setkeyvalueifempty[2]{\ifkeyempty{#1}{\setkeyvalue{#1}{#2}}{}}
+
+%%%%%%%%%%%%%%%% PUNTO
+
+% chiama come \punto[keys]{coordinate}
+\newcommand{\punto}[2][]{
+	\tikzset{keyfld/.cd,
+		col/.initial,
+		size/.initial=1.5,
+		shape/.initial = circle, % circle, rettangle, diamond o lo si può lasciare vuoto
+		name/.initial = puntoNome,
+		lbl/.initial,
+		lbl ang/.initial = -90,
+		lbl dist/.initial = 0.3,
+		lbl size/.initial,
+		lbl col/.initial,
+		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
+	} \setkeyfld{#1};
+	\setkeyvalueifempty{col lbl}{\kv{col}};
+	\setkeyvalueifempty{lbl col}{\kv{col lbl}};
+	\coordinate[\kv{shape},inner sep=\kv{size},fill=\kv{col}] (\kv{name}) at (#2);
+	\ifkeyempty{lbl}{}{\node[\kv{lbl col},\kv{lbl size}](puntoLblName) at($(#2)+(\kv{lbl ang}:\kv{lbl dist})$) {\kv{lbl}}};
+}
+
+% chiama come \pnt[keys]{nome}{coordinate}
+\newcommand{\pnt}[3][]{\punto[name=#2,#1]{#3};}
+% chiama come \pntl[keys]{nome}{lbl}{lbl ang}{coordinate}
+\newcommand{\pntl}[5][]{\punto[name=#2,lbl=#3,lbl ang=#4,#1]{#5};}
+% chiama come \pntle[keys]{name}{lbl ang}{coordinate}
+\newcommand{\pntle}[4][]{\pntl[#1]{#2}{$#2$}{#3}{#4};}
+% chiama come \pntlp[keys]{name}{lbl ang}{coordinate}
+\newcommand{\pntlp}[4][]{\pntl[#1]{#2p}{$#2'$}{#3}{#4};}
+% chiama come \pntls[keys]{name}{lbl ang}{coordinate}
+\newcommand{\pntls}[4][]{\pntl[#1]{#2s}{$#2''$}{#3}{#4};}
