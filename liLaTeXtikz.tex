@@ -2,21 +2,22 @@
 
 \usepackage{tkz-euclide} % per alcune funzioni grafiche (come \intrette)
 \usepackage{pgfplots} % pacchetto per plot
+\pgfplotsset{compat=1.17} % necessario per compatibilità con versioni precedenti
 
 %%%%%%%%%%%%%%%% AMBIENTE immagine
 
 % le immagini vengono generalmente create fra \begin{immagine}[opzioni] e \end{immagine}
 \newenvironment{immagine}[1][]
-{\begin{figure}[!ht]\centering\begin{tikzpicture}[#1]}
-{\end{tikzpicture}\end{figure}}
+	{\begin{figure}[!ht]\centering\begin{tikzpicture}[#1]}
+	{\end{tikzpicture}\end{figure}}
 
 % analogo ad immagine, ma permette di aggiungere una caption
 \newenvironment{immaginecap}[2][]
-{\def\immaginecapCaption{#2}\begin{figure}[!ht]\centering\begin{tikzpicture}[#1]}
-{\end{tikzpicture}\caption{\immaginecapCaption}\end{figure}}
+	{\def\immaginecapCaption{#2}\begin{figure}[!ht]\centering\begin{tikzpicture}[#1]}
+	{\end{tikzpicture}\caption{\immaginecapCaption}\end{figure}}
 \newenvironment{immaginecap*}[2][]
-{\def\immaginecapCaption{#2}\begin{figure}[!ht]\centering\begin{tikzpicture}[#1]}
-{\end{tikzpicture}\caption*{\immaginecapCaption}\end{figure}}
+	{\def\immaginecapCaption{#2}\begin{figure}[!ht]\centering\begin{tikzpicture}[#1]}
+	{\end{tikzpicture}\caption*{\immaginecapCaption}\end{figure}}
 
 
 %%%%%%%%%%%%%%%% KEY MANAGER
@@ -50,7 +51,7 @@
 \newcommand{\punto}[2][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
-		size/.initial=1.5,
+		size/.initial = 1.5,
 		shape/.initial = circle, % circle, rettangle, diamond o lo si può lasciare vuoto
 		name/.initial = puntoNome,
 		lbl/.initial,
@@ -63,25 +64,65 @@
 	\setkeyvalueifempty{col lbl}{\kv{col}};
 	\setkeyvalueifempty{lbl col}{\kv{col lbl}};
 	\coordinate[\kv{shape},inner sep=\kv{size},fill=\kv{col}] (\kv{name}) at (#2);
-	\ifkeyempty{lbl}{}{\node[\kv{lbl col},\kv{lbl size}](puntoLblName) at($(#2)+(\kv{lbl ang}:\kv{lbl dist})$) {\kv{lbl}}};
+	\ifkeyempty{lbl}{}{\node[\kv{lbl col}](puntoLblName) at($(#2)+(\kv{lbl ang}:\kv{lbl dist})$) {\kv{lbl size}\kv{lbl}}};
 }
 
-% chiama come \pnt[keys]{nome}{coordinate}
-\newcommand{\pnt}[3][]{\punto[name=#2,#1]{#3};}
-% chiama come \pntl[keys]{nome}{lbl}{lbl ang}{coordinate}
-\newcommand{\pntl}[5][]{\punto[name=#2,lbl=#3,lbl ang=#4,#1]{#5};}
-% chiama come \pntle[keys]{name}{lbl ang}{coordinate}
-\newcommand{\pntle}[4][]{\pntl[#1]{#2}{$#2$}{#3}{#4};}
-% chiama come \pntlp[keys]{name}{lbl ang}{coordinate}
-\newcommand{\pntlp}[4][]{\pntl[#1]{#2p}{$#2'$}{#3}{#4};}
-% chiama come \pntls[keys]{name}{lbl ang}{coordinate}
-\newcommand{\pntls}[4][]{\pntl[#1]{#2s}{$#2''$}{#3}{#4};}
+% chiama come \pnt[col]{nome}{coordinate}
+\newcommand{\pnt}[3][]{\punto[name=#2,col=#1]{#3};}
+% chiama come \pntlbl[col]{nome}{lbl}{lbl ang}{coordinate}
+\newcommand{\pntlbl}[5][]{\punto[name=#2,lbl=#3,lbl ang=#4,col=#1]{#5};}
+% chiama come \pntl[col]{name}{lbl ang}{coordinate}
+\newcommand{\pntl}[4][]{\pntlbl[#1]{#2}{$#2$}{#3}{#4};}
+% chiama come \pntlp[col]{name}{lbl ang}{coordinate}
+\newcommand{\pntlp}[4][]{\pntlbl[#1]{#2p}{$#2'$}{#3}{#4};}
+% chiama come \pntls[col]{name}{lbl ang}{coordinate}
+\newcommand{\pntls}[4][]{\pntlbl[#1]{#2s}{$#2''$}{#3}{#4};}
+
+
+%%%%%%%%%%%%%%%% CALCOLO DI COORDINATE
+
+% \medio[k]{<- M}{A}{B} definisce M come il punto k*A+(1-k)*B. Nel caso speciale di k=0.5, M è il punto medio del segmento AB
+\newcommand{\medio}[4][0.5]{\coordinate(#2)at($(#3)-#1*(#3)+#1*(#4)$);}
+
+% \proj{<- H}{P}{A}{B} genera H come la proiezione ortogonale di P sulla retta AB
+\newcommand{\proj}[4]{\tkzDefPointBy[projection=onto #3--#4](#2) \tkzGetPoint{#1};}
+
+% \sumvett{-C}{A}{B}{D} definisce il punto C in modo che il vettore AC sia uguale alla somma vettoriale AB+AD. Così facendo ABCD forma un parallelogramma
+\newcommand{\sumvett}[4]{\coordinate(#1)at($(#3)-(#2)+(#4)$);}
 
 
 %%%%%%%%%%%%%%%% INTERSEZIONI
 
-% \intpahts{I}{path1}{path2} trova il punto di intersezione fra due paths e lo chiama I
+% \intpahts{<- I}{path1}{path2} trova il punto di intersezione fra due paths e lo chiama I
 \newcommand{\intpaths}[3]{\path [name intersections={of=#2 and #3,by=#1}];}
 
-% \intrette{I}{A}{B}{C}{D} trova il punto di intersezione I fra le rette AB e CD
-\newcommand{\intrette}[5]{\tkzInterLL(#2,#3)(#4,#5) \tkzGetPoint{#1}}
+% \intrette{<- I}{A}{B}{C}{D} trova il punto di intersezione I fra le rette AB e CD
+\newcommand{\intrette}[5]{\tkzInterLL(#2,#3)(#4,#5) \tkzGetPoint{#1};}
+
+
+%%%%%%%%%%%%%%%% TRIANGOLI
+
+% \piedemed[k]{<- P}{A}{B}{C} trova il piede P della mediana BP (k è un parametro fra 0 e 1 che "sposta" P lungo il lato AC)
+\newcommand{\piedemed}[5][0.5]{\medio[#1]{#2}{#3}{#5};}
+
+% \piedealt{<- P}{A}{B}{C} trova P (il piede dell'altezza BP)
+\newcommand{\piedealt}[4]{\proj{#1}{#3}{#2}{#4};}
+
+% \piedebis[temp]{<- P}{A}{B}{C} trova P (il piede della bisettrice dell'angolo ABC)
+\newcommand{\piedebis}[5][piedebisTemp]{
+	\tkzDefLine[bisector](#3,#4,#5) \tkzGetPoint{#1}
+	\intrette{#2}{#4}{#1}{#3}{#5};
+}
+
+% \centrotriangolo[type]{<- P}{A}{B}{C} trova il centro del triangolo (funzione usata per definire i successivi 5 comandi)
+\newcommand{\centrotriangolo}[5][centroid]{\tkzDefTriangleCenter[#1](#3,#4,#5) \tkzGetPoint{#2};}
+% \baricentro{<- P}{A}{B}{C} trova il baricentro P di un triangolo ABC
+\newcommand{\baricentro}[4]{\centrotriangolo[centroid]{#1}{#2}{#3}{#4}}
+% \ortocentro{<- P}{A}{B}{C} trova il baricentro P di un triangolo ABC
+\newcommand{\ortocentro}[4]{\centrotriangolo[ortho]{#1}{#2}{#3}{#4}}
+% \circocentro{<- P}{A}{B}{C} trova il baricentro P di un triangolo ABC
+\newcommand{\circocentro}[4]{\centrotriangolo[circum]{#1}{#2}{#3}{#4}}
+% \incentro{<- P}{A}{B}{C} trova il baricentro P di un triangolo ABC
+\newcommand{\incentro}[4]{\centrotriangolo[in]{#1}{#2}{#3}{#4}}
+% \exocentro{<- P}{A}{B}{C} trova il baricentro P di un triangolo ABC (opposto a B)
+\newcommand{\excentro}[4]{\centrotriangolo[ex]{#1}{#2}{#3}{#4}}

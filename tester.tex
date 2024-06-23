@@ -4,14 +4,21 @@
 \input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
 
 \begin{document}
-\begin{immagine}[blue]
-\coordinate(A)at(0,0);
-\coordinate(B)at(1,0);
-\coordinate(C)at(4,1);
-\coordinate(D)at(5,-1);
-\draw(A)--(B) (C)--(D);
-\intrette{P}{A}{B}{C}{D};
-\punto[col=red]{P};
+
+\begin{immagine}
+\pntl{A}{180}{0,0};
+\pntl{B}{90}{6,3};
+\pntl{C}{0}{8,-5};
+\draw(A)--(B)--(C);
+\piedebis{D}{A}{B}{C};
+\draw[blue](B)--(D);
+\punto[col=red]{D};
+\medio[1.1]{M}{B}{C};
+\punto[col=Green]{M};
+\sumvett{D}{B}{A}{C};
+\draw[dashed,violet](A)--(D)--(C);
+\excentro{E}{A}{C}{B};
+\pntl[teal]{E}{90}{E};
 \end{immagine}
 
 \end{document}

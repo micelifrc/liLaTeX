@@ -39,6 +39,7 @@
 \usepackage{mathcomp} % contiene il comando \tccentigrade (per i gradi centrigradi)
 \usepackage{eurosym} % contiene il comando \euro (da usare fuori dall'ambiente matematico)
 \usepackage{dsfont} % per definire \mathbb{1}, che abbiamo chiamato \bUNO
+\usepackage{lmodern} % permette di usare fontsize di misure arbitrarie
 \usepackage[fontsize=\FontSize pt]{fontsize} % modifica il font size
 \ifdefstring{\TipoDoc}{immagine}{}{\usepackage[margin=\MarginSize cm]{geometry}} % margini
 \usepackage{graphicx} % per \includegraphics
@@ -633,5 +634,11 @@
 \makeatother
 
 
-% importa il file tikz
+
+%%%%%%%%%%%%%%%% ERRORI E WARNING
+
+\makeatletter\def\@font@warning#1{}\makeatother % rimuove i warning legati al fontsize
+
+
+%%%%%%%%%%%%%%%% importa il file tikz
 \ifnum\inputTikz>0 \input{\liLaTeXPath/liLaTeXtikz.tex} \fi
