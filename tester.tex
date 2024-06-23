@@ -5,8 +5,13 @@
 
 \begin{document}
 \begin{immagine}[blue]
-\pntls[col=red,col lbl=yellow,size=2]{A}{30}{0,0};
-\draw[Green](As)--++(0,-1);
+\coordinate(A)at(0,0);
+\coordinate(B)at(1,0);
+\coordinate(C)at(4,1);
+\coordinate(D)at(5,-1);
+\draw(A)--(B) (C)--(D);
+\intrette{P}{A}{B}{C}{D};
+\punto[col=red]{P};
 \end{immagine}
 
 \end{document}

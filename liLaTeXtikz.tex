@@ -1,5 +1,8 @@
 % Questo è il pacchetto liLaTeX per tikz
 
+\usepackage{tkz-euclide} % per alcune funzioni grafiche (come \intrette)
+\usepackage{pgfplots} % pacchetto per plot
+
 %%%%%%%%%%%%%%%% AMBIENTE immagine
 
 % le immagini vengono generalmente create fra \begin{immagine}[opzioni] e \end{immagine}
@@ -40,6 +43,7 @@
 % aggiorna il valore della key #1 al valore #2 solo se #1 è empty
 \newcommand\setkeyvalueifempty[2]{\ifkeyempty{#1}{\setkeyvalue{#1}{#2}}{}}
 
+
 %%%%%%%%%%%%%%%% PUNTO
 
 % chiama come \punto[keys]{coordinate}
@@ -72,3 +76,12 @@
 \newcommand{\pntlp}[4][]{\pntl[#1]{#2p}{$#2'$}{#3}{#4};}
 % chiama come \pntls[keys]{name}{lbl ang}{coordinate}
 \newcommand{\pntls}[4][]{\pntl[#1]{#2s}{$#2''$}{#3}{#4};}
+
+
+%%%%%%%%%%%%%%%% INTERSEZIONI
+
+% \intpahts{I}{path1}{path2} trova il punto di intersezione fra due paths e lo chiama I
+\newcommand{\intpaths}[3]{\path [name intersections={of=#2 and #3,by=#1}];}
+
+% \intrette{I}{A}{B}{C}{D} trova il punto di intersezione I fra le rette AB e CD
+\newcommand{\intrette}[5]{\tkzInterLL(#2,#3)(#4,#5) \tkzGetPoint{#1}}
