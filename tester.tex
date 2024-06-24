@@ -6,12 +6,14 @@
 \begin{document}
 
 \begin{immagine}
-\pntl{A}{180}{3,5};
-\pntl{B}{90}{7,8};
-\distanzarec{\d}{B}{A};
-\draw[orange](0,-2)--++(0,3);
-\node(N)at(0,0){\d};
-\node(N)at(0,-1){\distanza{A}{B}};
+\pntl{P}{40}{30:4};
+\coordinate(O)at(0,0);
+\angolopolare{\anga}{P}{O};
+\node(Ang) at (0,-1){\anga};
+\pntl[red]{Q}{70}{70:4};
+\coordinate(Op)at(70:5);
+\angolopolare{\angb}{Q}{Op};
+\node[red](Ang) at (0,-2){\angb};
 \end{immagine}
 
 \end{document}

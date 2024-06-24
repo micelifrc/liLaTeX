@@ -62,10 +62,16 @@
 \newcommand{\removeslash}[1]{{\catcode92=9 \endlinechar-1 \scantokens{#1}}}
 
 % calcola la distanza (in cm) fra #1 e #2
-\newcommand{\distanza}[2]{\tkzCalcLength(#1,#2) \tkzGetLength{distanzaAB} \convertto{cm}{\distanzaAB pt}}
+\newcommand{\getdistanza}[2]{\tkzCalcLength(#1,#2) \tkzGetLength{getdistanzaAB} \convertto{cm}{\getdistanzaAB pt}}
 
 % registra la distanza fra #2 e #3 in #1
-\newcommand{\distanzarec}[3]{\tkzCalcLength(#2,#3) \tkzGetLength{distanzarecTemp} \def#1{\convertto{cm}{\distanzarecTemp pt}};}
+\newcommand{\distanza}[3]{\tkzCalcLength(#2,#3) \tkzGetLength{distanzaTemp} \def#1{\convertto{cm}{\distanzaTemp pt}};}
+
+% angolopolare{<- \a}{P}{O} registra in \a la coordinata angolare di P in un sistema di rif. centrato in O
+\newcommand{\angolopolare}[3]{
+	\coordinate(angolopolareterzopunto)at($(#3)+(1,0)$);
+	\tkzFindAngle(angolopolareterzopunto,#3,#2) \tkzGetAngle{angolopolareoutput} \def#1{\angolopolareoutput};
+}
 
 %%%%%%%%%%%%%%%% PUNTO
 
@@ -120,8 +126,17 @@
 % \proj{<- H}{P}{A}{B} genera H come la proiezione ortogonale di P sulla retta AB
 \newcommand{\proj}[4]{\tkzDefPointBy[projection=onto #3--#4](#2) \tkzGetPoint{#1};}
 
-% \sumvett{-C}{A}{B}{D} definisce il punto C in modo che il vettore AC sia uguale alla somma vettoriale AB+AD. Così facendo ABCD forma un parallelogramma
+% \sumvett{<- C}{A}{B}{D} definisce il punto C in modo che il vettore AC sia uguale alla somma vettoriale AB+AD. Così facendo ABCD forma un parallelogramma
 \newcommand{\sumvett}[4]{\coordinate(#1)at($(#3)-(#2)+(#4)$);}
+
+% \ruotapunto{<- R}{P}{O}{a} definisce il punto R ottenuto ruotando P in senso antiorario di un angolo a (con centro di rotazione in O)
+\newcommand{\ruotapunto}[4]{\tkzDefPointBy[rotation= center #3 angle #4](#2) \tkzGetPoint{#1};}
+
+% \ruotapuntoN[L]{<- R}{P}{O}{a} dopo aver ruotato il punto, lo normalizza per farlo diventare di luunghezza L
+\newcommand{\ruotapuntoN}[5][1]{
+	\ruotapunto{ruotapuntoNnonnormalizzato}{#3}{#4}{#5};
+	\verso[#1]{#2}{#4}{ruotapuntoNnonnormalizzato};
+}
 
 
 %%%%%%%%%%%%%%%% INTERSEZIONI
