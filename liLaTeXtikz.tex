@@ -45,6 +45,28 @@
 \newcommand\setkeyvalueifempty[2]{\ifkeyempty{#1}{\setkeyvalue{#1}{#2}}{}}
 
 
+%%%%%%%%%%%%%%%% FUNZIONI
+
+% converte da pt a cm. Chiama come \convertto{cm}{misura pt}
+\makeatletter
+\def\convertto#1#2{\strip@pt\dimexpr #2*65536/\number\dimexpr 1#1}
+\makeatother
+
+% restituisce in output il nome del comando in input
+\newcommand{\commandname}[1]{\expandafter{\string#1}}
+
+% restituisce il nome del comando #1 senzo lo slash
+\newcommand{\commandstring}[1]{\removeslash{#1}}
+
+% rimuove lo \ dall'input
+\newcommand{\removeslash}[1]{{\catcode92=9 \endlinechar-1 \scantokens{#1}}}
+
+% calcola la distanza (in cm) fra #1 e #2
+\newcommand{\distanza}[2]{\tkzCalcLength(#1,#2) \tkzGetLength{distanzaAB} \convertto{cm}{\distanzaAB pt}}
+
+% registra la distanza fra #2 e #3 in #1
+\newcommand{\distanzarec}[3]{\tkzCalcLength(#2,#3) \tkzGetLength{distanzarecTemp} \def#1{\convertto{cm}{\distanzarecTemp pt}};}
+
 %%%%%%%%%%%%%%%% PUNTO
 
 % chiama come \punto[keys]{coordinate}
