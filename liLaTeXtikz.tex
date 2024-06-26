@@ -73,6 +73,9 @@
 	\tkzFindAngle(angolopolareterzopunto,#3,#2) \tkzGetAngle{angolopolareoutput} \def#1{\angolopolareoutput};
 }
 
+% \addlabel[opzioni]{P}{L}{ang} aggiunge un label L al punto P
+\newcommand{\addlabel}[4][]{\tkzLabelPoint(#2){#3}}
+
 %%%%%%%%%%%%%%%% PUNTO
 
 % chiama come \punto[keys]{coordinate}
@@ -138,6 +141,9 @@
 	\verso[#1]{#2}{#4}{ruotapuntoNnonnormalizzato};
 }
 
+% \triangoloequilatero{<- C}{A}{B} prende in input due punti A e B, e definisce un terzo punto C in modo che ABC sia un triangolo equilatero (coi vertici scritti in senso antiorario)
+\newcommand{\triangoloequilatero}[3]{\tkzDefTriangle[equilateral](#2,#3) \tkzGetPoint{#1}}
+
 
 %%%%%%%%%%%%%%%% INTERSEZIONI
 
@@ -174,3 +180,108 @@
 \newcommand{\incentro}[4]{\centrotriangolo[in]{#1}{#2}{#3}{#4}}
 % \exocentro{<- P}{A}{B}{C} trova il baricentro P di un triangolo ABC (opposto a B)
 \newcommand{\excentro}[4]{\centrotriangolo[ex]{#1}{#2}{#3}{#4}}
+
+
+%%%%%%%%%%%%%%%% MARKS accettano le opzioni s,z,x,o,oo,|,||,|||
+
+% chiama come \segmento[keys]{A}{B} per disegnare il segmento
+\newcommand{\segmento}[3][]{
+	\tikzset{keyfld/.cd,
+		col/.initial = black,
+		col draw/.initial, % il colore con cui si disegna il lato
+		mark/.initial = none, % il segno da mettere al segmento
+		mark size/.initial = 0.2, % la dimensione del segno
+		col mark/.initial = black, % il colore del segno
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
+		name path/.initial, % può essere usato per dare un nome al path
+		lbl/.initial,
+		lbl name/.initial, % il nome da dare alla posizione del label
+		lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
+		lbl size/.initial,
+		lbl col/.initial,
+		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
+	} \setkeyfld{#1};
+	\setkeyvalueifempty{col draw}{\kv{col}};
+	\setkeyvalueifempty{col lbl}{\kv{col}};
+	\setkeyvalueifempty{lbl col}{\kv{col lbl}};
+	\ifkeyempty{lbl}{}{\setkeyvalueifempty{lbl name}{segmentoLabelPos};}
+	\draw[\kv{col draw},\kv{width},\kv{pattern},\kv{arrow}](#2)--(#3);
+	\tkzMarkSegment[mark=\kv{mark},\kv{col mark},size=\kv{mark size}cm](#2,#3)
+	\ifkeyempty{lbl name}{}{
+		\medio{segmentoPuntoMedio}{#2}{#3};
+		\ruotapuntoN[\kv{lbl dist}]{\kv{lbl name}}{#2}{segmentoPuntoMedio}{90};
+	}
+	\ifkeyempty{lbl}{}{\node[\kv{lbl col}](segmentoLabel)at(\kv{lbl name}){\kv{lbl size}\kv{lbl}};}
+}
+
+% chiama come \markarco[keys]{m}{O}{A}{B} per creare un mark nel punto medio dell'arco di circonferenza AB di centro O. m indica il marchio richiesto (fra s,z,x,o,oo,|,||,|||)
+\newcommand{\markarco}[5][]{
+	\tikzset{keyfld/.cd,
+		col/.initial = black,
+		size/.initial = 0.2, % la dimensione del segno
+	} \setkeyfld{#1};
+	\piedebis[markarcoPiedeBisettriceTemp]{markarcoPiedeBisettrice}{#4}{#3}{#5};
+	\distanza{\markarcoRaggioCirconferenza}{#3}{#4};
+	\verso[\markarcoRaggioCirconferenza]{markarcoPuntoMedioArco}{#3}{markarcoPiedeBisettrice};
+	\ruotapuntoN{markarcoEstremoP}{#3}{markarcoPuntoMedioArco}{+90};
+	\ruotapuntoN{markarcoEstremoM}{#3}{markarcoPuntoMedioArco}{-90};
+	\tkzMarkSegment[mark=#2,\kv{col},size=\kv{size}cm](markarcoEstremoP,markarcoEstremoM)
+}
+
+% chiama come \angolo[keys]{A}{B}{C} per disegnare l'angolo in senso antiorario
+\newcommand{\angolo}[4][]{
+	\tikzset{keyfld/.cd,
+		col/.initial = black,
+		col draw/.initial, % il colore con cui si disegna l'angolo
+		r/.initial = 0.6, % il raggio dell'angolo
+		mark/.initial = none, % il segno da mettere all'angolo
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
+		fill/.initial = false, % può essere true o false
+		col fill/.initial, % il colore del filling
+		opacity/.initial = 0.3, % un numero fra 0 e 1 ch indica l'intensità della colorazione
+		lbl/.initial,
+		lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
+		lbl size/.initial,
+		lbl col/.initial,
+		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
+	} \setkeyfld{#1};
+	\setkeyvalueifempty{col draw}{\kv{col}};
+	\setkeyvalueifempty{col lbl}{\kv{col}};
+	\setkeyvalueifempty{lbl col}{\kv{col lbl}};
+	\ifkeyempty{col fill}{}{\setkeyvalue{fill}{true}};
+	\ifkeyequal{fill}{true}{\setkeyvalueifempty{col fill}{\kv{col}}}{};
+	\coordinate(angoloPuntoA)at(#2);
+	\coordinate(angoloPuntoB)at(#3);
+	\coordinate(angoloPuntoC)at(#4);
+	\ifkeyequal{fill}{true}{\tkzFillAngle[size=\kv{r},opacity=\kv{opacity},fill=\kv{col fill}](angoloPuntoA,angoloPuntoB,angoloPuntoC)}{}
+	\tkzMarkAngle[mark=\kv{mark},size=\kv{r},draw=\kv{col draw},\kv{width},\kv{pattern},\kv{arrow}](angoloPuntoA,angoloPuntoB,angoloPuntoC)
+	\ifkeyempty{lbl}{}{\tkzLabelAngle[pos=\kv{r}+\kv{lbl dist},\kv{lbl col}](angoloPuntoA,angoloPuntoB,angoloPuntoC){\kv{lbl size}\kv{lbl}}}
+}
+
+% chiama come \angoloretto[keys]{A}{B}{C} per disegnare l'angolo retto in senso antiorario
+\newcommand{\angoloretto}[4][]{
+	\tikzset{keyfld/.cd,
+		col/.initial = black,
+		col draw/.initial, % il colore con cui si disegna l'angolo
+		r/.initial = 0.4, % il lato del segmento del quadratino
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
+		fill/.initial = false, % può essere true o false
+		col fill/.initial, % il colore del filling
+		opacity/.initial = 0.3, % un numero fra 0 e 1 ch indica l'intensità della colorazione
+	} \setkeyfld{#1};
+	\setkeyvalueifempty{col draw}{\kv{col}};
+	\ifkeyempty{col fill}{}{\setkeyvalue{fill}{true}};
+	\ifkeyequal{fill}{true}{\setkeyvalueifempty{col fill}{\kv{col}}}{};
+	\coordinate(angolorettoPuntoA)at(#2);
+	\coordinate(angolorettoPuntoB)at(#3);
+	\coordinate(angolorettoPuntoC)at(#4);
+	\ifkeyequal{fill}{true}
+	{\tkzMarkRightAngle[size=\kv{r},\kv{width},\kv{pattern},fill=\kv{col fill},opacity=\kv{opacity}](angolorettoPuntoA,angolorettoPuntoB,angolorettoPuntoC)}{}
+	\tkzMarkRightAngle[size=\kv{r},draw=\kv{col draw},\kv{width},\kv{pattern},\kv{arrow}](angolorettoPuntoA,angolorettoPuntoB,angolorettoPuntoC)
+}

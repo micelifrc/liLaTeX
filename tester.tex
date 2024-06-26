@@ -6,14 +6,23 @@
 \begin{document}
 
 \begin{immagine}
-\pntl{P}{40}{30:4};
-\coordinate(O)at(0,0);
-\angolopolare{\anga}{P}{O};
-\node(Ang) at (0,-1){\anga};
-\pntl[red]{Q}{70}{70:4};
-\coordinate(Op)at(70:5);
-\angolopolare{\angb}{Q}{Op};
-\node[red](Ang) at (0,-2){\angb};
+\pntl{A}{-90}{1,0};
+\pntl{B}{-90}{5,0};
+\draw[gray,thin](A)circle(4);
+\draw[gray,thin](B)circle(4);
+\triangoloequilatero{C}{A}{B};
+\pntl[blue]{C}{90}{C};
+\draw (C)--(A)--(B);
+\angolo[fill=false,arrow=<->,mark=||]{B}{A}{C};
+\segmento[col draw=red,lbl name=N]{B}{C};
+\node[red](N)at(N){$\mathrm{a}$};
+\markarco{x}{B}{C}{A};
+
+\pntl{D}{90}{0,-5};
+\pntl{E}{-90}{2,-9};
+\pntl{F}{-90}{-8,-9};
+\draw(E)--(D)--(F);
+\angoloretto[fill=true]{F}{D}{E};
 \end{immagine}
 
 \end{document}
