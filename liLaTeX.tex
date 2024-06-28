@@ -351,7 +351,7 @@
 \newcommand{\riga}{\rule{\linewidth}{0.35mm}}
 
 % parentesi. Chiama come \pare{testo} o come \pare[L]{testo} dove L indica il tipo di parentesi da usare. Le opzioni sono t,q,g,v,f,c
-\newcommand\pare[2][t]{
+\newcommand{\pare}[2][t]{
 	\ifthenelse{\equal{#1}{q}}{\left[ #2 \right]}{
 	\ifthenelse{\equal{#1}{g}}{\left\{ #2 \right\}}{
 	\ifthenelse{\equal{#1}{v}}{\left\lvert #2 \right\rvert}{
@@ -475,12 +475,12 @@
 \newcounter{TabellaVotiPervBarIter}
 
 % assume valori 0-1 per determinare se al termine della colonna attuale dobbiamo disegnare una riga verticale nella prima riga (ovvero se la colonna si riferisce all'ultimo punto dell'attuale esercizio)
-\newcommand\TabellaVotiHeaderJump{1}
+\newcommand{\TabellaVotiHeaderJump}{1}
 
 % Chiama \TabellaVoti a fine verifica per creare la tabella per mettere i punti.
 % Il seguente esempio mostra come creare la tabella per una verifica con 5 esercizi (di cui l'es. 3 è diviso in 2 punti e l'es. 5 è diviso in 3 punti) in cui ciascun esercizio vale 18 punti (equamente distribuiti fra i vari punti dell'esercizio):
 % \TabellaVoti{{18}{18}{9,9}{18}{6,6,6}}
-\newcommand\TabellaVoti[1]{
+\newcommand{\TabellaVoti}[1]{
 	\vspace*{\fill} % spostati a fondo pagina
 	\pgfmathsetmacro\TabellaVotiTabellaWidth{18}
 	\pgfmathsetmacro\TabellaVotiHeight{1}
@@ -556,26 +556,26 @@
 }
 
 % valori utili durante la lettura dei dati dall'input per \TabellaVoti
-\newcommand\TabellaVotiDrawLettersRow{0} % può essere 0 (falso) o 1 (vero)
+\newcommand{\TabellaVotiDrawLettersRow}{0} % può essere 0 (falso) o 1 (vero)
 \newcounter{TabellaVotiNumLett} % quante lettere ci sono in tutto (se ad es. ci sono es: 1a,1b,2 TabellaVotiNumLett=3)
 \newcounter{TabellaVotiPuntiTot} % quanti sono i punti totali per la verifica (idealmente 100)
 \newcounter{TabellaVotiNumTabelle} % indica quale tabella di \TabellaVoti stiamo scrivendo (se è la prima, o se ne abbiamo già scritte precedentemente). Questo ci permette di creare più tabelle nello stesso documento.
-\newcommand\TabellaVotiInizializzaContenitoriIterOpenNum{0} % usata nella lettura dei dati. Indica se stiamo già leggendo un numero
+\newcommand{\TabellaVotiInizializzaContenitoriIterOpenNum}{0} % usata nella lettura dei dati. Indica se stiamo già leggendo un numero
 
 % funzioni per la gestione dell'array TabellaVotiPuntiPerLettera (quanti punti venono assegnati in ogni colonna della tabella)
-\newcommand\storedataTabellaVotiPuntiPerLettera[1][0]{
+\newcommand{\storedataTabellaVotiPuntiPerLettera}[1][0]{
 	\expandafter\newcommand\csname TabellaVotiPuntiPerLettera:\theTabellaVotiNumTabelle:\theTabellaVotiNumLett\endcsname{#1}
 }
-\newcommand\getTabellaVotiPuntiPerLettera[1][0]{\csname TabellaVotiPuntiPerLettera:\theTabellaVotiNumTabelle:#1\endcsname}
+\newcommand{\getTabellaVotiPuntiPerLettera}[1][0]{\csname TabellaVotiPuntiPerLettera:\theTabellaVotiNumTabelle:#1\endcsname}
 
 % funzioni per la gestione dell'array TabellaVotiBarraPerLettera (valori 0-1 per decidere se si tratta dell'ultima colonna relativa ad un esercizio)
-\newcommand\storedataTabellaVotiBarraPerLettera[1][0]{
+\newcommand{\storedataTabellaVotiBarraPerLettera}[1][0]{
 	\expandafter\newcommand\csname TabellaVotiBarraPerLettera:\theTabellaVotiNumTabelle:\theTabellaVotiNumLett\endcsname{#1}
 }
 
 \makeatletter
 % La funzione più esterna nella lettura dell'input per \TabellaVoti
-\newcommand\TabellaVotiInizializzaContenitori[1][0]{
+\newcommand{\TabellaVotiInizializzaContenitori}[1][0]{
 	\stepcounter{TabellaVotiNumTabelle}
 	\renewcommand\TabellaVotiDrawLettersRow{0}
 	\setcounter{TabellaVotiNumLett}{0}
@@ -584,13 +584,13 @@
 }
 
 % Una funzione di iterazione nella lettura dell'input per \TabellaVoti. Viene chiamata una volta per ciascun esercizio. La suddivisione fra gli esercizi viene fatta a "blocchi" (racchiusi fra {}), ma la lettura dentro a queste {} avviene un carattere alla volta
-\newcommand\TabellaVotiInizializzaContenitoriIter[1]{
+\newcommand{\TabellaVotiInizializzaContenitoriIter}[1]{
 	\TabellaVotiInizializzaContenitoriIterComma,#1
 	\@ifnextchar\bgroup{\TabellaVotiInizializzaContenitoriIter}{}
 }
 
 % Usata all'interno della lettura dell'input per \TabellaVoti quando leggiamo un separatore (una virgola) dall'input
-\newcommand\TabellaVotiInizializzaContenitoriIterComma[2][0]{
+\newcommand{\TabellaVotiInizializzaContenitoriIterComma}[2][0]{
 	\ifnum#1=1 \renewcommand\TabellaVotiDrawLettersRow{1} \fi
 	\renewcommand\TabellaVotiInizializzaContenitoriIterOpenNum{0}
 	\stepcounter{TabellaVotiNumLett}
@@ -598,7 +598,7 @@
 }
 
 % Usata all'interno della lettura dell'input per \TabellaVoti quando leggiamo una cifra dall'input
-\newcommand\TabellaVotiInizializzaContenitoriIterDigit[1]{
+\newcommand{\TabellaVotiInizializzaContenitoriIterDigit}[1]{
 	\ifnum\TabellaVotiInizializzaContenitoriIterOpenNum=0
 		\storedataTabellaVotiPuntiPerLettera[#1]
 		\renewcommand\TabellaVotiInizializzaContenitoriIterOpenNum{1}

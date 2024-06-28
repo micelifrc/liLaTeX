@@ -23,7 +23,7 @@
 %%%%%%%%%%%%%%%% KEY MANAGER
 
 % da chiamare all'inizio di qualunque comando con dei parametri opzionali come \setkeyfld{parametri opzionali}. Dovrebbe essere sempre la seconda riga di qualunque newcommand con parametri opzionali
-\newcommand\setkeyfld[1]{
+\newcommand{\setkeyfld}[1]{
 	% passiamo alla key directory keyfld, e ridefiniamo come #1 tutti le keys specificate in #1
 	\tikzset{keyfld/.cd,#1}%
 	% definiamo un soprannome \kv per il path alle keys. In questo modo, per riferirci al VALORE di una chiave chiamata K dovremo scrivere \kv{K}, anziché la più lunga /tikz/keyfld/K. Quindi K indica la chiave, mentre \kv{K} indica il suo valore
@@ -31,18 +31,28 @@
 }
 
 % ifkeyequal{keyname}{value to compare}{do if equal}{do if different}
-\newcommand\ifkeyequal[4]{
+\newcommand{\ifkeyequal}[4]{
 	\edef\ifkeyequalkey{\kv{#1}} 
 	\edef\ifkeyequalcomp{#2}
 	\ifdefequal{\ifkeyequalkey}{\ifkeyequalcomp}{#3}{#4}
 }
 % \ifkeyempty{keyname}{do if empty}{do if non-empty}
-\newcommand\ifkeyempty[3]{\ifkeyequal{#1}{\pgfkeysnovalue}{#2}{#3}}
+\newcommand{\ifkeyempty}[3]{\ifkeyequal{#1}{\pgfkeysnovalue}{#2}{#3}}
 
 % aggiorna il valore della key #1 al valore #2. Chiama ad esempio come \setkeyvalue{color}{blue} o come \setkeyvalue{h}{\kv{b}}
-\newcommand\setkeyvalue[2]{\tikzset{keyfld/.cd,#1=#2}}
+\newcommand{\setkeyvalue}[2]{\tikzset{keyfld/.cd,#1=#2}}
+% copia il valore della key #2 nella key #1
+\newcommand{\copykeyvalue}[2]{\setkeyvalue{#1}{\kv{#2}}}
 % aggiorna il valore della key #1 al valore #2 solo se #1 è empty
-\newcommand\setkeyvalueifempty[2]{\ifkeyempty{#1}{\setkeyvalue{#1}{#2}}{}}
+\newcommand{\setkeyvalueifempty}[2]{\ifkeyempty{#1}{\setkeyvalue{#1}{#2}}{}}
+% aggiorna il valore della key #1 al valore \kv{#2} solo se #1 è empty
+\newcommand{\copykeyvalueifempty}[2]{\setkeyvalueifempty{#1}{\kv{#2}}}
+
+% aggiorna i valori di diverse keys se sono vuoti. Analoghi a chiamare \setkeyvalueifempty o \copykeyvalueifempty diverse volte di fila
+\makeatletter
+\newcommand{\setkeyvaluesifempty}[2]{\setkeyvalueifempty{#1}{#2}\@ifnextchar\bgroup{\setkeyvaluesifempty}{}}
+\newcommand{\copykeyvaluesifempty}[2]{\copykeyvalueifempty{#1}{#2}\@ifnextchar\bgroup{\copykeyvaluesifempty}{}}
+\makeatother
 
 
 %%%%%%%%%%%%%%%% FUNZIONI
@@ -93,8 +103,9 @@
 		lbl col/.initial,
 		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
 	} \setkeyfld{#1};
-	\setkeyvalueifempty{col lbl}{\kv{col}};
-	\setkeyvalueifempty{lbl col}{\kv{col lbl}};
+	\copykeyvaluesifempty
+		{col lbl}{col}
+		{lbl col}{col lbl}
 	\coordinate[\kv{shape},inner sep=\kv{size},fill=\kv{col}] (\kv{name}) at (#2);
 	\ifkeyempty{lbl}{}{\node[\kv{lbl col}](puntoLblName) at($(#2)+(\kv{lbl ang}:\kv{lbl dist})$) {\kv{lbl size}\kv{lbl}}};
 }
@@ -179,11 +190,12 @@
 		s x/.initial, % analogo di step x
 		s y/.initial, % analogo di step y
 	} \setkeyfld{#1};
-	\setkeyvalueifempty{s}{\kv{step}};
-	\setkeyvalueifempty{step x}{\kv{s}};
-	\setkeyvalueifempty{step y}{\kv{s}};
-	\setkeyvalueifempty{s x}{\kv{step x}};
-	\setkeyvalueifempty{s y}{\kv{step y}};
+	\copykeyvaluesifempty
+		{s}{step}
+		{step x}{s}
+		{step y}{s}
+		{s x}{step x}
+		{s y}{step y}
 	\draw[\kv{col},\kv{width},\kv{pattern}] (#2,#4) grid [xstep=\kv{s x},ystep=\kv{s y}] (#3,#5);
 }
 
@@ -221,7 +233,7 @@
 		col lbl/.initial,
 		flip lbl/.initial = false, % rendi true se vuoi ribaltare il label
 	} \setkeyfld{#1};
-	\setkeyvalueifempty{col lbl}{\kv{col}};
+	\copykeyvalueifempty{col lbl}{col};
 	\ifkeyequal{flip lbl}{true}{\def\assexflipper{180}}{\def\assexflipper{0}};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(0,\kv{y})+(\kv{ang shift}:#2)$) -- ($(0,\kv{y})+(\kv{ang shift}:#3)$)node(assexpunta){};
 	\node[\kv{col lbl}](\kv{lbl name}) at ($(assexpunta)+(\kv{ang shift}-90+\assexflipper:\kv{lbl dist})$){\kv{lbl}};
@@ -242,7 +254,7 @@
 		col lbl/.initial,
 		flip lbl/.initial = false, % rendi true se vuoi ribaltare il label
 	} \setkeyfld{#1};
-	\setkeyvalueifempty{col lbl}{\kv{col}};
+	\copykeyvalueifempty{col lbl}{col};
 	\ifkeyequal{flip lbl}{true}{\def\asseyflipper{180}}{\def\asseyflipper{0}};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(\kv{x},0)+(\kv{ang shift}+90:#2)$) -- ($(\kv{x},0)+(\kv{ang shift}+90:#3)$)node(asseypunta){};
 	\node[\kv{col lbl}](\kv{lbl name}) at ($(asseypunta)+(\kv{ang shift}+180+\asseyflipper:\kv{lbl dist})$){\kv{lbl}};
@@ -281,7 +293,7 @@
 		lbl dist/.initial = 0.3,
 		col lbl/.initial,
 	} \setkeyfld{#1};
-	\setkeyvalueifempty{col lbl}{\kv{col}};
+	\copykeyvalueifempty{col lbl}{col};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (#3,0|-#2)--(#4,0|-#2)node(assixypuntax){};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (0,#5-|#2)--(0,#6-|#2)node(assixypuntay){};
 	\node[\kv{col lbl}](\kv{lbl x name}) at ($(assixypuntax)+(-90:\kv{lbl dist})$){\kv{lbl x}};
@@ -301,7 +313,7 @@
 		flip/.initial = false, % se posto a true il label viene messo verso l'alto anziché verso il basso
 	} \setkeyfld{#1};
 	\ifnum\value{TipoDocVerificaCounter}=0 \setkeyvalueifempty{col}{gray} \fi % se non è una verifica la barra viene colorata di grigio
-	\setkeyvalueifempty{col lbl}{\kv{col}};
+	\copykeyvalueifempty{col lbl}{col};
 	\ifkeyequal{flip}{false}
 	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](#2,\kv{y}+0.5*\kv{size})--++(0,-\kv{size})node[anchor=north,\kv{col lbl}]{#3};}
 	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](#2,\kv{y}-0.5*\kv{size})--++(0,+\kv{size})node[anchor=south,\kv{col lbl}]{#3};}
@@ -320,7 +332,7 @@
 		flip/.initial = false, % se posto a true il label viene messo verso l'alto anziché verso il basso
 	} \setkeyfld{#1};
 	\ifnum\value{TipoDocVerificaCounter}=0 \setkeyvalueifempty{col}{gray} \fi % se non è una verifica la barra viene colorata di grigio
-	\setkeyvalueifempty{col lbl}{\kv{col}};
+	\copykeyvalueifempty{col lbl}{col};
 	\ifkeyequal{flip}{false}
 	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](\kv{x}+0.5*\kv{size},#2)--++(-\kv{size},0)node[anchor=east,\kv{col lbl}]{#3};}
 	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](\kv{x}-0.5*\kv{size},#2)--++(+\kv{size},0)node[anchor=west,\kv{col lbl}]{#3};}
@@ -346,11 +358,12 @@
 		lbl y/.initial = $y$,
 		col lbl/.initial,
 	} \setkeyfld{#1};
-	\setkeyvalueifempty{front x}{\kv{front}};
-	\setkeyvalueifempty{front y}{\kv{front}};
-	\setkeyvalueifempty{back x}{\kv{back}};
-	\setkeyvalueifempty{back y}{\kv{back}};
-	\setkeyvalueifempty{col lbl}{\kv{col}};
+	\copykeyvaluesifempty
+		{front x}{front}
+		{front y}{front}
+		{back x}{back}
+		{back y}{back}
+		{col lbl}{col}
 	\ifkeyequal{flip}{false}{\def\sistrifflipper{+1}}{\def\sistrifflipper{-1}}
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(#3:-\kv{back x})$) -- ($(#2)+(#3:\kv{front x})$)node(sistrifLblXpunta){};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(\sistrifflipper*90+#3:-\kv{back y})$) -- ($(#2)+(\sistrifflipper*90+#3:\kv{front y})$)node(sistrifLblYpunta){};
