@@ -6,23 +6,9 @@
 \begin{document}
 
 \begin{immagine}
-\pntl{A}{-90}{1,0};
-\pntl{B}{-90}{5,0};
-\draw[gray,thin](A)circle(4);
-\draw[gray,thin](B)circle(4);
-\triangoloequilatero{C}{A}{B};
-\pntl[blue]{C}{90}{C};
-\draw (C)--(A)--(B);
-\angolo[fill=false,arrow=<->,mark=||]{B}{A}{C};
-\segmento[col draw=red,lbl name=N]{B}{C};
-\node[red](N)at(N){$\mathrm{a}$};
-\markarco{x}{B}{C}{A};
-
-\pntl{D}{90}{0,-5};
-\pntl{E}{-90}{2,-9};
-\pntl{F}{-90}{-8,-9};
-\draw(E)--(D)--(F);
-\angoloretto[fill=true]{F}{D}{E};
+\pntl{A}{90}{0,0};
+\assixy[x=1,y=2,col=red,arrow=<->]{-2}{10}{-1}{5};
+\foreach \x in {1,2,...,6}\assexbar[y=2]{1.5*\x}{\x};
 \end{immagine}
 
 \end{document}

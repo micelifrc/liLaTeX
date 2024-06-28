@@ -76,6 +76,7 @@
 % \addlabel[opzioni]{P}{L}{ang} aggiunge un label L al punto P
 \newcommand{\addlabel}[4][]{\tkzLabelPoint(#2){#3}}
 
+
 %%%%%%%%%%%%%%%% PUNTO
 
 % chiama come \punto[keys]{coordinate}
@@ -161,6 +162,163 @@
 
 % \intrette{<- I}{A}{B}{C}{D} trova il punto di intersezione I fra le rette AB e CD
 \newcommand{\intrette}[5]{\tkzInterLL(#2,#3)(#4,#5) \tkzGetPoint{#1};}
+
+
+%%%%%%%%%%%%%%%% SISTEMI DI RIFERIMENTO E GRIGLIE
+
+% \sistrif[keys]{centro}{angolo} crea il sistema di riferimento
+\newcommand{\sistrif}[3][]{
+	\tikzset{keyfld/.cd,
+		col/.initial = teal,
+		arrow/.initial = ->,
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		front/.initial = 2, % la lunghezza con cui andiamo avanti
+		back/.initial = 0.3, % la lunghezza per cui andiamo indietro
+		front x/.initial,
+		back x/.initial,
+		front y/.initial,
+		back y/.initial,
+		flip/.initial = false, % rendi true se vuoi capovolgere il verso dell'asse y
+		label/.initial = true, % rengi false se non vuoi il label
+		lbl dist/.initial = 0.3,
+		lbl x/.initial = $x$,
+		lbl y/.initial = $y$,
+		col lbl/.initial,
+	} \setkeyfld{#1};
+	\setkeyvalueifempty{front x}{\kv{front}};
+	\setkeyvalueifempty{front y}{\kv{front}};
+	\setkeyvalueifempty{back x}{\kv{back}};
+	\setkeyvalueifempty{back y}{\kv{back}};
+	\setkeyvalueifempty{col lbl}{\kv{col}};
+	\ifkeyequal{flip}{false}{\def\sistrifflipper{+1}}{\def\sistrifflipper{-1}}
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(#3:-\kv{back x})$) -- ($(#2)+(#3:\kv{front x})$)node(sistrifLblXpunta){};
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(\sistrifflipper*90+#3:-\kv{back y})$) -- ($(#2)+(\sistrifflipper*90+#3:\kv{front y})$)node(sistrifLblYpunta){};
+	\ifkeyequal{label}{true}{
+		\node[\kv{col lbl}](sistrifLblXlabel)at($(sistrifLblXpunta)+(#3-90*\sistrifflipper:\kv{lbl dist})$){\kv{lbl x}};
+		\node[\kv{col lbl}](sistrifLblYlabel)at($(sistrifLblYpunta)+(#3+180:\kv{lbl dist})$){\kv{lbl y}};
+	}{}
+}
+
+% \assex[keys]{x-left}{x-right} crea l'asse x
+\newcommand{\assex}[3][]{
+	\tikzset{keyfld/.cd,
+		y/.initial = 0, % la y del centro
+		ang shift/.initial = 0,
+		col/.initial,
+		arrow/.initial = ->,
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		lbl/.initial = $x$,
+		lbl name/.initial = assexlbl, % il nome da dare al label
+		lbl dist/.initial = 0.3,
+		col lbl/.initial,
+		flip lbl/.initial = false, % rendi true se vuoi ribaltare il label
+	} \setkeyfld{#1};
+	\setkeyvalueifempty{col lbl}{\kv{col}};
+	\ifkeyequal{flip lbl}{true}{\def\assexflipper{180}}{\def\assexflipper{0}};
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(0,\kv{y})+(\kv{ang shift}:#2)$) -- ($(0,\kv{y})+(\kv{ang shift}:#3)$)node(assexpunta){};
+	\node[\kv{col lbl}](\kv{lbl name}) at ($(assexpunta)+(\kv{ang shift}-90+\assexflipper:\kv{lbl dist})$){\kv{lbl}};
+}
+
+% \assey[keys]{y-bottom}{y-top} crea l'assey
+\newcommand{\assey}[3][]{
+	\tikzset{keyfld/.cd,
+		x/.initial = 0, % la x del centro
+		ang shift/.initial = 0,
+		col/.initial,
+		arrow/.initial = ->,
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		lbl/.initial = $y$,
+		lbl name/.initial = asseylbl, % il nome da dare al label
+		lbl dist/.initial = 0.3,
+		col lbl/.initial,
+		flip lbl/.initial = false, % rendi true se vuoi ribaltare il label
+	} \setkeyfld{#1};
+	\setkeyvalueifempty{col lbl}{\kv{col}};
+	\ifkeyequal{flip lbl}{true}{\def\asseyflipper{180}}{\def\asseyflipper{0}};
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(\kv{x},0)+(\kv{ang shift}+90:#2)$) -- ($(\kv{x},0)+(\kv{ang shift}+90:#3)$)node(asseypunta){};
+	\node[\kv{col lbl}](\kv{lbl name}) at ($(asseypunta)+(\kv{ang shift}+180+\asseyflipper:\kv{lbl dist})$){\kv{lbl}};
+}
+
+% \assixy[keys]{x-left}{x-right}{y-left}{y-right} disegna gli assi cartesiani
+\newcommand{\assixy}[5][]{
+	\tikzset{keyfld/.cd,
+		x/.initial = 0, % la x del centro
+		y/.initial = 0, % la y del centro
+		col/.initial,
+		arrow/.initial = ->,
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		lbl x/.initial = $x$,
+		lbl y/.initial = $y$,
+		lbl x name/.initial = assixylblx, % il nome da dare al label per y
+		lbl y name/.initial = assixylbly, % il nome da dare al label per y
+		lbl dist/.initial = 0.3,
+		col lbl/.initial,
+	} \setkeyfld{#1};
+	\assixyO[#1]{\kv{x},\kv{y}}{#2}{#3}{#4}{#5};
+}
+
+% \assixyO[keys]{centro}{x-left}{x-right}{y-left}{y-right} disegna gli assi cartesiani
+\newcommand{\assixyO}[6][]{
+	\tikzset{keyfld/.cd,
+		col/.initial,
+		arrow/.initial = ->,
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		lbl x/.initial = $x$,
+		lbl y/.initial = $y$,
+		lbl x name/.initial = assixylblx, % il nome da dare al label per y
+		lbl y name/.initial = assixylbly, % il nome da dare al label per y
+		lbl dist/.initial = 0.3,
+		col lbl/.initial,
+	} \setkeyfld{#1};
+	\setkeyvalueifempty{col lbl}{\kv{col}};
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (#3,0|-#2)--(#4,0|-#2)node(assixypuntax){};
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (0,#5-|#2)--(0,#6-|#2)node(assixypuntay){};
+	\node[\kv{col lbl}](\kv{lbl x name}) at ($(assixypuntax)+(-90:\kv{lbl dist})$){\kv{lbl x}};
+	\node[\kv{col lbl}](\kv{lbl y name}) at ($(assixypuntay)+(180:\kv{lbl dist})$){\kv{lbl y}};
+}
+
+% \assexbar[keys]{\x}{lbl}
+\newcommand{\assexbar}[3][]{
+	\tikzset{keyfld/.cd,
+		y/.initial = 0, % la y dell'asse cartesiano
+		col/.initial,
+		arrow/.initial,
+		width/.initial = very thin, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		size/.initial = .2, % la dimensione della barretta verticale
+		col lbl/.initial,
+		flip/.initial = false, % se posto a true il label viene messo verso l'alto anziché verso il basso
+	} \setkeyfld{#1};
+	\ifnum\value{TipoDocVerificaCounter}=0 \setkeyvalueifempty{col}{gray} \fi % se non è una verifica la barra viene colorata di grigio
+	\setkeyvalueifempty{col lbl}{\kv{col}};
+	\ifkeyequal{flip}{false}
+	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](#2,\kv{y}+0.5*\kv{size})--++(0,-\kv{size})node[anchor=north,\kv{col lbl}]{#3};}
+	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](#2,\kv{y}-0.5*\kv{size})--++(0,+\kv{size})node[anchor=south,\kv{col lbl}]{#3};}
+}
+
+% \asseybar[keys]{\y}{lbl}
+\newcommand{\asseybar}[3][]{
+	\tikzset{keyfld/.cd,
+		x/.initial = 0, % la x dell'asse cartesiano
+		col/.initial,
+		arrow/.initial,
+		width/.initial = very thin, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		size/.initial = .2, % la dimensione della barretta verticale
+		col lbl/.initial,
+		flip/.initial = false, % se posto a true il label viene messo verso l'alto anziché verso il basso
+	} \setkeyfld{#1};
+	\ifnum\value{TipoDocVerificaCounter}=0 \setkeyvalueifempty{col}{gray} \fi % se non è una verifica la barra viene colorata di grigio
+	\setkeyvalueifempty{col lbl}{\kv{col}};
+	\ifkeyequal{flip}{false}
+	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](\kv{x}+0.5*\kv{size},#2)--++(-\kv{size},0)node[anchor=east,\kv{col lbl}]{#3};}
+	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](\kv{x}-0.5*\kv{size},#2)--++(+\kv{size},0)node[anchor=west,\kv{col lbl}]{#3};}
+}
 
 
 %%%%%%%%%%%%%%%% TRIANGOLI
