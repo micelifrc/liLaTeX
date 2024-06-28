@@ -164,41 +164,47 @@
 \newcommand{\intrette}[5]{\tkzInterLL(#2,#3)(#4,#5) \tkzGetPoint{#1};}
 
 
-%%%%%%%%%%%%%%%% SISTEMI DI RIFERIMENTO E GRIGLIE
+%%%%%%%%%%%%%%%% GRIGLIE SISTEMI DI RIFERIMENTO
 
-% \sistrif[keys]{centro}{angolo} crea il sistema di riferimento
-\newcommand{\sistrif}[3][]{
+% \griglia[keys]{west}{east}{south}{north}
+\newcommand{\griglia}[5][]{
 	\tikzset{keyfld/.cd,
-		col/.initial = teal,
-		arrow/.initial = ->,
-		width/.initial, % può essere thin, thick, ...
+		col/.initial = gray,
+		width/.initial = thin, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
-		front/.initial = 2, % la lunghezza con cui andiamo avanti
-		back/.initial = 0.3, % la lunghezza per cui andiamo indietro
-		front x/.initial,
-		back x/.initial,
-		front y/.initial,
-		back y/.initial,
-		flip/.initial = false, % rendi true se vuoi capovolgere il verso dell'asse y
-		label/.initial = true, % rengi false se non vuoi il label
-		lbl dist/.initial = 0.3,
-		lbl x/.initial = $x$,
-		lbl y/.initial = $y$,
-		col lbl/.initial,
+		step/.initial = 1, % la distanza fra due barre
+		s/.initial, % equivalente a step
+		step x/.initial, % se specificato indica la distanza fra due barre lungo l'asse x
+		step y/.initial, % se specificato indica la distanza fra due barre lungo l'asse y
+		s x/.initial, % analogo di step x
+		s y/.initial, % analogo di step y
 	} \setkeyfld{#1};
-	\setkeyvalueifempty{front x}{\kv{front}};
-	\setkeyvalueifempty{front y}{\kv{front}};
-	\setkeyvalueifempty{back x}{\kv{back}};
-	\setkeyvalueifempty{back y}{\kv{back}};
-	\setkeyvalueifempty{col lbl}{\kv{col}};
-	\ifkeyequal{flip}{false}{\def\sistrifflipper{+1}}{\def\sistrifflipper{-1}}
-	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(#3:-\kv{back x})$) -- ($(#2)+(#3:\kv{front x})$)node(sistrifLblXpunta){};
-	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(\sistrifflipper*90+#3:-\kv{back y})$) -- ($(#2)+(\sistrifflipper*90+#3:\kv{front y})$)node(sistrifLblYpunta){};
-	\ifkeyequal{label}{true}{
-		\node[\kv{col lbl}](sistrifLblXlabel)at($(sistrifLblXpunta)+(#3-90*\sistrifflipper:\kv{lbl dist})$){\kv{lbl x}};
-		\node[\kv{col lbl}](sistrifLblYlabel)at($(sistrifLblYpunta)+(#3+180:\kv{lbl dist})$){\kv{lbl y}};
-	}{}
+	\setkeyvalueifempty{s}{\kv{step}};
+	\setkeyvalueifempty{step x}{\kv{s}};
+	\setkeyvalueifempty{step y}{\kv{s}};
+	\setkeyvalueifempty{s x}{\kv{step x}};
+	\setkeyvalueifempty{s y}{\kv{step y}};
+	\draw[\kv{col},\kv{width},\kv{pattern}] (#2,#4) grid [xstep=\kv{s x},ystep=\kv{s y}] (#3,#5);
 }
+
+% \cartamillimetrata[keys]{west}{east}{south}{north} % una porzione di carta millimetrata
+\newcommand{\cartamillimetrata}[5][]{
+	\tikzset{keyfld/.cd,
+		col1/.initial = pink!50,
+		col2/.initial = gray!70,
+		width1/.initial = ultra thin, % può essere thin, thick, ...
+		width2/.initial = thin, % può essere thin, thick, ...
+		pattern1/.initial, % può essere solid, dashed, dotted, ...
+		pattern2/.initial, % può essere solid, dashed, dotted, ...
+		step1/.initial = 0.1, % la distanza fra due barre minori (normalmente 0.1)
+		step2/.initial = 0.5, % la distanza fra due barre maggiori (normalmente 0.5)
+	} \setkeyfld{#1};
+	\draw[\kv{col1},\kv{width1},\kv{pattern1}] (#2,#4) grid [step=\kv{step1}] (#3,#5);
+	\draw[\kv{col2},\kv{width2},\kv{pattern2}] (#2,#4) grid [step=\kv{step2}] (#3,#5);
+}
+
+% può solo essere usata con \TipoDoc=immagine. Crea una pagina intera di carta millimetrata
+\newcommand{\cartamillimetratapagina}[1][]{\cartamillimetrata[#1]{0}{21}{0}{29.7};}
 
 % \assex[keys]{x-left}{x-right} crea l'asse x
 \newcommand{\assex}[3][]{
@@ -318,6 +324,40 @@
 	\ifkeyequal{flip}{false}
 	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](\kv{x}+0.5*\kv{size},#2)--++(-\kv{size},0)node[anchor=east,\kv{col lbl}]{#3};}
 	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](\kv{x}-0.5*\kv{size},#2)--++(+\kv{size},0)node[anchor=west,\kv{col lbl}]{#3};}
+}
+
+% \sistrif[keys]{centro}{angolo} crea il sistema di riferimento, ruotato dell'angolo specificato. Si usa in cinematica/dinamica per indicare le direzioni e i versi degli assi cartesiani utilizzati
+\newcommand{\sistrif}[3][]{
+	\tikzset{keyfld/.cd,
+		col/.initial = teal,
+		arrow/.initial = ->,
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		front/.initial = 2, % la lunghezza con cui andiamo avanti
+		back/.initial = 0.3, % la lunghezza per cui andiamo indietro
+		front x/.initial,
+		back x/.initial,
+		front y/.initial,
+		back y/.initial,
+		flip/.initial = false, % rendi true se vuoi capovolgere il verso dell'asse y
+		label/.initial = true, % rengi false se non vuoi il label
+		lbl dist/.initial = 0.3,
+		lbl x/.initial = $x$,
+		lbl y/.initial = $y$,
+		col lbl/.initial,
+	} \setkeyfld{#1};
+	\setkeyvalueifempty{front x}{\kv{front}};
+	\setkeyvalueifempty{front y}{\kv{front}};
+	\setkeyvalueifempty{back x}{\kv{back}};
+	\setkeyvalueifempty{back y}{\kv{back}};
+	\setkeyvalueifempty{col lbl}{\kv{col}};
+	\ifkeyequal{flip}{false}{\def\sistrifflipper{+1}}{\def\sistrifflipper{-1}}
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(#3:-\kv{back x})$) -- ($(#2)+(#3:\kv{front x})$)node(sistrifLblXpunta){};
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(\sistrifflipper*90+#3:-\kv{back y})$) -- ($(#2)+(\sistrifflipper*90+#3:\kv{front y})$)node(sistrifLblYpunta){};
+	\ifkeyequal{label}{true}{
+		\node[\kv{col lbl}](sistrifLblXlabel)at($(sistrifLblXpunta)+(#3-90*\sistrifflipper:\kv{lbl dist})$){\kv{lbl x}};
+		\node[\kv{col lbl}](sistrifLblYlabel)at($(sistrifLblYpunta)+(#3+180:\kv{lbl dist})$){\kv{lbl y}};
+	}{}
 }
 
 
