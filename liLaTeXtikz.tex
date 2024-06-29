@@ -689,3 +689,20 @@
 \newcommand{\arcocirc}[4][]{\tkzDrawArc[#1](#2,#3)(#4);}
 % \arcocircang[opzioni]{O}{A}{ang} disegna un arco di circonferenza di centro O che parte da A e ruota di un angolo ang
 \newcommand{\arcocircang}[4][]{\tkzDrawArc[rotate,#1](#2,#3)(#4);}
+
+
+%%%%%%%%%%%%%%%% CARRUCOLA
+
+% \carrucola[keys]{centro}{raggio esterno} disegna una carrucola
+\newcommand{\carrucola}[3][]{
+	\tikzset{keyfld/.cd,
+		col1/.initial = gray!70, % il colore della parte più esterna
+		col2/.initial = gray, % il colore della parte intermedia
+		col3/.initial = black, % il colore della parte interna
+		r2/.initial = 2/3, % che percentuale di carrucola (come raggio) viene coperta dai due cerchi centrali
+		r3/.initial = 0.1, % che percentuale di carrucola (come raggio) viene coperta dal cerchio centrale
+	} \setkeyfld{#1};
+	\draw[\kv{col3},fill=\kv{col1}] (#2) circle (#3);
+	\draw[\kv{col2},fill=\kv{col2}] (#2) circle (#3*\kv{r2});
+	\draw[\kv{col3},fill=\kv{col3}] (#2) circle (#3*\kv{r3});
+}
