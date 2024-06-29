@@ -679,3 +679,13 @@
 	\circocentro{#5}{#2}{#3}{#4};
 	\circCPr[#1]{#5}{#2}{#6};
 }
+
+
+%%%%%%%%%%%%%%%% ARCHI DI CIRCONFERENZA
+
+% questi comandi disegnano archi in senso antiorario (rilevante per eventuali frecce)
+
+% \arcocirc[opzioni]{O}{A}{B} disegna un arco di circonferenza di centro O che va da A alla semiretta OB
+\newcommand{\arcocirc}[4][]{\tkzDrawArc[#1](#2,#3)(#4);}
+% \arcocircang[opzioni]{O}{A}{ang} disegna un arco di circonferenza di centro O che parte da A e ruota di un angolo ang
+\newcommand{\arcocircang}[4][]{\tkzDrawArc[rotate,#1](#2,#3)(#4);}

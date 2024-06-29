@@ -9,13 +9,11 @@
 \pntl{A}{-90}{2,1};
 \pntl{B}{-90}{5,2};
 \pntl{C}{90}{1,6};
-\circPPPcr[col=Green]{A}{B}{C}{O}{\R};
+\circPPPcr[pattern=path]{A}{B}{C}{O}{\R};
 \pntl[Green]{O}{45}{O};
-\node[red](R)at($(O)+(0,-4)$){\R};
-\foreach \P in {A,B,C}{
-	\distanza{\r}{\P}{O};
-	\draw(O)--node[anchor=south]{\r}(\P);
-}
+\arcocirc[->,red]{C}{A}{B};
+\draw(C)--(B);
+\arcocircang[Green,<-]{O}{C}{-40};
 \end{immagine}
 
 \end{document}
