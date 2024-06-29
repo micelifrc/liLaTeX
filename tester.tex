@@ -6,16 +6,9 @@
 \begin{document}
 
 \begin{immagine}
-\pntl{A}{-90}{2,1};
-\pntl{B}{-90}{5,2};
-\pntl{C}{90}{1,6};
-\circPPPcr[pattern=path]{A}{B}{C}{O}{\R};
-\pntl[Green]{O}{45}{O};
-\arcocirc[->,red]{C}{A}{B};
-\draw(C)--(B);
-\arcocircang[Green,<-]{O}{C}{-40};
-
-\carrucola{-4,2}{1};
+\def\ang{40}
+\draw[fill=gray!30](\ang:8|-0,0)--(0,0)--(\ang:8);
+\cassa[ang=\ang,lbl=$m$,col=red,fill=false]{\ang:2}{2}{1};
 \end{immagine}
 
 \end{document}

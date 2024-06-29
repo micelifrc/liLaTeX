@@ -688,10 +688,10 @@
 % \arcocirc[opzioni]{O}{A}{B} disegna un arco di circonferenza di centro O che va da A alla semiretta OB
 \newcommand{\arcocirc}[4][]{\tkzDrawArc[#1](#2,#3)(#4);}
 % \arcocircang[opzioni]{O}{A}{ang} disegna un arco di circonferenza di centro O che parte da A e ruota di un angolo ang
-\newcommand{\arcocircang}[4][]{\tkzDrawArc[rotate,#1](#2,#3)(#4);}
+\newcommand{\arcocircang}[4][]{\tkzDrawArc[#1,rotate](#2,#3)(#4);}
 
 
-%%%%%%%%%%%%%%%% CARRUCOLA
+%%%%%%%%%%%%%%%% UTILS
 
 % \carrucola[keys]{centro}{raggio esterno} disegna una carrucola
 \newcommand{\carrucola}[3][]{
@@ -705,4 +705,35 @@
 	\draw[\kv{col3},fill=\kv{col1}] (#2) circle (#3);
 	\draw[\kv{col2},fill=\kv{col2}] (#2) circle (#3*\kv{r2});
 	\draw[\kv{col3},fill=\kv{col3}] (#2) circle (#3*\kv{r3});
+}
+
+% \cassa[keys]{punto iniziale}{lunghezza x}{lunghezza y}
+\newcommand{\cassa}[4][]{
+	\tikzset{keyfld/.cd,
+		ang/.initial = 0, % l'angolo di inclinazione
+		col/.initial = black,
+		col draw/.initial,
+		col fill/.initial,
+		opacity/.initial = 20,
+		fill/.initial = true,
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		centro/.initial, % dove registrare il nome del centro della cassa
+		lbl/.initial,
+		lbl size/.initial,
+		lbl col/.initial,
+		col lbl/.initial,
+	} \setkeyfld{#1};
+	\setkeyvaluesifempty
+		{col draw}{\kv{col}}
+		{col fill}{\kv{col}!\kv{opacity}}
+	\ifkeyequal{fill}{true}{\fill[\kv{col fill}] (#2)--++(\kv{ang}:#3)--++(\kv{ang}+90:#4)--++(\kv{ang}+180:#3)--++(\kv{ang}+270:#4);}{}
+	\draw[\kv{col draw},\kv{width},\kv{pattern}] (#2)--++(\kv{ang}:#3)--++(\kv{ang}+90:#4)--++(\kv{ang}+180:#3)--++(\kv{ang}+270:#4);
+	\ifkeyempty{lbl}{}{\setkeyvalueifempty{centro}{cassacentro}}
+	\ifkeyempty{centro}{}{
+		\copykeyvaluesifempty
+			{lbl col}{col}
+			{col lbl}{lbl col}
+		\node[\kv{col lbl}] (\kv{centro}) at ($(#2)+(\ang:0.5*#3)+(\ang+90:0.5*#4)$) {\kv{lbl size}\kv{lbl}};
+	}
 }
