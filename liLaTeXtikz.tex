@@ -86,6 +86,27 @@
 % \addlabel[opzioni]{P}{L}{ang} aggiunge un label L al punto P
 \newcommand{\addlabel}[4][]{\tkzLabelPoint(#2){#3}}
 
+% \stylelbl[keys]{coord} scrive il label nel formato specificato
+\newcommand{\stylelbl}[2][]{
+	\tikzset{keyfld/.cd,
+		lbl style/.initial, % se specificato usiamo questo stile. Le opzioni sono rm, bf, cal
+		lbl/.initial,
+		lbl name/.initial = scriptlblName,
+		col/.initial,
+		lbl size/.initial,
+		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
+	} \setkeyfld{#1};
+	\copykeyvaluesifempty
+		{lbl col}{col}
+		{col lbl}{lbl col}
+	\ifkeyempty{lbl}{\coordinate (\kv{lbl name}) at (#2);}{
+		\ifkeyempty{lbl style}{ \node[\kv{col lbl}] (\kv{lbl name}) at (#2) {\kv{lbl size}\kv{lbl}}; }{}
+		\ifkeyequal{lbl style}{rm}{ \node[\kv{col lbl}] (\kv{lbl name}) at (#2) {\kv{lbl size}$\mathrm{\kv{lbl}}$}; }{}
+		\ifkeyequal{lbl style}{bf}{ \node[\kv{col lbl}] (\kv{lbl name}) at (#2) {\kv{lbl size}$\mathbf{\kv{lbl}}$}; }{}
+		\ifkeyequal{lbl style}{cal}{ \node[\kv{col lbl}] (\kv{lbl name}) at (#2) {\kv{lbl size}$\mathcal{\kv{lbl}}$}; }{}
+	}
+}
+
 
 %%%%%%%%%%%%%%%% PUNTO
 
@@ -97,17 +118,15 @@
 		shape/.initial = circle, % circle, rettangle, diamond o lo si può lasciare vuoto
 		name/.initial = puntoNome,
 		lbl/.initial,
+		lbl name/.initial,
 		lbl ang/.initial = -90,
 		lbl dist/.initial = 0.3,
 		lbl size/.initial,
 		lbl col/.initial,
 		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
 	} \setkeyfld{#1};
-	\copykeyvaluesifempty
-		{col lbl}{col}
-		{lbl col}{col lbl}
 	\coordinate[\kv{shape},inner sep=\kv{size},fill=\kv{col}] (\kv{name}) at (#2);
-	\ifkeyempty{lbl}{}{\node[\kv{lbl col}](puntoLblName) at($(#2)+(\kv{lbl ang}:\kv{lbl dist})$) {\kv{lbl size}\kv{lbl}}};
+	\stylelbl[#1]{$(#2)+(\kv{lbl ang}:\kv{lbl dist})$};
 }
 
 % chiama come \pnt[col]{nome}{coordinate}
@@ -236,7 +255,7 @@
 	\copykeyvalueifempty{col lbl}{col};
 	\ifkeyequal{flip lbl}{true}{\def\assexflipper{180}}{\def\assexflipper{0}};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(0,\kv{y})+(\kv{ang shift}:#2)$) -- ($(0,\kv{y})+(\kv{ang shift}:#3)$)node(assexpunta){};
-	\node[\kv{col lbl}](\kv{lbl name}) at ($(assexpunta)+(\kv{ang shift}-90+\assexflipper:\kv{lbl dist})$){\kv{lbl}};
+	\stylelbl[#1]{$(assexpunta)+(\kv{ang shift}-90+\assexflipper:\kv{lbl dist})$};
 }
 
 % \assey[keys]{y-bottom}{y-top} crea l'assey
@@ -257,7 +276,7 @@
 	\copykeyvalueifempty{col lbl}{col};
 	\ifkeyequal{flip lbl}{true}{\def\asseyflipper{180}}{\def\asseyflipper{0}};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(\kv{x},0)+(\kv{ang shift}+90:#2)$) -- ($(\kv{x},0)+(\kv{ang shift}+90:#3)$)node(asseypunta){};
-	\node[\kv{col lbl}](\kv{lbl name}) at ($(asseypunta)+(\kv{ang shift}+180+\asseyflipper:\kv{lbl dist})$){\kv{lbl}};
+	\stylelbl[#1]{$(asseypunta)+(\kv{ang shift}+180+\asseyflipper:\kv{lbl dist})$};
 }
 
 % \assixy[keys]{x-left}{x-right}{y-left}{y-right} disegna gli assi cartesiani
@@ -423,9 +442,7 @@
 		lbl col/.initial,
 		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
 	} \setkeyfld{#1};
-	\setkeyvalueifempty{col draw}{\kv{col}};
-	\setkeyvalueifempty{col lbl}{\kv{col}};
-	\setkeyvalueifempty{lbl col}{\kv{col lbl}};
+	\copykeyvalueifempty{col draw}{col};
 	\ifkeyempty{lbl}{}{\setkeyvalueifempty{lbl name}{segmentoLabelPos};}
 	\ifkeyempty{name path}
 		{\draw[\kv{col draw},\kv{width},\kv{pattern},\kv{arrow}](#2)--(#3);}
@@ -435,7 +452,7 @@
 		\medio{segmentoPuntoMedio}{#2}{#3};
 		\ruotapuntoN[\kv{lbl dist}]{\kv{lbl name}}{#2}{segmentoPuntoMedio}{90};
 	}
-	\ifkeyempty{lbl}{}{\node[\kv{lbl col}](segmentoLabel)at(\kv{lbl name}){\kv{lbl size}\kv{lbl}};}
+	\stylelbl[#1]{\kv{lbl name}};
 }
 
 % chiama come \markarco[keys]{m}{O}{A}{B} per creare un mark nel punto medio dell'arco di circonferenza AB di centro O. m indica il marchio richiesto (fra s,z,x,o,oo,|,||,|||)
@@ -530,10 +547,7 @@
 		lbl col/.initial,
 		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
 	} \setkeyfld{#1};
-	\copykeyvaluesifempty
-		{pattern draw}{pattern}
-		{lbl col}{col}
-		{col lbl}{lbl col}
+	\copykeyvalueifempty{pattern draw}{pattern}
 	\ifkeyempty{draw length}{
 		\ifkeyempty{name path}
 			{\draw[\kv{col},\kv{width},\kv{pattern draw}](#2)--(#3);}
@@ -556,7 +570,7 @@
 		\verso[0.2]{rettaFulcro}{rettaProlB}{#2};
 		\ifkeyequal{flip lbl}{false}{\def\semirettaLblAng{-90}}{\def\semirettaLblAng{+90}}
 		\ruotapuntoN[\kv{lbl dist}]{\kv{lbl name}}{rettaProlB}{rettaFulcro}{\semirettaLblAng};
-		\ifkeyempty{lbl}{}{\node[\kv{col lbl}](\kv{lbl name}) at (\kv{lbl name}) {\kv{lbl size}\kv{lbl}};}
+		\stylelbl[#1]{\kv{lbl name}};
 	}
 }
 
@@ -579,10 +593,7 @@
 		lbl col/.initial,
 		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
 	} \setkeyfld{#1};
-	\copykeyvaluesifempty
-		{pattern draw}{pattern}
-		{lbl col}{col}
-		{col lbl}{lbl col}
+	\copykeyvalueifempty{pattern draw}{pattern}
 	\ifkeyempty{draw length}{
 		\ifkeyempty{name path}
 			{\draw[\kv{col},\kv{width},\kv{pattern draw}](#2)--(#3);}
@@ -602,7 +613,7 @@
 		\verso[0.2]{semirettaFulcro}{semirettaProlTo}{#2};
 		\ifkeyequal{flip lbl}{false}{\def\semirettaLblAng{-90}}{\def\semirettaLblAng{+90}}
 		\ruotapuntoN[\kv{lbl dist}]{\kv{lbl name}}{semirettaProlTo}{semirettaFulcro}{\semirettaLblAng};
-		\ifkeyempty{lbl}{}{\node[\kv{col lbl}](\kv{lbl name}) at (\kv{lbl name}) {\kv{lbl size}\kv{lbl}};}
+		\stylelbl[#1]{\kv{lbl name}};
 	}
 }
 
@@ -650,12 +661,7 @@
 		}
 	}
 	\ifkeyempty{lbl}{}{\setkeyvalueifempty{lbl name}{circCPlblName};}
-	\ifkeyempty{lbl name}{}{
-		\copykeyvaluesifempty
-			{lbl col}{col}
-			{col lbl}{lbl col}
-		\node[\kv{col lbl}] (\kv{lbl name}) at ($(#2)+(\kv{lbl ang}:#3+\kv{lbl dist} cm)$) {\kv{lbl size}\kv{lbl}};
-	}
+	\ifkeyempty{lbl name}{}{\stylelbl[#1]{$(#2)+(\kv{lbl ang}:#3+\kv{lbl dist} cm)$};}
 }
 
 % \circCP[keys]{C}{P} disegna la circonferenza di centro C e passante per P
@@ -720,6 +726,7 @@
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		centro/.initial, % dove registrare il nome del centro della cassa
 		lbl/.initial,
+		lbl style/.initial = bf, % se specificato usiamo questo stile. Le opzioni sono rm, bf, cal
 		lbl size/.initial,
 		lbl col/.initial,
 		col lbl/.initial,
@@ -730,10 +737,5 @@
 	\ifkeyequal{fill}{true}{\fill[\kv{col fill}] (#2)--++(\kv{ang}:#3)--++(\kv{ang}+90:#4)--++(\kv{ang}+180:#3)--++(\kv{ang}+270:#4);}{}
 	\draw[\kv{col draw},\kv{width},\kv{pattern}] (#2)--++(\kv{ang}:#3)--++(\kv{ang}+90:#4)--++(\kv{ang}+180:#3)--++(\kv{ang}+270:#4);
 	\ifkeyempty{lbl}{}{\setkeyvalueifempty{centro}{cassacentro}}
-	\ifkeyempty{centro}{}{
-		\copykeyvaluesifempty
-			{lbl col}{col}
-			{col lbl}{lbl col}
-		\node[\kv{col lbl}] (\kv{centro}) at ($(#2)+(\ang:0.5*#3)+(\ang+90:0.5*#4)$) {\kv{lbl size}\kv{lbl}};
-	}
+	\ifkeyempty{centro}{}{\stylelbl[#1]{$(#2)+(\ang:0.5*#3)+(\ang+90:0.5*#4)$};}
 }
