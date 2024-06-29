@@ -216,7 +216,7 @@
 }
 
 % può solo essere usata con \TipoDoc=immagine. Crea una pagina intera di carta millimetrata
-\newcommand{\cartamillimetratapagina}[1][]{\cartamillimetrata[#1]{0}{21}{0}{29.7};}
+\newcommand{\cartamillimetratapagina}[1][]{\cartamillimetrata[#1]{0}{21}{0.3}{30};}
 
 % \assex[keys]{x-left}{x-right} crea l'asse x
 \newcommand{\assex}[3][]{
@@ -427,7 +427,9 @@
 	\setkeyvalueifempty{col lbl}{\kv{col}};
 	\setkeyvalueifempty{lbl col}{\kv{col lbl}};
 	\ifkeyempty{lbl}{}{\setkeyvalueifempty{lbl name}{segmentoLabelPos};}
-	\draw[\kv{col draw},\kv{width},\kv{pattern},\kv{arrow}](#2)--(#3);
+	\ifkeyempty{name path}
+		{\draw[\kv{col draw},\kv{width},\kv{pattern},\kv{arrow}](#2)--(#3);}
+		{\draw[\kv{col draw},\kv{width},\kv{pattern},\kv{arrow},name path=\kv{name path}](#2)--(#3);}
 	\tkzMarkSegment[mark=\kv{mark},\kv{col mark},size=\kv{mark size}cm](#2,#3)
 	\ifkeyempty{lbl name}{}{
 		\medio{segmentoPuntoMedio}{#2}{#3};
@@ -504,4 +506,102 @@
 	\ifkeyequal{fill}{true}
 	{\tkzMarkRightAngle[size=\kv{r},\kv{width},\kv{pattern},fill=\kv{col fill},opacity=\kv{opacity}](angolorettoPuntoA,angolorettoPuntoB,angolorettoPuntoC)}{}
 	\tkzMarkRightAngle[size=\kv{r},draw=\kv{col draw},\kv{width},\kv{pattern},\kv{arrow}](angolorettoPuntoA,angolorettoPuntoB,angolorettoPuntoC)
+}
+
+
+%%%%%%%%%%%%%%%% RETTE E SEMIRETTE
+
+% \retta[keys]{A}{B} crea una retta da A a B
+\newcommand{\retta}[3][]{
+	\tikzset{keyfld/.cd,
+		draw length/.initial,
+		prol length/.initial = 0.8,
+		col/.initial,
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		pattern draw/.initial, % può essere solid, dashed, dotted, ...
+		pattern prol/.initial = dashed, % può essere solid, dashed, dotted, ...
+		name path/.initial, % può essere usato per dare un nome al path (per il tratto continuo)
+		lbl/.initial,
+		lbl name/.initial, % il nome da dare alla posizione del label
+		lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
+		flip lbl/.initial = false, % dice se vogliamo ribaltare la posizione del label
+		lbl size/.initial,
+		lbl col/.initial,
+		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
+	} \setkeyfld{#1};
+	\copykeyvaluesifempty
+		{pattern draw}{pattern}
+		{lbl col}{col}
+		{col lbl}{lbl col}
+	\ifkeyempty{draw length}{
+		\ifkeyempty{name path}
+			{\draw[\kv{col},\kv{width},\kv{pattern draw}](#2)--(#3);}
+			{\draw[\kv{col},\kv{width},\kv{pattern draw},name path=\kv{name path}](#2)--(#3);}
+		\allont[\kv{prol length}]{rettaProlA}{#2}{#3};
+		\allont[\kv{prol length}]{rettaProlB}{#3}{#2};
+		\draw[\kv{col},\kv{width},\kv{pattern prol}] (#2)--(rettaProlA) (#3)--(rettaProlB);
+	}{
+		\allont[\kv{draw length}]{rettaDrawA}{#2}{#3};
+		\allont[\kv{draw length}]{rettaDrawB}{#3}{#2};
+		\ifkeyempty{name path}
+			{\draw[\kv{col},\kv{width},\kv{pattern draw}](rettaDrawA)--(#2)--(#3)--(rettaDrawB);}
+			{\draw[\kv{col},\kv{width},\kv{pattern draw},name path=\kv{name path}](rettaDrawA)--(#2)--(#3)--(rettaDrawB);}
+		\allont[\kv{prol length}]{rettaProlA}{rettaDrawA}{#3};
+		\allont[\kv{prol length}]{rettaProlB}{rettaDrawB}{#2};
+		\draw[\kv{col},\kv{width},\kv{pattern prol}] (rettaDrawA)--(rettaProlA) (rettaDrawB)--(rettaProlB);
+	}
+	\ifkeyempty{lbl}{}{\setkeyvalueifempty{lbl name}{rettaLblName};}
+	\ifkeyempty{lbl name}{}{
+		\verso[0.2]{rettaFulcro}{rettaProlB}{#2};
+		\ifkeyequal{flip lbl}{false}{\def\semirettaLblAng{-90}}{\def\semirettaLblAng{+90}}
+		\ruotapuntoN[\kv{lbl dist}]{\kv{lbl name}}{rettaProlB}{rettaFulcro}{\semirettaLblAng};
+		\ifkeyempty{lbl}{}{\node[\kv{col lbl}](\kv{lbl name}) at (\kv{lbl name}) {\kv{lbl size}\kv{lbl}};}
+	}
+}
+
+% \semiretta[keys]{A}{B} crea una semiretta da A a B
+\newcommand{\semiretta}[3][]{
+	\tikzset{keyfld/.cd,
+		draw length/.initial,
+		prol length/.initial = 0.8,
+		col/.initial,
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		pattern draw/.initial, % può essere solid, dashed, dotted, ...
+		pattern prol/.initial = dashed, % può essere solid, dashed, dotted, ...
+		name path/.initial, % può essere usato per dare un nome al path (per il tratto continuo)
+		lbl/.initial,
+		lbl name/.initial, % il nome da dare alla posizione del label
+		lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
+		flip lbl/.initial = false, % dice se vogliamo ribaltare la posizione del label
+		lbl size/.initial,
+		lbl col/.initial,
+		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
+	} \setkeyfld{#1};
+	\copykeyvaluesifempty
+		{pattern draw}{pattern}
+		{lbl col}{col}
+		{col lbl}{lbl col}
+	\ifkeyempty{draw length}{
+		\ifkeyempty{name path}
+			{\draw[\kv{col},\kv{width},\kv{pattern draw}](#2)--(#3);}
+			{\draw[\kv{col},\kv{width},\kv{pattern draw},name path=\kv{name path}](#2)--(#3);}
+		\allont[\kv{prol length}]{semirettaProlTo}{#3}{#2};
+		\draw[\kv{col},\kv{width},\kv{pattern prol}](#3)--(semirettaProlTo);
+	}{
+		\allont[\kv{draw length}]{semirettaDrawTo}{#3}{#2};
+		\ifkeyempty{name path}
+			{\draw[\kv{col},\kv{width},\kv{pattern draw}](#2)--(#3)--(semirettaDrawTo);}
+			{\draw[\kv{col},\kv{width},\kv{pattern draw},name path=\kv{name path}](#2)--(#3)--(semirettaDrawTo);}
+		\allont[\kv{prol length}]{semirettaProlTo}{semirettaDrawTo}{#2};
+		\draw[\kv{col},\kv{width},\kv{pattern prol}](semirettaDrawTo)--(semirettaProlTo);
+	}
+	\ifkeyempty{lbl}{}{\setkeyvalueifempty{lbl name}{semirettaLblName};}
+	\ifkeyempty{lbl name}{}{
+		\verso[0.2]{semirettaFulcro}{semirettaProlTo}{#2};
+		\ifkeyequal{flip lbl}{false}{\def\semirettaLblAng{-90}}{\def\semirettaLblAng{+90}}
+		\ruotapuntoN[\kv{lbl dist}]{\kv{lbl name}}{semirettaProlTo}{semirettaFulcro}{\semirettaLblAng};
+		\ifkeyempty{lbl}{}{\node[\kv{col lbl}](\kv{lbl name}) at (\kv{lbl name}) {\kv{lbl size}\kv{lbl}};}
+	}
 }
