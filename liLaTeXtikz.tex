@@ -605,3 +605,77 @@
 		\ifkeyempty{lbl}{}{\node[\kv{col lbl}](\kv{lbl name}) at (\kv{lbl name}) {\kv{lbl size}\kv{lbl}};}
 	}
 }
+
+
+%%%%%%%%%%%%%%%% CIRCONFERENZE
+
+% chiama come \circCR[keys]{C}{R} per disegnare la circonferenza di centro C e raggio R
+\newcommand{\circCR}[3][]{
+	\tikzset{keyfld/.cd,
+		col/.initial,
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		name path/.initial, % può essere usato per dare un nome al path
+		fill/.initial = false,
+		col fill/.initial,
+		opacity/.initial = 30, % l'opacity del fill, se non è stato specificato col fill
+		lbl name/.initial, % il nome da dare all'eventuale label (se presente)
+		lbl/.initial,
+		lbl size/.initial,
+		lbl dist/.initial = 0.3, % la distanza del label dalla circonferenza
+		lbl ang/.initial = -150, % l'angolo a cui mettere il label
+		lbl col/.initial,
+		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
+	} \setkeyfld{#1};
+	\ifkeyequal{fill}{true}{\setkeyvalueifempty{col fill}{\kv{col}!\kv{opacity}};}
+	\ifkeyequal{pattern}{path}{
+		\ifkeyempty{name path}{
+			\ifkeyempty{col fill}
+			{\path (#2) circle (#3);}
+			{\path[fill=\kv{col fill}] (#2) circle (#3);}
+		}{
+			\ifkeyempty{col fill}
+			{\path[name path=\kv{name path}] (#2) circle (#3);}
+			{\path[name path=\kv{name path},fill=\kv{col fill}] (#2) circle (#3);}
+		}
+	}{
+		\ifkeyempty{name path}{
+			\ifkeyempty{col fill}
+			{\draw[\kv{col},\kv{width},\kv{pattern}] (#2) circle (#3);}
+			{\draw[\kv{col},\kv{width},\kv{pattern},fill=\kv{col fill}] (#2) circle (#3);}
+		}{
+			\ifkeyempty{col fill}
+			{\draw[\kv{col},\kv{width},\kv{pattern},name path=\kv{name path}] (#2) circle (#3);}
+			{\draw[\kv{col},\kv{width},\kv{pattern},name path=\kv{name path},fill=\kv{col fill}] (#2) circle (#3);}
+		}
+	}
+	\ifkeyempty{lbl}{}{\setkeyvalueifempty{lbl name}{circCPlblName};}
+	\ifkeyempty{lbl name}{}{
+		\copykeyvaluesifempty
+			{lbl col}{col}
+			{col lbl}{lbl col}
+		\node[\kv{col lbl}] (\kv{lbl name}) at ($(#2)+(\kv{lbl ang}:#3+\kv{lbl dist} cm)$) {\kv{lbl size}\kv{lbl}};
+	}
+}
+
+% \circCP[keys]{C}{P} disegna la circonferenza di centro C e passante per P
+\newcommand{\circCP}[3][]{\circCPr[#1]{#2}{#3}{\circCPmisuraraggio};}
+
+% \circCPr[keys]{C}{P}{<- r} disegna la circonferenza di centro C e passante per P. Registra in r la misura del raggio della circonferenza (in cm)
+\newcommand{\circCPr}[4][]{
+	\distanza{#4}{#2}{#3};
+	\circCR[#1]{#2}{#4 cm};
+}
+
+% \circPPP[keys]{A}{B}{C} disegna la circonferenza passante per i tre punti A, B e C
+\newcommand{\circPPP}[4][]{\circPPPcr[#1]{#2}{#3}{#4}{circPPPcentro}{\circPPPmisuraraggio};}
+% \circPPPc[keys]{A}{B}{C}{<- centro} disegna la circonferenza passante per i tre punti A, B e C
+\newcommand{\circPPPc}[5][]{\circPPPcr[#1]{#2}{#3}{#4}{#5}{\circPPPmisuraraggio};}
+% \circPPPr[keys]{A}{B}{C}{<- raggio} disegna la circonferenza passante per i tre punti A, B e C
+\newcommand{\circPPPr}[5][]{\circPPPcr[#1]{#2}{#3}{#4}{circPPPcentro}{#5};}
+
+% \circPPPcr[keys]{A}{B}{C}{<- centro}{<- raggio} disegna la circonferenza passante per i tre punti A, B e C e registra il centro e il raggio della circonferenza
+\newcommand{\circPPPcr}[6][]{
+	\circocentro{#5}{#2}{#3}{#4};
+	\circCPr[#1]{#5}{#2}{#6};
+}
