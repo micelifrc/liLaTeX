@@ -739,6 +739,19 @@
 	\end{rotazione}
 }
 
+
+%%%%%%%%%%%%%%%% PLOT GENERICI
+
+% chiama come \plot[opzioni]{from:to}{x}{y}. È parametrizzato come \x
+\newcommand{\plot}[4][]{\draw[smooth,samples=100,domain=#2,#1] plot ({#3},{#4});}
+
+% chiama come \plotcos[opzioni]{from:to}{ampiezza} o come \plotsin[opzioni]{from:to}{ampiezza}
+\newcommand{\plotcos}[3][]{\plot[#1]{#2}{\x}{#3*cos(\x*180/pi)};}
+\newcommand{\plotsin}[3][]{\plot[#1]{#2}{\x}{#3*sin(\x*180/pi)};}
+% chiama come \plotcos[opzioni]{from:to}{ampiezza}{shift} o come \plotsin[opzioni]{from:to}{ampiezza}{shift}
+\newcommand{\plotcosshift}[4][]{\plotcos[#1,shift={(#4)}]{#2}{#3};}
+\newcommand{\plotsinshift}[4][]{\plotsin[#1,shift={(#4)}]{#2}{#3};}
+
 %%%%%%%%%%%%%%%% UTILS
 
 % \estendistr#1{#2} aggiunge #2 alla fine della stringa #1

@@ -2,13 +2,14 @@
 %\documentclass[crop]{standalone} % per le immagini
 \newcommand{\TipoDoc}{plain}
 \input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
-\usepackage{pgf}
 
 \begin{document}
 
 \begin{immagine}
-\grigliaZ{8}{6};
-\parabolaVPPx[blue]{2,3}{5,1}{4,5};
+\grigliaZ{11}{11};
+%\plot[red,thick]{0:10}{\x/2}{\x^2/10};
+\plotsin[red,thick]{0:10}{3};
+\plotcosshift[blue,thick]{0:10}{3}{0,3};
 \end{immagine}
 
 \end{document}
