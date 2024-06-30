@@ -63,6 +63,9 @@
 
 %%%%%%%%%%%%%%%% FUNZIONI
 
+% definisce un valore numerico #1 uguale all'output dell'operazione #2
+\newcommand\tikzdef[2]{\pgfmathsetmacro{#1}{#2}} % definisce float #1:=#2
+
 % converte da pt a cm. Chiama come \convertto{cm}{misura pt}
 \makeatletter
 \def\convertto#1#2{\strip@pt\dimexpr #2*65536/\number\dimexpr 1#1}
@@ -724,13 +727,14 @@
 % \ellisserot[opzioni]{centro}{semiasse a}{semiasse b}{ang}
 \newcommand{\ellisserot}[5][]{\draw[#1,rotate around={#5:(#2)}](#2)ellipse(#3cm and #4cm);}
 
-% \parabolaVPP[opzioni]{V}{P1}{P2} disegna un tratto di parabola con vertice V con estremi in P1 e P2. Serve che V sia fra P1 e P2. In realtà vengono disegnati due archi di parabola
+% \parabolaVPP[opzioni]{V}{P1}{P2} disegna un tratto di parabola con vertice V con estremi in P1 e P2. Serve che V sia fra P1 e P2. In realtà vengono disegnati due archi di parabola. \parabolaVPPy è identico a \parabolaVPP
 \newcommand{\parabolaVPP}[4][]{\parabolaVPPy[#1]{#2}{#3}{#4};}
 \newcommand{\parabolaVPPy}[4][]{
 	\draw[#1](#2)parabola(#3);
 	\draw[#1](#2)parabola(#4);
 }
 
+% \parabolaVPPx[opzioni]{V}{P1}{P2} è analogo a \parabolaVPPy per parabole con l'asse di simmetria parallelo all'asse x
 \newcommand{\parabolaVPPx}[4][]{
 	\coordinate(parabolaVPPxPuno)at(#3);
 	\coordinate(parabolaVPPxPdue)at(#4);
@@ -738,6 +742,32 @@
 		\parabolaVPPy[#1]{#2}{parabolaVPPxPuno}{parabolaVPPxPdue}{-90};
 	\end{rotazione}
 }
+
+% \parabolaeq[opzioni]{from:to}{a}{b}{c} (e \parabolaeqy, che è identico) disegna un ramo di parabola di equazione y=ax^2+bx+c. La funzione \parabolaeqx[opzioni]{from:to}{a}{b}{c} è analoga per disegnare il ramo di parabola x=ay^2+by+c (questa volta il range è inteso su y)
+\newcommand{\parabolaeq}[5][]{\parabolaeqy[#1]{#2}{#3}{#4}{#5};}
+\newcommand{\parabolaeqy}[5][]{\plot[#1]{#2}{\x}{#3*\x^2+#4*\x+#5};}
+\newcommand{\parabolaeqx}[5][]{\plot[#1]{#2}{#3*\x^2+#4*\x+#5}{\x};}
+
+% \ellisseeq[opzioni]{a}{b}{c}{d}{e} disegna un'ellisse di equazione ax^2+by^2+cx+dy+e=0
+\newcommand{\ellisseeq}[6][]{
+	\tikzdef\ellisseeqzerodeg{0.25*#4*#4/#2+0.25*#5*#5/#3-#6};
+	\tikzdef\ellisseeqsemiassea{sqrt(\ellisseeqzerodeg/#2)};
+	\tikzdef\ellisseeqsemiasseb{sqrt(\ellisseeqzerodeg/#3)};
+	\ellisse[#1]{-0.5*#4/#2,-0.5*#5/#3}{\ellisseeqsemiassea}{\ellisseeqsemiasseb};
+}
+
+% \propinv[opzioni]{fromx:tox}{fromy:toy}{k} disegna una funzione del tipo x*y=k tenendo solo i punti (x,y) per cui x e y rientrano (entrambi) nei range specificati
+\newcommand{\propinv}[4][]{
+	\extractcoordpaircolon{\propinvfromx}{\propinvtox}{#2};
+	\extractcoordpaircolonbis{\propinvfromy}{\propinvtoy}{#3};
+	\tikzdef\propinvfromyx{abs(#4)/\propinvfromy};
+	\tikzdef\propinvtoyx{abs(#4)/\propinvtoy};
+	\plot[#1]{\propinvfromx:\propinvfromyx}{\x}{#4/\x};
+	\plot[#1]{\propinvtoyx:\propinvtox}{\x}{#4/\x};
+}
+
+% \propinvshift[opzioni]{fromx:tox}{fromy:toy}{k}{shift} è analogo a \propinv ma shiftato di shift
+\newcommand{\propinvshift}[5][]{\propinv[#1,shift={(#5)}]{#2}{#3}{#4};}
 
 
 %%%%%%%%%%%%%%%% PLOT GENERICI
@@ -751,6 +781,87 @@
 % chiama come \plotcos[opzioni]{from:to}{ampiezza}{shift} o come \plotsin[opzioni]{from:to}{ampiezza}{shift}
 \newcommand{\plotcosshift}[4][]{\plotcos[#1,shift={(#4)}]{#2}{#3};}
 \newcommand{\plotsinshift}[4][]{\plotsin[#1,shift={(#4)}]{#2}{#3};}
+
+
+%%%%%%%%%%%%%%%% ESTRATTORE DI COORDINATE
+
+% \extractcoordpair[separatore]{<- \x}{<- \y}{P} estrae le coordinate di P e le scrive in \x e \y. Gli unici separatori supportati al momento sono , e :
+\newcommand{\extractcoordpair}[4][,]{
+	\ifx,#1 \extractcoordpaircomma{#2}{#3}{#4}
+	\else
+		\ifx:#1 \extractcoordpaircolon{#2}{#3}{#4} \fi
+	\fi
+}
+
+% \extractcoordpaircomma{<- \x}{<-  \y}{P} estrae le due coordinate di P e le scrive in \x e in \y. P deve essere scritto esplicitamente come coordinata
+\newcommand{\extractcoordpaircomma}[3]{
+	\def\extractcoordpaircommax{}
+	\def\extractcoordpaircommay{}
+	\extractcoordpaircommaIterFist#3,
+	\def#1{\extractcoordpaircommax}
+	\def#2{\extractcoordpaircommay}
+}
+\newcommand{\extractcoordpaircommaIterFist}[1]{
+	\ifx,#1 
+		\expandafter\extractcoordpaircommaIterSecond
+	\else 
+		\estendistr\extractcoordpaircommax{#1}
+		\expandafter\extractcoordpaircommaIterFist
+	\fi
+}
+\newcommand{\extractcoordpaircommaIterSecond}[1]{
+	\ifx,#1 \else
+		\estendistr\extractcoordpaircommay{#1}
+		\expandafter\extractcoordpaircommaIterSecond
+	\fi
+}
+
+% \extractcoordpaircolon{<- \a}{<-  \r}{P} estrae le due coordinate polari di P e le scrive in \a e in \r. P deve essere scritto esplicitamente come coordinata. Funziona anche per un range
+\newcommand{\extractcoordpaircolon}[3]{
+	\def\extractcoordpaircolona{}
+	\def\extractcoordpaircolonr{}
+	\extractcoordpaircolonIterFist#3:
+	\def#1{\extractcoordpaircolona}
+	\def#2{\extractcoordpaircolonr}
+}
+\newcommand{\extractcoordpaircolonIterFist}[1]{
+	\ifx:#1 
+		\expandafter\extractcoordpaircolonIterSecond
+	\else 
+		\estendistr\extractcoordpaircolona{#1}
+		\expandafter\extractcoordpaircolonIterFist
+	\fi
+}
+\newcommand{\extractcoordpaircolonIterSecond}[1]{
+	\ifx:#1 \else
+		\estendistr\extractcoordpaircolonr{#1}
+		\expandafter\extractcoordpaircolonIterSecond
+	\fi
+}
+
+% \extractcoordpaircolonbis è identico a \extractcoordpaircolon (non si può usare due volte \extractcoordpaircolon, se no la seconda chiamata sovrascrive la prima)
+\newcommand{\extractcoordpaircolonbis}[3]{
+	\def\extractcoordpaircolonabis{}
+	\def\extractcoordpaircolonrbis{}
+	\extractcoordpaircolonIterFistbis#3:
+	\def#1{\extractcoordpaircolonabis}
+	\def#2{\extractcoordpaircolonrbis}
+}
+\newcommand{\extractcoordpaircolonIterFistbis}[1]{
+	\ifx:#1 
+		\expandafter\extractcoordpaircolonIterSecondbis
+	\else 
+		\estendistr\extractcoordpaircolonabis{#1}
+		\expandafter\extractcoordpaircolonIterFistbis
+	\fi
+}
+\newcommand{\extractcoordpaircolonIterSecondbis}[1]{
+	\ifx:#1 \else
+		\estendistr\extractcoordpaircolonrbis{#1}
+		\expandafter\extractcoordpaircolonIterSecondbis
+	\fi
+}
+
 
 %%%%%%%%%%%%%%%% UTILS
 
