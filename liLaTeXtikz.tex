@@ -758,8 +758,8 @@
 
 % \propinv[opzioni]{fromx:tox}{fromy:toy}{k} disegna una funzione del tipo x*y=k tenendo solo i punti (x,y) per cui x e y rientrano (entrambi) nei range specificati
 \newcommand{\propinv}[4][]{
-	\extractcoordpaircolon{\propinvfromx}{\propinvtox}{#2};
-	\extractcoordpaircolonbis{\propinvfromy}{\propinvtoy}{#3};
+	\extractcoordpair[:]{\propinvfromx}{\propinvtox}{#2};
+	\extractcoordpairbis[:]{\propinvfromy}{\propinvtoy}{#3};
 	\tikzdef\propinvfromyx{abs(#4)/\propinvfromy};
 	\tikzdef\propinvtoyx{abs(#4)/\propinvtoy};
 	\plot[#1]{\propinvfromx:\propinvfromyx}{\x}{#4/\x};
@@ -785,80 +785,52 @@
 
 %%%%%%%%%%%%%%%% ESTRATTORE DI COORDINATE
 
-% \extractcoordpair[separatore]{<- \x}{<- \y}{P} estrae le coordinate di P e le scrive in \x e \y. Gli unici separatori supportati al momento sono , e :
+% \extractcoordpair[separatore]{<- \x}{<-  \y}{P} estrae le due coordinate di P e le scrive in \x e in \y. Se P è dato in coordinate polari o rappresenta un range allora il separatore da usare è : (anziché ,)
 \newcommand{\extractcoordpair}[4][,]{
-	\ifx,#1 \extractcoordpaircomma{#2}{#3}{#4}
-	\else
-		\ifx:#1 \extractcoordpaircolon{#2}{#3}{#4} \fi
+	\def\extractcoordpairseparator{#1}
+	\def\extractcoordpairx{}
+	\def\extractcoordpairy{}
+	\extractcoordpairIterFist#4\extractcoordpairseparator
+	\def#2{\extractcoordpairx}
+	\def#3{\extractcoordpairy}
+}
+\newcommand{\extractcoordpairIterFist}[1]{
+	\if\extractcoordpairseparator#1 
+		\expandafter\extractcoordpairIterSecond
+	\else 
+		\estendistr\extractcoordpairx{#1}
+		\expandafter\extractcoordpairIterFist
+	\fi
+}
+\newcommand{\extractcoordpairIterSecond}[1]{
+	\if\extractcoordpairseparator#1 \else
+		\estendistr\extractcoordpairy{#1}
+		\expandafter\extractcoordpairIterSecond
 	\fi
 }
 
-% \extractcoordpaircomma{<- \x}{<-  \y}{P} estrae le due coordinate di P e le scrive in \x e in \y. P deve essere scritto esplicitamente come coordinata
-\newcommand{\extractcoordpaircomma}[3]{
-	\def\extractcoordpaircommax{}
-	\def\extractcoordpaircommay{}
-	\extractcoordpaircommaIterFist#3,
-	\def#1{\extractcoordpaircommax}
-	\def#2{\extractcoordpaircommay}
+% \extractcoordpairbis è identico a \extractcoordpair (non si può usare due volte \extractcoordpair, se no la seconda chiamata sovrascrive la prima)
+%TODO cercare una soluzione un po' più elegante
+\newcommand{\extractcoordpairbis}[4][,]{
+	\def\extractcoordpairseparator{#1}
+	\def\extractcoordpairxbis{}
+	\def\extractcoordpairybis{}
+	\extractcoordpairIterFistbis#4\extractcoordpairseparator
+	\def#2{\extractcoordpairxbis}
+	\def#3{\extractcoordpairybis}
 }
-\newcommand{\extractcoordpaircommaIterFist}[1]{
-	\ifx,#1 
-		\expandafter\extractcoordpaircommaIterSecond
+\newcommand{\extractcoordpairIterFistbis}[1]{
+	\if\extractcoordpairseparator#1 
+		\expandafter\extractcoordpairIterSecondbis
 	\else 
-		\estendistr\extractcoordpaircommax{#1}
-		\expandafter\extractcoordpaircommaIterFist
+		\estendistr\extractcoordpairxbis{#1}
+		\expandafter\extractcoordpairIterFistbis
 	\fi
 }
-\newcommand{\extractcoordpaircommaIterSecond}[1]{
-	\ifx,#1 \else
-		\estendistr\extractcoordpaircommay{#1}
-		\expandafter\extractcoordpaircommaIterSecond
-	\fi
-}
-
-% \extractcoordpaircolon{<- \a}{<-  \r}{P} estrae le due coordinate polari di P e le scrive in \a e in \r. P deve essere scritto esplicitamente come coordinata. Funziona anche per un range
-\newcommand{\extractcoordpaircolon}[3]{
-	\def\extractcoordpaircolona{}
-	\def\extractcoordpaircolonr{}
-	\extractcoordpaircolonIterFist#3:
-	\def#1{\extractcoordpaircolona}
-	\def#2{\extractcoordpaircolonr}
-}
-\newcommand{\extractcoordpaircolonIterFist}[1]{
-	\ifx:#1 
-		\expandafter\extractcoordpaircolonIterSecond
-	\else 
-		\estendistr\extractcoordpaircolona{#1}
-		\expandafter\extractcoordpaircolonIterFist
-	\fi
-}
-\newcommand{\extractcoordpaircolonIterSecond}[1]{
-	\ifx:#1 \else
-		\estendistr\extractcoordpaircolonr{#1}
-		\expandafter\extractcoordpaircolonIterSecond
-	\fi
-}
-
-% \extractcoordpaircolonbis è identico a \extractcoordpaircolon (non si può usare due volte \extractcoordpaircolon, se no la seconda chiamata sovrascrive la prima)
-\newcommand{\extractcoordpaircolonbis}[3]{
-	\def\extractcoordpaircolonabis{}
-	\def\extractcoordpaircolonrbis{}
-	\extractcoordpaircolonIterFistbis#3:
-	\def#1{\extractcoordpaircolonabis}
-	\def#2{\extractcoordpaircolonrbis}
-}
-\newcommand{\extractcoordpaircolonIterFistbis}[1]{
-	\ifx:#1 
-		\expandafter\extractcoordpaircolonIterSecondbis
-	\else 
-		\estendistr\extractcoordpaircolonabis{#1}
-		\expandafter\extractcoordpaircolonIterFistbis
-	\fi
-}
-\newcommand{\extractcoordpaircolonIterSecondbis}[1]{
-	\ifx:#1 \else
-		\estendistr\extractcoordpaircolonrbis{#1}
-		\expandafter\extractcoordpaircolonIterSecondbis
+\newcommand{\extractcoordpairIterSecondbis}[1]{
+	\if\extractcoordpairseparator#1 \else
+		\estendistr\extractcoordpairybis{#1}
+		\expandafter\extractcoordpairIterSecondbis
 	\fi
 }
 
