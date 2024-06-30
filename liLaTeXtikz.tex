@@ -109,13 +109,14 @@
 
 
 %%%%%%%%%%%%%%%% PUNTO
+% Attenzione! coordinate create come \punto (o suoi derivati) sono incompatibili con l'opzione fill per eventuali poligoni. Questo vuol dire che se vogliamo disegnare un poligono colorato, dobbiamo definire i punti come \coordinate, poi usare fill, e infine ripassare i vertici con \punto
 
 % chiama come \punto[keys]{coordinate}
 \newcommand{\punto}[2][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		size/.initial = 1.5,
-		shape/.initial = circle, % circle, rettangle, diamond o lo si può lasciare vuoto
+		shape/.initial = circle, % circle, rettangle o lo si può lasciare vuoto
 		name/.initial = puntoNome,
 		lbl/.initial,
 		lbl name/.initial,
@@ -698,6 +699,47 @@
 
 
 %%%%%%%%%%%%%%%% UTILS
+
+% \estendistr#1{#2} aggiunge #2 alla fine della stringa #1
+\def\estendistr#1#2{\expandafter\def\expandafter#1\expandafter{#1#2}}
+
+% \poligono[opzioni]{A,B,C,...} disegna un poligono
+\newcommand{\poligono}[2][]{
+	\def\poligonoInputBuilder{(} % la stringa (A)--(B)--(C)--(A) Viene costruita progressivamente
+	\def\poligonoFirstPointBuilder{} % la stringa A
+	\newcounter{poligonoNumPointsBuilder}
+	\setcounter{poligonoNumPointsBuilder}{1}
+	\poligonoIter#2;
+	\draw[#1]\poligonoInputBuilder;
+}
+% necessario per la funzione \poligono
+\newcommand{\poligonoIter}[1]{
+	\ifx;#1\estendistr\poligonoInputBuilder{)--(\poligonoFirstPointBuilder)}\else
+		\ifx,#1\estendistr\poligonoInputBuilder{)--(}\stepcounter{poligonoNumPointsBuilder}\else
+			\estendistr\poligonoInputBuilder{#1}
+			\ifnum\thepoligonoNumPointsBuilder=1
+				\estendistr\poligonoFirstPointBuilder{#1}
+			\fi
+		\fi
+		\expandafter\poligonoIter
+	\fi
+}
+
+% \poligonale[opzioni]{A,B,C,...} disegna una poligonale (una linea spezzata)
+\newcommand{\poligonale}[2][]{
+	\def\poligonaleInputBuilder{(} % la stringa (A)--(B)--(C) Viene costruita progressivamente
+	\poligonaleIter#2;
+	\draw[#1]\poligonaleInputBuilder;
+}
+% necessario per la funzione \poligonale
+\newcommand{\poligonaleIter}[1]{
+	\ifx;#1\estendistr\poligonaleInputBuilder{)}\else
+		\ifx,#1\estendistr\poligonaleInputBuilder{)--(}\else
+			\estendistr\poligonaleInputBuilder{#1}
+		\fi
+		\expandafter\poligonaleIter
+	\fi
+}
 
 % \carrucola[keys]{centro}{raggio esterno} disegna una carrucola
 \newcommand{\carrucola}[3][]{
