@@ -18,6 +18,12 @@
 \newenvironment{immaginecap*}[2][]
 	{\def\immaginecapCaption{#2}\begin{figure}[!ht]\centering\begin{tikzpicture}[#1]}
 	{\end{tikzpicture}\caption*{\immaginecapCaption}\end{figure}}
+	
+% \begin{rotazione}[centro rotazione]{ang}picture\end{rotazione} disegna l'immagine ruotata
+% Attenzione! una coordinata fornita come (1,2) verrà ruotata, ma una coordinata data come P non verrà ruotata. È un comportamento un po' anomalo, ma il rotate around di tikz funziona in questo modo
+\newenvironment{rotazione}[2][0,0]
+	{\begin{scope}[rotate around={#2:(#1)}]}
+	{\end{scope}}
 
 
 %%%%%%%%%%%%%%%% KEY MANAGER
@@ -174,7 +180,11 @@
 \newcommand{\sumvett}[4]{\coordinate(#1)at($(#3)-(#2)+(#4)$);}
 
 % \ruotapunto{<- R}{P}{O}{a} definisce il punto R ottenuto ruotando P in senso antiorario di un angolo a (con centro di rotazione in O)
-\newcommand{\ruotapunto}[4]{\tkzDefPointBy[rotation= center #3 angle #4](#2) \tkzGetPoint{#1};}
+\newcommand{\ruotapunto}[4]{
+	\coordinate(ruotapuntoP)at(#2);
+	\coordinate(ruotapuntoO)at(#3);
+	\tkzDefPointBy[rotation= center ruotapuntoO angle #4](ruotapuntoP) \tkzGetPoint{#1};
+}
 
 % \ruotapuntoN[L]{<- R}{P}{O}{a} dopo aver ruotato il punto, lo normalizza per farlo diventare di luunghezza L
 \newcommand{\ruotapuntoN}[5][1]{
@@ -218,6 +228,8 @@
 		{s y}{step y}
 	\draw[\kv{col},\kv{width},\kv{pattern}] (#2,#4) grid [xstep=\kv{s x},ystep=\kv{s y}] (#3,#5);
 }
+% \grigliaZ[keys]{east}{north}
+\newcommand{\grigliaZ}[3][]{\griglia[#1]{0}{#2}{0}{#3}}
 
 % \cartamillimetrata[keys]{west}{east}{south}{north} % una porzione di carta millimetrata
 \newcommand{\cartamillimetrata}[5][]{
@@ -697,6 +709,35 @@
 % \arcocircang[opzioni]{O}{A}{ang} disegna un arco di circonferenza di centro O che parte da A e ruota di un angolo ang
 \newcommand{\arcocircang}[4][]{\tkzDrawArc[#1,rotate](#2,#3)(#4);}
 
+% \semicirc[opzioni]{A}{B} disegna una semicirconferenza di diametro AB
+\newcommand{\semicirc}[3][]{
+	\medio{semicircCentro}{#2}{#3};
+	\arcocircang[#1]{semicircCentro}{#2}{180};
+}
+
+
+%%%%%%%%%%%%%%%% ALTRE CONICHE
+
+% \ellisse[opzioni]{centro}{semiasse a}{semiasse b}
+\newcommand{\ellisse}[4][]{\draw[#1](#2)ellipse(#3cm and #4cm);}
+
+% \ellisserot[opzioni]{centro}{semiasse a}{semiasse b}{ang}
+\newcommand{\ellisserot}[5][]{\draw[#1,rotate around={#5:(#2)}](#2)ellipse(#3cm and #4cm);}
+
+% \parabolaVPP[opzioni]{V}{P1}{P2} disegna un tratto di parabola con vertice V con estremi in P1 e P2. Serve che V sia fra P1 e P2. In realtà vengono disegnati due archi di parabola
+\newcommand{\parabolaVPP}[4][]{\parabolaVPPy[#1]{#2}{#3}{#4};}
+\newcommand{\parabolaVPPy}[4][]{
+	\draw[#1](#2)parabola(#3);
+	\draw[#1](#2)parabola(#4);
+}
+
+\newcommand{\parabolaVPPx}[4][]{
+	\coordinate(parabolaVPPxPuno)at(#3);
+	\coordinate(parabolaVPPxPdue)at(#4);
+	\begin{rotazione}[#2]{-90}
+		\parabolaVPPy[#1]{#2}{parabolaVPPxPuno}{parabolaVPPxPdue}{-90};
+	\end{rotazione}
+}
 
 %%%%%%%%%%%%%%%% UTILS
 

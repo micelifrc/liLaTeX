@@ -2,22 +2,13 @@
 %\documentclass[crop]{standalone} % per le immagini
 \newcommand{\TipoDoc}{plain}
 \input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+\usepackage{pgf}
 
 \begin{document}
 
 \begin{immagine}
-\griglia{-2}{6}{-1}{6};
-\punto[name=A,shape=]{0,0};
-\punto[name=B,shape=]{4,1};
-\punto[name=C,shape=circle]{2,4};
-\punto[name=D,shape=circle]{-1,5};
-\coordinate(Apoligono)at(A);
-\coordinate(Bpoligono)at(B);
-\coordinate(Cpoligono)at(C);
-\coordinate(Dpoligono)at(D);
-\poligono[red,very thick]{A,B,C,D};
-\fill[yellow!15](Apoligono)--(Bpoligono)--(Cpoligono)--(Dpoligono)--(Apoligono);
-%\draw[red,fill=yellow!15,very thick] (A)--(B)--(C)--(D)--(A);
+\grigliaZ{8}{6};
+\parabolaVPPx[blue]{2,3}{5,1}{4,5};
 \end{immagine}
 
 \end{document}
