@@ -759,7 +759,7 @@
 % \propinv[opzioni]{fromx:tox}{fromy:toy}{k} disegna una funzione del tipo x*y=k tenendo solo i punti (x,y) per cui x e y rientrano (entrambi) nei range specificati
 \newcommand{\propinv}[4][]{
 	\extractcoordpair[:]{\propinvfromx}{\propinvtox}{#2};
-	\extractcoordpairbis[:]{\propinvfromy}{\propinvtoy}{#3};
+	\extractcoordpair[:]{\propinvfromy}{\propinvtoy}{#3};
 	\tikzdef\propinvfromyx{abs(#4)/\propinvfromy};
 	\tikzdef\propinvtoyx{abs(#4)/\propinvtoy};
 	\plot[#1]{\propinvfromx:\propinvfromyx}{\x}{#4/\x};
@@ -791,8 +791,8 @@
 	\def\extractcoordpairx{}
 	\def\extractcoordpairy{}
 	\extractcoordpairIterFist#4\extractcoordpairseparator
-	\def#2{\extractcoordpairx}
-	\def#3{\extractcoordpairy}
+	\tikzdef#2{\extractcoordpairx}
+	\tikzdef#3{\extractcoordpairy}
 }
 \newcommand{\extractcoordpairIterFist}[1]{
 	\if\extractcoordpairseparator#1 
@@ -806,31 +806,6 @@
 	\if\extractcoordpairseparator#1 \else
 		\estendistr\extractcoordpairy{#1}
 		\expandafter\extractcoordpairIterSecond
-	\fi
-}
-
-% \extractcoordpairbis è identico a \extractcoordpair (non si può usare due volte \extractcoordpair, se no la seconda chiamata sovrascrive la prima)
-%TODO cercare una soluzione un po' più elegante
-\newcommand{\extractcoordpairbis}[4][,]{
-	\def\extractcoordpairseparator{#1}
-	\def\extractcoordpairxbis{}
-	\def\extractcoordpairybis{}
-	\extractcoordpairIterFistbis#4\extractcoordpairseparator
-	\def#2{\extractcoordpairxbis}
-	\def#3{\extractcoordpairybis}
-}
-\newcommand{\extractcoordpairIterFistbis}[1]{
-	\if\extractcoordpairseparator#1 
-		\expandafter\extractcoordpairIterSecondbis
-	\else 
-		\estendistr\extractcoordpairxbis{#1}
-		\expandafter\extractcoordpairIterFistbis
-	\fi
-}
-\newcommand{\extractcoordpairIterSecondbis}[1]{
-	\if\extractcoordpairseparator#1 \else
-		\estendistr\extractcoordpairybis{#1}
-		\expandafter\extractcoordpairIterSecondbis
 	\fi
 }
 
