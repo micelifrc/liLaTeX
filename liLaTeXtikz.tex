@@ -743,6 +743,19 @@
 	\end{rotazione}
 }
 
+% \conicaeq[keys]{fromx:tox}{a}{b}{c}{d}{e} disegna la conica ax^2+by^2+cx+dy+e=0 nel range specificato per x
+\newcommand{\conicaeq}[7][]{\conicageneq[#1]{#2}{#3}{#4}{0}{#5}{#6}{#7};}
+
+% \conicageneq[keys]{fromx:tox}{a}{b}{c}{d}{e}{f} disegna la conica ax^2+by^2+cxy+dx+ey+f=0 nel range specificato per x
+\newcommand{\conicageneq}[8][]{
+	\ifnum#4=0
+		\plot[#1]{#2}{\x}{-(#3*(\x)^2+#6*(\x)+#8)/(#5*(\x)+#7)};
+	\else
+		\plot[#1]{#2}{\x}{(-#5*(\x)-#7-sqrt((#5*(\x)+#7)^2-4*#4*(#3*(\x)^2+#6*(\x)+#8)))/(2*#4)};
+		\plot[#1]{#2}{\x}{(-#5*(\x)-#7+sqrt((#5*(\x)+#7)^2-4*#4*(#3*(\x)^2+#6*(\x)+#8)))/(2*#4)};
+	\fi
+}
+
 % \parabolaeq[opzioni]{from:to}{a}{b}{c} (e \parabolaeqy, che è identico) disegna un ramo di parabola di equazione y=ax^2+bx+c. La funzione \parabolaeqx[opzioni]{from:to}{a}{b}{c} è analoga per disegnare il ramo di parabola x=ay^2+by+c (questa volta il range è inteso su y)
 \newcommand{\parabolaeq}[5][]{\parabolaeqy[#1]{#2}{#3}{#4}{#5};}
 \newcommand{\parabolaeqy}[5][]{\plot[#1]{#2}{\x}{#3*\x^2+#4*\x+#5};}
