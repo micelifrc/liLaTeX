@@ -999,8 +999,8 @@
 \newcommand\graffa[3][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
-		width/.initial,
-		pattern/.initial,
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
 		shape/.initial = brace,
 		amplitude/.initial = 5, % in pt
 		mirror/.initial = false,
@@ -1027,11 +1027,39 @@
 \newcommand\molla[3][]{
 	\tikzset{keyfld/.cd,
 		col/.initial = gray,
-		width/.initial,
+		width/.initial, % può essere thin, thick, ...
 		scale/.initial = 1,
 		step/.initial = 0.15,
 		r/.initial = 0.2,
 		aspect/.initial = 0.3,
 	} \setkeyfld{#1};
 	\draw[\kv{col},\kv{width},decoration={aspect=\kv{aspect}, segment length=\kv{scale}*\kv{step}cm,amplitude=\kv{scale}*\kv{r}cm,coil},decorate] (#3) -- (#2);
+}
+
+% \casetta[keys]{pos} disegna una casetta. Pos è il centro della base della casetta
+\newcommand{\casetta}[2][]{
+	\tikzset{keyfld/.cd,
+		col/.initial= blue,
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		scale/.initial = 1,
+		s/.initial, % equivalente a scale
+		w/.initial, % equivalente a width
+		h/.initial, % equivalente a height
+		x/.initial, % equivalente a width
+		y/.initial, % equivalente a height
+	} \setkeyfld{#1};
+	\copykeyvalueifempty{s}{scale};
+	\setkeyvaluesifempty
+		{w}{0.6*\kv{s}}
+		{h}{1.0*\kv{s}}
+		{x}{\kv{w}}
+		{y}{\kv{h}}
+	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(+0.3*\kv{x},0.88*\kv{y})$)--++(0,0.12*\kv{y})--++(-0.1*\kv{x},0)--++(0,-0.08*\kv{y}); % camino
+	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.1*\kv{x},0)$)--++(0,0.3*\kv{y})--++(-0.15*\kv{x},0)--++(0,-0.3*\kv{y}); % porta
+	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(0.1*\kv{x},0.15*\kv{y})$)rectangle++(0.2*\kv{x},0.12*\kv{y}) ($(#2)+(0.2*\kv{x},0.15*\kv{y})$)--++(0,0.12*\kv{y}); % finestra in basso a destra
+	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(0.1*\kv{x},0.55*\kv{y})$)rectangle++(0.2*\kv{x},0.12*\kv{y}) ($(#2)+(0.2*\kv{x},0.55*\kv{y})$)--++(0,0.12*\kv{y}); % finestra in alto a destra
+	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.1*\kv{x},0.55*\kv{y})$)rectangle++(-0.2*\kv{x},0.12*\kv{y}) ($(#2)+(-0.2*\kv{x},0.55*\kv{y})$)--++(0,0.12*\kv{y}); % finestra in alto a sinistra
+	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.4*\kv{x},0.8*\kv{y})$)--++(0,-0.8*\kv{y})--++(0.8*\kv{x},0)--++(0,0.8*\kv{y}); % corpo
+	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.5*\kv{x},0.8*\kv{y})$)--++(0.5*\kv{x},0.2*\kv{y})--++(0.5*\kv{x},-0.2*\kv{y})--++(-\kv{x},0); % tetto
 }
