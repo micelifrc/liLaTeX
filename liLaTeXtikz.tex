@@ -994,3 +994,31 @@
 	\@ifnextchar\bgroup{\raggioluce[#1]{#3}}{}
 }
 \makeatother
+
+% chiama come \graffa[keys]{A}{B} (se mirror resta false, gira in senso antiorario).
+\newcommand\graffa[3][]{
+	\tikzset{keyfld/.cd,
+		col/.initial,
+		width/.initial,
+		pattern/.initial,
+		shape/.initial = brace,
+		amplitude/.initial = 5, % in pt
+		mirror/.initial = false,
+		lbl/.initial,
+		lbl col/.initial,
+		col lbl/.initial,
+		lbl dist/.initial = .5,
+		lbl name/.initial,
+	} \setkeyfld{#1};
+	\ifkeyequal{mirror}{false}
+	{\draw[\kv{col},\kv{width},\kv{pattern},decorate,decoration={\kv{shape},amplitude=\kv{amplitude}pt}](#3) --(#2);}
+	{\draw[\kv{col},\kv{width},\kv{pattern},decorate,decoration={\kv{shape},amplitude=\kv{amplitude}pt}](#2) --(#3);}
+	\ifkeyempty{lbl}{}{\setkeyvalueifempty{lbl name}{graffanamelbl}}
+	\ifkeyempty{lbl name}{}{
+		\medio{graffaPM}{#3}{#2};
+		\ifkeyequal{mirror}{false}{\def\graffaanglbl{90};}{\def\graffaanglbl{270};}
+		\ruotapunto{graffapuntoruotato}{#2}{graffaPM}{\graffaanglbl};
+		\verso[\kv{lbl dist}]{graffalblpos}{graffaPM}{graffapuntoruotato};
+		\stylelbl[#1]{graffalblpos};
+	}
+}
