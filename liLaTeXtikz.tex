@@ -710,51 +710,47 @@
 	\circCPr[#1]{#5}{#2}{#6};
 }
 
-% \interLC{A}{B}{O}{\R}{<- P1}{<- P2} trova i due punti di intersezione P1 e P2 fra la retta AB e la circonferenza di centro O e raggio \R
+% \interLC{<- P1}{<- P2}{A}{B}{O}{\R} trova i due punti di intersezione P1 e P2 fra la retta AB e la circonferenza di centro O e raggio \R
 \newcommand{\interLC}[6]{
-	\path[name path=interLCcirconferenza](#3)circle(#4);
-	\distanza{\interLCdistAO}{#1}{#3};
-	\tikzdef\interLCdiffraggisign{sign(\interLCdistAO cm-#4 cm});
+	\path[name path=interLCcirconferenza](#5)circle(#6);
+	\distanza{\interLCdistAO}{#3}{#5};
+	\tikzdef\interLCdiffraggisign{sign(\interLCdistAO cm-#6 cm});
 	\ifnum\interLCdiffraggisign=-1 % se A è interno alla circonferenza
-		\allont[2*#4]{interLCdistAOpuntofuori}{#1}{#2};
-		\path[name path=interLCABsegmento](#1)--(interLCdistAOpuntofuori);
-		\intpaths{#5}{interLCcirconferenza}{interLCABsegmento};
-		\verso[2*#4]{interLCdistAOpuntofuori}{#1}{#2};
-		\path[name path=interLCABsegmento](#1)--(interLCdistAOpuntofuori);
-		\intpaths{#6}{interLCcirconferenza}{interLCABsegmento};
+		\allont[2*#6]{interLCdistAOpuntofuori}{#3}{#4};
+		\path[name path=interLCABsegmento](#3)--(interLCdistAOpuntofuori);
+		\intpaths{#1}{interLCcirconferenza}{interLCABsegmento};
+		\verso[2*#6]{interLCdistAOpuntofuori}{#3}{#4};
+		\path[name path=interLCABsegmento](#3)--(interLCdistAOpuntofuori);
+		\intpaths{#2}{interLCcirconferenza}{interLCABsegmento};
 	\fi
 	\ifnum\interLCdiffraggisign=1 % se A è esterno alla circonferenza
-		\distanza{\interLCdistBO}{#2}{#3};
-		\tikzdef\interLCdiffdistdaOsign{sign(\interLCdistAO cm-\interLCdistBO cm});
-		\ifnum\interLCdiffdistdaOsign=1 \def\interLCdistAPuno{+\interLCdistAO}
-		\else \def\interLCdistAPuno{-\interLCdistAO} \fi
-		\verso[\interLCdistAPuno]{interLCdistAOpuntofuoriuno}{#1}{#2};
-		\path[name path=interLCABsegmento](#1)--(interLCdistAOpuntofuoriuno);
-		\intpaths{#5}{interLCcirconferenza}{interLCABsegmento};
-		\allont[3*#4]{interLCdistAOpuntofuoridue}{interLCdistAOpuntofuoriuno}{#1};
-		\path[name path=interLCABsegmento](interLCdistAOpuntofuoriuno)--(interLCdistAOpuntofuoridue);
-		\intpaths{#6}{interLCcirconferenza}{interLCABsegmento};
+		\proj{interLCproj}{#5}{#3}{#4};
+		\path[name path=interLCABsegmento](#3)--(interLCproj);
+		\intpaths{#1}{interLCcirconferenza}{interLCABsegmento};
+		\allont[2*#6]{interLCdistAOpuntofuori}{interLCproj}{#3};
+		\path[name path=interLCABsegmento](interLCproj)--(interLCdistAOpuntofuori);
+		\intpaths{#2}{interLCcirconferenza}{interLCABsegmento};
 	\fi
 	\ifnum\interLCdiffraggisign=0 % se A appartiene alla circonferenza
-		\coordinate(#5)at(#1);
-		\proj{interLCproj}{#3}{#1}{#2};
-		\opposto{#6}{#1}{interLCproj};
+		\coordinate(#1)at(#3);
+		\proj{interLCproj}{#5}{#3}{#4};
+		\opposto{#2}{#3}{interLCproj};
 	\fi
 }
 
-% \interCC{O1}{\R1}{O2}{\R2}{<- P1}{<- P2} trova i due punti di intersezione P1 e P2 fra le due circonferenze di centri O1 e O2 e raggi \R1 e \R2
+% \interCC{<- P1}{<- P2}{O1}{\R1}{O2}{\R2} trova i due punti di intersezione P1 e P2 fra le due circonferenze di centri O1 e O2 e raggi \R1 e \R2
 \newcommand{\interCC}[6]{
-	\coordinate(interCCpuntosucirconferenzaA)at($(#1)+(#2,0)$);
-	\coordinate(interCCpuntosucirconferenzaB)at($(#3)+(#4,0)$);
-	\tkzInterCC(#1,interCCpuntosucirconferenzaA)(#3,interCCpuntosucirconferenzaB)
-	\tkzGetPoints{#5}{#6}
+	\coordinate(interCCpuntosucirconferenzaA)at($(#3)+(#4,0)$);
+	\coordinate(interCCpuntosucirconferenzaB)at($(#5)+(#6,0)$);
+	\tkzInterCC(#3,interCCpuntosucirconferenzaA)(#5,interCCpuntosucirconferenzaB)
+	\tkzGetPoints{#1}{#2}
 }
 
-%\tangentiPC{P}{O}{\R}{<- Ta}{<- Tb} trova i punti Ta e Tb sulla circonferenza di centro O e raggio \R tali per cui PTa e PTb sono tangenti alla circonferenza
+%\tangentiPC{<- Ta}{<- Tb}{P}{O}{\R} trova i punti Ta e Tb sulla circonferenza di centro O e raggio \R tali per cui PTa e PTb sono tangenti alla circonferenza
 \newcommand{\tangentiPC}[5]{
-	\medio{tangentiPCmedio}{#1}{#2};
-	\distanza{\tangentiPCraggioPO}{tangentiPCmedio}{#1};
-	\interCC{tangentiPCmedio}{\tangentiPCraggioPO}{#2}{#3}{#4}{#5};
+	\medio{tangentiPCmedio}{#3}{#4};
+	\distanza{\tangentiPCraggioPO}{tangentiPCmedio}{#3};
+	\interCC{#1}{#2}{tangentiPCmedio}{\tangentiPCraggioPO}{#4}{#5};
 }
 
 % \PtangenzaCC{<- P}{O1}{\R1}{O2}{\R2} trova il punto P da cui escono le tangenti comuni alle due circonferenze di centri O1 e O2 e raggi \R1 e \R2
