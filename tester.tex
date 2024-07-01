@@ -6,8 +6,15 @@
 \begin{document}
 
 \begin{immagine}
-\grigliaZ{11}{11};
-\conicaeq[red,thick]{-5:5}{1}{1}{0}{0}{-25};
+\pntl{A}{-90}{0,0};
+\pntl{B}{-90}{-2,-5};
+\draw[gray](A)circle(3);
+\draw[gray](B)circle(1);
+\PtangenzaCC{P}{B}{1}{A}{3};
+\pntl{P}{0}{P};
+\tangentiPC{P}{A}{3}{C}{D};
+\semiretta[col=red]{P}{C};
+\semiretta[col=red]{P}{D};
 \end{immagine}
 
 \end{document}
