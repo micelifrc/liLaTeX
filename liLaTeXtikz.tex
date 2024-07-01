@@ -1022,3 +1022,16 @@
 		\stylelbl[#1]{graffalblpos};
 	}
 }
+
+% \molla[keys]{A}{B} disegna una molla da A a B
+\newcommand\molla[3][]{
+	\tikzset{keyfld/.cd,
+		col/.initial = gray,
+		width/.initial,
+		scale/.initial = 1,
+		step/.initial = 0.15,
+		r/.initial = 0.2,
+		aspect/.initial = 0.3,
+	} \setkeyfld{#1};
+	\draw[\kv{col},\kv{width},decoration={aspect=\kv{aspect}, segment length=\kv{scale}*\kv{step}cm,amplitude=\kv{scale}*\kv{r}cm,coil},decorate] (#3) -- (#2);
+}
