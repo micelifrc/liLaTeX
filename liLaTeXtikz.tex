@@ -1063,3 +1063,6 @@
 	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.4*\kv{x},0.8*\kv{y})$)--++(0,-0.8*\kv{y})--++(0.8*\kv{x},0)--++(0,0.8*\kv{y}); % corpo
 	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.5*\kv{x},0.8*\kv{y})$)--++(0.5*\kv{x},0.2*\kv{y})--++(0.5*\kv{x},-0.2*\kv{y})--++(-\kv{x},0); % tetto
 }
+
+% \sfera[colore]{centro}{raggio} crea una sfera tridimensionale
+\newcommand\sfera[3][teal]{\shade[ball color=#1] (#2) circle (#3);}
