@@ -4,7 +4,7 @@
 \usepackage{pgfplots} % pacchetto per plot
 \pgfplotsset{compat=1.17} % necessario per compatibilità con versioni precedenti
 
-%%%%%%%%%%%%%%%% AMBIENTE immagine
+%%%%%%%%%%%%%%%%	AMBIENTE immagine
 
 % le immagini vengono generalmente create fra \begin{immagine}[opzioni] e \end{immagine}
 \newenvironment{immagine}[1][]
@@ -26,7 +26,7 @@
 	{\end{scope}}
 
 
-%%%%%%%%%%%%%%%% KEY MANAGER
+%%%%%%%%%%%%%%%%	KEY MANAGER
 
 % da chiamare all'inizio di qualunque comando con dei parametri opzionali come \setkeyfld{parametri opzionali}. Dovrebbe essere sempre la seconda riga di qualunque newcommand con parametri opzionali
 \newcommand{\setkeyfld}[1]{
@@ -61,7 +61,7 @@
 \makeatother
 
 
-%%%%%%%%%%%%%%%% FUNZIONI
+%%%%%%%%%%%%%%%%	FUNZIONI
 
 % definisce un valore numerico #1 uguale all'output dell'operazione #2
 \newcommand\tikzdef[2]{\pgfmathsetmacro{#1}{#2}} % definisce float #1:=#2
@@ -108,24 +108,47 @@
 	\tikzset{keyfld/.cd,
 		lbl style/.initial, % se specificato usiamo questo stile. Le opzioni sono rm, bf, cal
 		lbl/.initial,
+		lbl size/.initial,
 		lbl name/.initial = scriptlblName,
 		col/.initial,
-		lbl size/.initial,
+		lbl col/.initial,
 		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
 	} \setkeyfld{#1};
+	\PRIVstylelbl[
+		PRIVlbl lbl style=\kv{lbl style},
+		PRIVlbl lbl=\kv{lbl},
+		PRIVlbl lbl size=\kv{lbl size},
+		PRIVlbl lbl name=\kv{lbl name},
+		PRIVlbl col=\kv{col},
+		PRIVlbl lbl col=\kv{lbl col},
+		PRIVlbl col lbl=\kv{col lbl},
+	]{#2};
+}
+
+% \PRIVstylelbl[keys]{coord} analogo a \stylelbl, ma da usare nelle funzioni di questo pacchetto
+\newcommand{\PRIVstylelbl}[2][]{
+	\tikzset{keyfld/.cd,
+		PRIVlbl lbl style/.initial, % se specificato usiamo questo stile. Le opzioni sono rm, bf, cal
+		PRIVlbl lbl/.initial,
+		PRIVlbl lbl size/.initial,
+		PRIVlbl lbl name/.initial = scriptlblName,
+		PRIVlbl col/.initial,
+		PRIVlbl lbl col/.initial,
+		PRIVlbl col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
+	} \setkeyfld{#1};
 	\copykeyvaluesifempty
-		{lbl col}{col}
-		{col lbl}{lbl col}
-	\ifkeyempty{lbl}{\coordinate (\kv{lbl name}) at (#2);}{
-		\ifkeyempty{lbl style}{ \node[\kv{col lbl}] (\kv{lbl name}) at (#2) {\kv{lbl size}\kv{lbl}}; }{}
-		\ifkeyequal{lbl style}{rm}{ \node[\kv{col lbl}] (\kv{lbl name}) at (#2) {\kv{lbl size}$\mathrm{\kv{lbl}}$}; }{}
-		\ifkeyequal{lbl style}{bf}{ \node[\kv{col lbl}] (\kv{lbl name}) at (#2) {\kv{lbl size}$\mathbf{\kv{lbl}}$}; }{}
-		\ifkeyequal{lbl style}{cal}{ \node[\kv{col lbl}] (\kv{lbl name}) at (#2) {\kv{lbl size}$\mathcal{\kv{lbl}}$}; }{}
+		{PRIVlbl lbl col}{PRIVlbl col}
+		{PRIVlbl col lbl}{PRIVlbl lbl col}
+	\ifkeyempty{PRIVlbl lbl}{\coordinate (\kv{PRIVlbl lbl name}) at (#2);}{
+		\ifkeyempty{PRIVlbl lbl style}{ \node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}\kv{PRIVlbl lbl}}; }{}
+		\ifkeyequal{PRIVlbl lbl style}{rm}{ \node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}$\mathrm{\kv{PRIVlbl lbl}}$}; }{}
+		\ifkeyequal{PRIVlbl lbl style}{PRIVlbl bf}{ \node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}$\mathbf{\kv{PRIVlbl lbl}}$}; }{}
+		\ifkeyequal{PRIVlbl lbl style}{PRIVlbl cal}{ \node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}$\mathcal{\kv{PRIVlbl lbl}}$}; }{}
 	}
 }
 
 
-%%%%%%%%%%%%%%%% PUNTO
+%%%%%%%%%%%%%%%%	PUNTO
 % Attenzione! coordinate create come \punto (o suoi derivati) sono incompatibili con l'opzione fill per eventuali poligoni. Questo vuol dire che se vogliamo disegnare un poligono colorato, dobbiamo definire i punti come \coordinate, poi usare fill, e infine ripassare i vertici con \punto
 
 % chiama come \punto[keys]{coordinate}
@@ -136,6 +159,7 @@
 		shape/.initial = circle, % circle, rettangle o lo si può lasciare vuoto
 		name/.initial = puntoNome,
 		lbl/.initial,
+		lbl style/.initial, % può essere lasciato vuoto o può essere rm, bf, cal
 		lbl name/.initial,
 		lbl ang/.initial = -90,
 		lbl dist/.initial = 0.3,
@@ -144,7 +168,15 @@
 		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
 	} \setkeyfld{#1};
 	\coordinate[\kv{shape},inner sep=\kv{size},fill=\kv{col}] (\kv{name}) at (#2);
-	\stylelbl[#1]{$(#2)+(\kv{lbl ang}:\kv{lbl dist})$};
+	\PRIVstylelbl[
+		PRIVlbl lbl style=\kv{lbl style},
+		PRIVlbl lbl=\kv{lbl},
+		PRIVlbl lbl size=\kv{lbl size},
+		PRIVlbl lbl name=\kv{lbl name},
+		PRIVlbl col=\kv{col},
+		PRIVlbl lbl col=\kv{lbl col},
+		PRIVlbl col lbl=\kv{col lbl},
+	]{$(#2)+(\kv{lbl ang}:\kv{lbl dist})$};
 }
 
 % chiama come \pnt[col]{nome}{coordinate}
@@ -159,7 +191,7 @@
 \newcommand{\pntls}[4][]{\pntlbl[#1]{#2s}{$#2''$}{#3}{#4};}
 
 
-%%%%%%%%%%%%%%%% CALCOLO DI COORDINATE
+%%%%%%%%%%%%%%%%	CALCOLO DI COORDINATE
 
 % \verso[L]{<- P}{A}{B} crea un punto P ottenuto traslando A verso B per una lunghezza complessiva L
 \newcommand{\verso}[4][1]{\coordinate (#2) at ($(#3)!#1cm!(#4)$);}
@@ -207,7 +239,7 @@
 \newcommand{\triangoloequilatero}[3]{\tkzDefTriangle[equilateral](#2,#3) \tkzGetPoint{#1}}
 
 
-%%%%%%%%%%%%%%%% INTERSEZIONI
+%%%%%%%%%%%%%%%%	INTERSEZIONI
 
 % \intpahts{<- I}{path1}{path2} trova il punto di intersezione fra due paths e lo chiama I
 \newcommand{\intpaths}[3]{\path [name intersections={of=#2 and #3,by=#1}];}
@@ -216,7 +248,7 @@
 \newcommand{\intrette}[5]{\tkzInterLL(#2,#3)(#4,#5) \tkzGetPoint{#1};}
 
 
-%%%%%%%%%%%%%%%% GRIGLIE SISTEMI DI RIFERIMENTO
+%%%%%%%%%%%%%%%%	GRIGLIE SISTEMI DI RIFERIMENTO
 
 % \griglia[keys]{west}{east}{south}{north}
 \newcommand{\griglia}[5][]{
@@ -271,15 +303,26 @@
 		width/.initial, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		lbl/.initial = $x$,
+		lbl style/.initial, % può essere lasciato vuoto o può essere rm, bf, cal
+		lbl size/.initial,
 		lbl name/.initial = assexlbl, % il nome da dare al label
 		lbl dist/.initial = 0.3,
-		col lbl/.initial,
+		lbl col/.initial,
+		col lbl/.initial, % analogo a lbl col
 		flip lbl/.initial = false, % rendi true se vuoi ribaltare il label
 	} \setkeyfld{#1};
 	\copykeyvalueifempty{col lbl}{col};
 	\ifkeyequal{flip lbl}{true}{\def\assexflipper{180}}{\def\assexflipper{0}};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(0,\kv{y})+(\kv{ang shift}:#2)$) -- ($(0,\kv{y})+(\kv{ang shift}:#3)$)node(assexpunta){};
-	\stylelbl[#1]{$(assexpunta)+(\kv{ang shift}-90+\assexflipper:\kv{lbl dist})$};
+	\PRIVstylelbl[
+		PRIVlbl lbl style=\kv{lbl style},
+		PRIVlbl lbl=\kv{lbl},
+		PRIVlbl lbl size=\kv{lbl size},
+		PRIVlbl lbl name=\kv{lbl name},
+		PRIVlbl col=\kv{col},
+		PRIVlbl lbl col=\kv{lbl col},
+		PRIVlbl col lbl=\kv{col lbl},
+	]{$(assexpunta)+(\kv{ang shift}-90+\assexflipper:\kv{lbl dist})$};
 }
 
 % \assey[keys]{y-bottom}{y-top} crea l'assey
@@ -292,15 +335,26 @@
 		width/.initial, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		lbl/.initial = $y$,
+		lbl style/.initial, % può essere lasciato vuoto o può essere rm, bf, cal
+		lbl size/.initial,
 		lbl name/.initial = asseylbl, % il nome da dare al label
 		lbl dist/.initial = 0.3,
-		col lbl/.initial,
+		lbl col/.initial,
+		col lbl/.initial, % analogo a lbl col
 		flip lbl/.initial = false, % rendi true se vuoi ribaltare il label
 	} \setkeyfld{#1};
 	\copykeyvalueifempty{col lbl}{col};
 	\ifkeyequal{flip lbl}{true}{\def\asseyflipper{180}}{\def\asseyflipper{0}};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(\kv{x},0)+(\kv{ang shift}+90:#2)$) -- ($(\kv{x},0)+(\kv{ang shift}+90:#3)$)node(asseypunta){};
-	\stylelbl[#1]{$(asseypunta)+(\kv{ang shift}+180+\asseyflipper:\kv{lbl dist})$};
+	\PRIVstylelbl[
+		PRIVlbl lbl style=\kv{lbl style},
+		PRIVlbl lbl=\kv{lbl},
+		PRIVlbl lbl size=\kv{lbl size},
+		PRIVlbl lbl name=\kv{lbl name},
+		PRIVlbl col=\kv{col},
+		PRIVlbl lbl col=\kv{lbl col},
+		PRIVlbl col lbl=\kv{col lbl},
+	]{$(asseypunta)+(\kv{ang shift}+180+\asseyflipper:\kv{lbl dist})$};
 }
 
 % \assixy[keys]{x-left}{x-right}{y-left}{y-right} disegna gli assi cartesiani
@@ -319,7 +373,11 @@
 		lbl dist/.initial = 0.3,
 		col lbl/.initial,
 	} \setkeyfld{#1};
-	\assixyO[#1]{\kv{x},\kv{y}}{#2}{#3}{#4}{#5};
+	\copykeyvalueifempty{col lbl}{col};
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (#2,\kv{y})--(#3,\kv{y})node(assixypuntax){};
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (\kv{x},#4)--(\kv{x},#5)node(assixypuntay){};
+	\node[\kv{col lbl}](\kv{lbl x name}) at ($(assixypuntax)+(-90:\kv{lbl dist})$){\kv{lbl x}};
+	\node[\kv{col lbl}](\kv{lbl y name}) at ($(assixypuntay)+(180:\kv{lbl dist})$){\kv{lbl y}};
 }
 
 % \assixyO[keys]{centro}{x-left}{x-right}{y-left}{y-right} disegna gli assi cartesiani
@@ -417,7 +475,7 @@
 }
 
 
-%%%%%%%%%%%%%%%% TRIANGOLI
+%%%%%%%%%%%%%%%%	TRIANGOLI
 
 % \piedemed[k]{<- P}{A}{B}{C} trova il piede P della mediana BP (k è un parametro fra 0 e 1 che "sposta" P lungo il lato AC)
 \newcommand{\piedemed}[5][0.5]{\medio[#1]{#2}{#3}{#5};}
@@ -432,7 +490,13 @@
 }
 
 % \centrotriangolo[type]{<- P}{A}{B}{C} trova il centro del triangolo (funzione usata per definire i successivi 5 comandi)
-\newcommand{\centrotriangolo}[5][centroid]{\tkzDefTriangleCenter[#1](#3,#4,#5) \tkzGetPoint{#2};}
+\newcommand{\centrotriangolo}[5][centroid]{
+	\coordinate(centrotriangoloA)at(#3);
+	\coordinate(centrotriangoloB)at(#4);
+	\coordinate(centrotriangoloC)at(#5);
+	\tkzDefTriangleCenter[#1](centrotriangoloA,centrotriangoloB,centrotriangoloC)
+	\tkzGetPoint{#2};
+}
 % \baricentro{<- P}{A}{B}{C} trova il baricentro P di un triangolo ABC
 \newcommand{\baricentro}[4]{\centrotriangolo[centroid]{#1}{#2}{#3}{#4}}
 % \ortocentro{<- P}{A}{B}{C} trova il baricentro P di un triangolo ABC
@@ -444,8 +508,56 @@
 % \exocentro{<- P}{A}{B}{C} trova il baricentro P di un triangolo ABC (opposto a B)
 \newcommand{\excentro}[4]{\centrotriangolo[ex]{#1}{#2}{#3}{#4}}
 
+% \triangolobase[keys]{A}{B}{C} disegna un triangolo ABC, con label per vertici, angoli e lati
+\newcommand{\triangolobase}[4][]{
+	\tikzset{keyfld/.cd,
+		col/.initial,
+		col vertici/.initial,
+		col lati/.initial,
+		col angoli/.initial,
+		fill angoli/.initial = false,
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		lbl vertici/.initial = true,
+		lbl lati/.initial = true,
+		lbl angoli/.initial = true,
+		lbl vertici dist/.initial = 0.3,
+	} \setkeyfld{#1};
+	\copykeyvaluesifempty
+		{col vertici}{col}
+		{col lati}{col}
+		{col angoli}{col}
+	\ifkeyequal{lbl angoli}{true}{
+		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV lbl=$\alpha$]{#3}{#2}{#4};
+		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV lbl=$\beta$]{#4}{#3}{#2};
+		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV lbl=$\gamma$]{#2}{#4}{#3};
+	}{
+		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli}]{#3}{#2}{#4};
+		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli}]{#4}{#3}{#2};
+		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli}]{#2}{#4}{#3};
+	}
+	\ifkeyequal{lbl lati}{true}{
+		\PRIVsegmento[PRIV col=\kv{col lati},PRIV lbl=a,PRIV lbl style=rm]{#3}{#4};
+		\PRIVsegmento[PRIV col=\kv{col lati},PRIV lbl=b,PRIV lbl style=rm]{#4}{#2};
+		\PRIVsegmento[PRIV col=\kv{col lati},PRIV lbl=c,PRIV lbl style=rm]{#2}{#3};
+	}{
+		\PRIVsegmento[PRIV col=\kv{col lati}]{#3}{#4};
+		\PRIVsegmento[PRIV col=\kv{col lati}]{#4}{#2};
+		\PRIVsegmento[PRIV col=\kv{col lati}]{#2}{#3};
+	}
+	\ifkeyequal{lbl vertici}{true}{
+		\baricentro{triangolobasebaricentro}{#2}{#3}{#4};
+		\allont[\kv{lbl vertici dist}]{triangolobaselbllato}{#2}{triangolobasebaricentro};
+		\node[\kv{col vertici}](triangolobaselbllato)at(triangolobaselbllato){$A$};
+		\allont[\kv{lbl vertici dist}]{triangolobaselbllato}{#3}{triangolobasebaricentro};
+		\node[\kv{col vertici}](triangolobaselbllato)at(triangolobaselbllato){$B$};
+		\allont[\kv{lbl vertici dist}]{triangolobaselbllato}{#4}{triangolobasebaricentro};
+		\node[\kv{col vertici}](triangolobaselbllato)at(triangolobaselbllato){$C$};
+	}{}
+}
 
-%%%%%%%%%%%%%%%% MARKS accettano le opzioni s,z,x,o,oo,|,||,|||
+
+%%%%%%%%%%%%%%%%	MARKS accettano le opzioni s,z,x,o,oo,|,||,|||
 
 % chiama come \segmento[keys]{A}{B} per disegnare il segmento
 \newcommand{\segmento}[3][]{
@@ -460,23 +572,74 @@
 		arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
 		name path/.initial, % può essere usato per dare un nome al path
 		lbl/.initial,
+		lbl style/.initial,
 		lbl name/.initial, % il nome da dare alla posizione del label
 		lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
 		lbl size/.initial,
 		lbl col/.initial,
 		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
 	} \setkeyfld{#1};
-	\copykeyvalueifempty{col draw}{col};
-	\ifkeyempty{lbl}{}{\setkeyvalueifempty{lbl name}{segmentoLabelPos};}
-	\ifkeyempty{name path}
-		{\draw[\kv{col draw},\kv{width},\kv{pattern},\kv{arrow}](#2)--(#3);}
-		{\draw[\kv{col draw},\kv{width},\kv{pattern},\kv{arrow},name path=\kv{name path}](#2)--(#3);}
-	\tkzMarkSegment[mark=\kv{mark},\kv{col mark},size=\kv{mark size}cm](#2,#3)
-	\ifkeyempty{lbl name}{}{
-		\medio{segmentoPuntoMedio}{#2}{#3};
-		\ruotapuntoN[\kv{lbl dist}]{\kv{lbl name}}{#2}{segmentoPuntoMedio}{90};
+	\PRIVsegmento[
+		PRIV col=\kv{col},
+		PRIV col draw=\kv{col draw},
+		PRIV mark=\kv{mark},
+		PRIV mark size=\kv{mark size},
+		PRIV col mark=\kv{col mark},
+		PRIV width=\kv{width},
+		PRIV pattern=\kv{pattern},
+		PRIV arrow=\kv{arrow},
+		PRIV name path=\kv{name path},
+		PRIV lbl=\kv{lbl},
+		PRIV lbl style=lbl style,
+		PRIV lbl name=\kv{lbl name},
+		PRIV lbl dist=\kv{lbl dist},
+		PRIV lbl size=\kv{lbl size},
+		PRIV lbl col=\kv{lbl col},
+		PRIV col lbl=\kv{col lbl},
+	]{#2}{#3};
+}
+
+% chiama come \PRIVsegmento[keys]{A}{B} per disegnare il segmento (versione privata, per il solo programmatore)
+\newcommand{\PRIVsegmento}[3][]{
+	\tikzset{keyfld/.cd,
+		PRIV col/.initial = black,
+		PRIV col draw/.initial, % il colore con cui si disegna il lato
+		PRIV mark/.initial = none, % il segno da mettere al segmento
+		PRIV mark size/.initial = 0.2, % la dimensione del segno
+		PRIV col mark/.initial = black, % il colore del segno
+		PRIV width/.initial, % può essere thin, thick, ...
+		PRIV pattern/.initial, % può essere solid, dashed, dotted, ...
+		PRIV arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
+		PRIV name path/.initial, % può essere usato per dare un nome al path
+		PRIV lbl/.initial,
+		PRIV lbl style/.initial, % può essere vuoto, oppure può essere rm,bf,cal
+		PRIV lbl name/.initial, % il nome da dare alla posizione del label
+		PRIV lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
+		PRIV lbl size/.initial,
+		PRIV lbl col/.initial,
+		PRIV col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
+	} \setkeyfld{#1};
+	\copykeyvalueifempty{PRIV col draw}{PRIV col};
+	\coordinate(segmentoA)at(#2);
+	\coordinate(segmentoB)at(#3);
+	\ifkeyempty{PRIV lbl}{}{\setkeyvalueifempty{PRIV lbl name}{segmentoLabelPos};}
+	\ifkeyempty{PRIV name path}
+		{\draw[\kv{PRIV col draw},\kv{PRIV width},\kv{PRIV pattern},\kv{PRIV arrow}](segmentoA)--(segmentoB);}
+		{\draw[\kv{PRIV col draw},\kv{PRIV width},\kv{PRIV pattern},\kv{PRIV arrow},name path=\kv{PRIV name path}](segmentoA)--(segmentoB);}
+	\tkzMarkSegment[mark=\kv{PRIV mark},\kv{PRIV col mark},size=\kv{PRIV mark size}cm](segmentoA,segmentoB)
+	\ifkeyempty{PRIV lbl name}{}{
+		\medio{segmentoPuntoMedio}{segmentoA}{segmentoB};
+		\ruotapuntoN[\kv{PRIV lbl dist}]{\kv{PRIV lbl name}}{segmentoA}{segmentoPuntoMedio}{90};
 	}
-	\stylelbl[#1]{\kv{lbl name}};
+	\PRIVstylelbl[
+		PRIVlbl lbl style=\kv{PRIV lbl style},
+		PRIVlbl lbl=\kv{PRIV lbl},
+		PRIVlbl lbl size=\kv{PRIV lbl size},
+		PRIVlbl lbl name=\kv{PRIV lbl name},
+		PRIVlbl col=\kv{PRIV col},
+		PRIVlbl lbl col=\kv{PRIV lbl col},
+		PRIVlbl col lbl=\kv{PRIV col lbl},
+	]{\kv{PRIV lbl name}};
 }
 
 % chiama come \markarco[keys]{m}{O}{A}{B} per creare un mark nel punto medio dell'arco di circonferenza AB di centro O. m indica il marchio richiesto (fra s,z,x,o,oo,|,||,|||)
@@ -512,17 +675,56 @@
 		lbl col/.initial,
 		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
 	} \setkeyfld{#1};
-	\setkeyvalueifempty{col draw}{\kv{col}};
-	\setkeyvalueifempty{col lbl}{\kv{col}};
-	\setkeyvalueifempty{lbl col}{\kv{col lbl}};
-	\ifkeyempty{col fill}{}{\setkeyvalue{fill}{true}};
-	\ifkeyequal{fill}{true}{\setkeyvalueifempty{col fill}{\kv{col}}}{};
+	\PRIVangolo[
+		PRIV col=\kv{col},
+		PRIV col draw=\kv{col draw},
+		PRIV r=\kv{r},
+		PRIV mark=\kv{mark},
+		PRIV width=\kv{width},
+		PRIV pattern=\kv{pattern},
+		PRIV arrow=\kv{arrow},
+		PRIV fill=\kv{fill},
+		PRIV col fill=\kv{col fill},
+		PRIV opacity=\kv{opacity},
+		PRIV lbl=\kv{lbl};
+		PRIV lbl dist=\kv{lbl dist},
+		PRIV lbl size=\kv{lbl size},
+		PRIV lbl col=\kv{lbl col},
+		PRIV col lbl=\kv{col lbl},
+	]{#2}{#3}{#4};
+}
+
+% chiama come \PRIVangolo[keys]{A}{B}{C} per disegnare l'angolo in senso antiorario
+\newcommand{\PRIVangolo}[4][]{
+	\tikzset{keyfld/.cd,
+		PRIV col/.initial = black,
+		PRIV col draw/.initial, % il colore con cui si disegna l'angolo
+		PRIV r/.initial = 0.6, % il raggio dell'angolo
+		PRIV mark/.initial = none, % il segno da mettere all'angolo
+		PRIV width/.initial, % può essere thin, thick, ...
+		PRIV pattern/.initial, % può essere solid, dashed, dotted, ...
+		PRIV arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
+		PRIV fill/.initial = false, % può essere true o false
+		PRIV col fill/.initial, % il colore del filling
+		PRIV opacity/.initial = 0.3, % un numero fra 0 e 1 ch indica l'intensità della colorazione
+		PRIV lbl/.initial,
+		PRIV lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
+		PRIV lbl size/.initial,
+		PRIV lbl col/.initial,
+		PRIV col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
+	} \setkeyfld{#1};
+	\copykeyvaluesifempty
+		{PRIV col draw}{PRIV col}
+		{PRIV col lbl}{PRIV col}
+		{PRIV lbl col}{PRIV col lbl}
+	\ifkeyempty{PRIV col fill}{}{\setkeyvalue{PRIV fill}{true}};
+	\ifkeyequal{PRIV fill}{true}{\copykeyvalueifempty{PRIV col fill}{PRIV col}}{};
 	\coordinate(angoloPuntoA)at(#2);
 	\coordinate(angoloPuntoB)at(#3);
 	\coordinate(angoloPuntoC)at(#4);
-	\ifkeyequal{fill}{true}{\tkzFillAngle[size=\kv{r},opacity=\kv{opacity},fill=\kv{col fill}](angoloPuntoA,angoloPuntoB,angoloPuntoC)}{}
-	\tkzMarkAngle[mark=\kv{mark},size=\kv{r},draw=\kv{col draw},\kv{width},\kv{pattern},\kv{arrow}](angoloPuntoA,angoloPuntoB,angoloPuntoC)
-	\ifkeyempty{lbl}{}{\tkzLabelAngle[pos=\kv{r}+\kv{lbl dist},\kv{lbl col}](angoloPuntoA,angoloPuntoB,angoloPuntoC){\kv{lbl size}\kv{lbl}}}
+	\ifkeyequal{PRIV fill}{true}{\tkzFillAngle[size=\kv{PRIV r},opacity=\kv{PRIV opacity},fill=\kv{PRIV col fill}](angoloPuntoA,angoloPuntoB,angoloPuntoC)}{}
+	\tkzMarkAngle[mark=\kv{PRIV mark},size=\kv{PRIV r},draw=\kv{PRIV col draw},\kv{PRIV width},\kv{PRIV pattern},\kv{PRIV arrow}](angoloPuntoA,angoloPuntoB,angoloPuntoC)
+	\ifkeyempty{PRIV lbl}{}{\tkzLabelAngle[pos=\kv{PRIV r}+\kv{PRIV lbl dist},\kv{PRIV lbl col}](angoloPuntoA,angoloPuntoB,angoloPuntoC){\kv{PRIV lbl size}\kv{PRIV lbl}}}
 }
 
 % chiama come \angoloretto[keys]{A}{B}{C} per disegnare l'angolo retto in senso antiorario
@@ -550,7 +752,7 @@
 }
 
 
-%%%%%%%%%%%%%%%% RETTE E SEMIRETTE
+%%%%%%%%%%%%%%%%	RETTE E SEMIRETTE
 
 % \retta[keys]{A}{B} crea una retta da A a B
 \newcommand{\retta}[3][]{
@@ -564,6 +766,7 @@
 		pattern prol/.initial = dashed, % può essere solid, dashed, dotted, ...
 		name path/.initial, % può essere usato per dare un nome al path (per il tratto continuo)
 		lbl/.initial,
+		lbl style/.initial, % può essere lasciato vuoto oppure può essere rm, bf, cal
 		lbl name/.initial, % il nome da dare alla posizione del label
 		lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
 		flip lbl/.initial = false, % dice se vogliamo ribaltare la posizione del label
@@ -594,7 +797,15 @@
 		\verso[0.2]{rettaFulcro}{rettaProlB}{#2};
 		\ifkeyequal{flip lbl}{false}{\def\semirettaLblAng{-90}}{\def\semirettaLblAng{+90}}
 		\ruotapuntoN[\kv{lbl dist}]{\kv{lbl name}}{rettaProlB}{rettaFulcro}{\semirettaLblAng};
-		\stylelbl[#1]{\kv{lbl name}};
+		\PRIVstylelbl[
+			PRIVlbl lbl style=\kv{lbl style},
+			PRIVlbl lbl=\kv{lbl},
+			PRIVlbl lbl size=\kv{lbl size},
+			PRIVlbl lbl name=\kv{lbl name},
+			PRIVlbl col=\kv{col},
+			PRIVlbl lbl col=\kv{lbl col},
+			PRIVlbl col lbl=\kv{col lbl},
+		]{\kv{lbl name}};
 	}
 }
 
@@ -610,6 +821,7 @@
 		pattern prol/.initial = dashed, % può essere solid, dashed, dotted, ...
 		name path/.initial, % può essere usato per dare un nome al path (per il tratto continuo)
 		lbl/.initial,
+		lbl style/.initial, % può essere lasciato vuoto oppure può essere rm, bf, cal
 		lbl name/.initial, % il nome da dare alla posizione del label
 		lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
 		flip lbl/.initial = false, % dice se vogliamo ribaltare la posizione del label
@@ -637,12 +849,20 @@
 		\verso[0.2]{semirettaFulcro}{semirettaProlTo}{#2};
 		\ifkeyequal{flip lbl}{false}{\def\semirettaLblAng{-90}}{\def\semirettaLblAng{+90}}
 		\ruotapuntoN[\kv{lbl dist}]{\kv{lbl name}}{semirettaProlTo}{semirettaFulcro}{\semirettaLblAng};
-		\stylelbl[#1]{\kv{lbl name}};
+		\PRIVstylelbl[
+			PRIVlbl lbl style=\kv{lbl style},
+			PRIVlbl lbl=\kv{lbl},
+			PRIVlbl lbl size=\kv{lbl size},
+			PRIVlbl lbl name=\kv{lbl name},
+			PRIVlbl col=\kv{col},
+			PRIVlbl lbl col=\kv{lbl col},
+			PRIVlbl col lbl=\kv{col lbl},
+		]{\kv{lbl name}};
 	}
 }
 
 
-%%%%%%%%%%%%%%%% CIRCONFERENZE
+%%%%%%%%%%%%%%%%	CIRCONFERENZE
 
 % chiama come \circCR[keys]{C}{R} per disegnare la circonferenza di centro C e raggio R
 \newcommand{\circCR}[3][]{
@@ -656,6 +876,7 @@
 		opacity/.initial = 30, % l'opacity del fill, se non è stato specificato col fill
 		lbl name/.initial, % il nome da dare all'eventuale label (se presente)
 		lbl/.initial,
+		lbl style/.initial, % può essere lasciato vuoto oppure può essere rm, bf, cal
 		lbl size/.initial,
 		lbl dist/.initial = 0.3, % la distanza del label dalla circonferenza
 		lbl ang/.initial = -150, % l'angolo a cui mettere il label
@@ -685,7 +906,17 @@
 		}
 	}
 	\ifkeyempty{lbl}{}{\setkeyvalueifempty{lbl name}{circCPlblName};}
-	\ifkeyempty{lbl name}{}{\stylelbl[#1]{$(#2)+(\kv{lbl ang}:#3+\kv{lbl dist} cm)$};}
+	\ifkeyempty{lbl name}{}{
+		\PRIVstylelbl[
+			PRIVlbl lbl style=\kv{lbl style},
+			PRIVlbl lbl=\kv{lbl},
+			PRIVlbl lbl size=\kv{lbl size},
+			PRIVlbl lbl name=\kv{lbl name},
+			PRIVlbl col=\kv{col},
+			PRIVlbl lbl col=\kv{lbl col},
+			PRIVlbl col lbl=\kv{col lbl},
+		]{$(#2)+(\kv{lbl ang}:#3+\kv{lbl dist} cm)$};
+	}
 }
 
 % \circCP[keys]{C}{P} disegna la circonferenza di centro C e passante per P
@@ -709,6 +940,9 @@
 	\circocentro{#5}{#2}{#3}{#4};
 	\circCPr[#1]{#5}{#2}{#6};
 }
+
+
+%%%%%%%%%%%%%%%%	PUNTI DA CIRCONFERENZE
 
 % \interLC{<- P1}{<- P2}{A}{B}{O}{\R} trova i due punti di intersezione P1 e P2 fra la retta AB e la circonferenza di centro O e raggio \R
 \newcommand{\interLC}[6]{
@@ -775,7 +1009,7 @@
 }
 
 
-%%%%%%%%%%%%%%%% ARCHI DI CIRCONFERENZA
+%%%%%%%%%%%%%%%%	ARCHI DI CIRCONFERENZA
 
 % questi comandi disegnano archi in senso antiorario (rilevante per eventuali frecce)
 
@@ -791,7 +1025,7 @@
 }
 
 
-%%%%%%%%%%%%%%%% ALTRE CONICHE
+%%%%%%%%%%%%%%%%	ALTRE CONICHE
 
 % \ellisse[opzioni]{centro}{semiasse a}{semiasse b}
 \newcommand{\ellisse}[4][]{\draw[#1](#2)ellipse(#3cm and #4cm);}
@@ -855,7 +1089,7 @@
 \newcommand{\propinvshift}[5][]{\propinv[#1,shift={(#5)}]{#2}{#3}{#4};}
 
 
-%%%%%%%%%%%%%%%% PLOT GENERICI
+%%%%%%%%%%%%%%%%	PLOT GENERICI
 
 % chiama come \plot[opzioni]{from:to}{x}{y}. È parametrizzato come \x
 \newcommand{\plot}[4][]{\draw[smooth,samples=100,domain=#2,#1] plot ({#3},{#4});}
@@ -868,7 +1102,7 @@
 \newcommand{\plotsinshift}[4][]{\plotsin[#1,shift={(#4)}]{#2}{#3};}
 
 
-%%%%%%%%%%%%%%%% ESTRATTORE DI COORDINATE
+%%%%%%%%%%%%%%%%	UTILS
 
 % \extractcoordpair[separatore]{<- \x}{<-  \y}{P} estrae le due coordinate di P e le scrive in \x e in \y. Se P è dato in coordinate polari o rappresenta un range allora il separatore da usare è : (anziché ,)
 \newcommand{\extractcoordpair}[4][,]{
@@ -893,9 +1127,6 @@
 		\expandafter\extractcoordpairIterSecond
 	\fi
 }
-
-
-%%%%%%%%%%%%%%%% UTILS
 
 % \estendistr#1{#2} aggiunge #2 alla fine della stringa #1
 \def\estendistr#1#2{\expandafter\def\expandafter#1\expandafter{#1#2}}
@@ -976,7 +1207,17 @@
 	\ifkeyequal{fill}{true}{\fill[\kv{col fill}] (#2)--++(\kv{ang}:#3)--++(\kv{ang}+90:#4)--++(\kv{ang}+180:#3)--++(\kv{ang}+270:#4);}{}
 	\draw[\kv{col draw},\kv{width},\kv{pattern}] (#2)--++(\kv{ang}:#3)--++(\kv{ang}+90:#4)--++(\kv{ang}+180:#3)--++(\kv{ang}+270:#4);
 	\ifkeyempty{lbl}{}{\setkeyvalueifempty{centro}{cassacentro}}
-	\ifkeyempty{centro}{}{\stylelbl[#1]{$(#2)+(\ang:0.5*#3)+(\ang+90:0.5*#4)$};}
+	\ifkeyempty{centro}{}{
+		\PRIVstylelbl[
+			PRIVlbl lbl style=\kv{lbl style},
+			PRIVlbl lbl=\kv{lbl},
+			PRIVlbl lbl size=\kv{lbl size},
+			PRIVlbl lbl name=\kv{centro},
+			PRIVlbl col=\kv{col},
+			PRIVlbl lbl col=\kv{lbl col},
+			PRIVlbl col lbl=\kv{col lbl},
+		]{$(#2)+(\ang:0.5*#3)+(\ang+90:0.5*#4)$};
+	}
 }
 
 % \raggioluce[keys]{P1}{P2}{P3}... disegna un raggio di luce (con le varie frecce)
@@ -1005,6 +1246,7 @@
 		amplitude/.initial = 5, % in pt
 		mirror/.initial = false,
 		lbl/.initial,
+		lbl style/.initial, % se specificato usiamo questo stile. Le opzioni sono rm, bf, cal
 		lbl col/.initial,
 		col lbl/.initial,
 		lbl dist/.initial = .5,
@@ -1019,7 +1261,15 @@
 		\ifkeyequal{mirror}{false}{\def\graffaanglbl{90};}{\def\graffaanglbl{270};}
 		\ruotapunto{graffapuntoruotato}{#2}{graffaPM}{\graffaanglbl};
 		\verso[\kv{lbl dist}]{graffalblpos}{graffaPM}{graffapuntoruotato};
-		\stylelbl[#1]{graffalblpos};
+		\PRIVstylelbl[
+			PRIVlbl lbl style=\kv{lbl style},
+			PRIVlbl lbl=\kv{lbl},
+			PRIVlbl lbl size=\kv{lbl size},
+			PRIVlbl lbl name=\kv{lbl name},
+			PRIVlbl col=\kv{col},
+			PRIVlbl lbl col=\kv{lbl col},
+			PRIVlbl col lbl=\kv{col lbl},
+		]{graffalblpos};
 	}
 }
 
@@ -1035,6 +1285,12 @@
 	} \setkeyfld{#1};
 	\draw[\kv{col},\kv{width},decoration={aspect=\kv{aspect}, segment length=\kv{scale}*\kv{step}cm,amplitude=\kv{scale}*\kv{r}cm,coil},decorate] (#3) -- (#2);
 }
+
+% \sfera[colore]{centro}{raggio} crea una sfera tridimensionale
+\newcommand\sfera[3][teal]{\shade[ball color=#1] (#2) circle (#3);}
+
+
+%%%%%%%%%%%%%%%% 	DISEGNI ARTICOLATI
 
 % \casetta[keys]{pos} disegna una casetta. Pos è il centro della base della casetta
 \newcommand{\casetta}[2][]{
@@ -1063,6 +1319,3 @@
 	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.4*\kv{x},0.8*\kv{y})$)--++(0,-0.8*\kv{y})--++(0.8*\kv{x},0)--++(0,0.8*\kv{y}); % corpo
 	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.5*\kv{x},0.8*\kv{y})$)--++(0.5*\kv{x},0.2*\kv{y})--++(0.5*\kv{x},-0.2*\kv{y})--++(-\kv{x},0); % tetto
 }
-
-% \sfera[colore]{centro}{raggio} crea una sfera tridimensionale
-\newcommand\sfera[3][teal]{\shade[ball color=#1] (#2) circle (#3);}
