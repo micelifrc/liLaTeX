@@ -172,7 +172,7 @@
 % \perpendicolare[L]{<- P}{S}{A}{B} crea un punto P, ottenuto traslando S per una lunghezza L nel verso perpendicolare a AB (si suppone SAB in senso antiorario)
 \newcommand{\perpendicolare}[5][1]{\coordinate (#2) at ($(#3)-(#4)+(#4)!#1cm!-90:(#5)$);}
 
-% \medio[k]{<- M}{A}{B} definisce M come il punto k*A+(1-k)*B. Nel caso speciale di k=0.5, M è il punto medio del segmento AB
+% \medio[k]{<- M}{A}{B} definisce M come il punto (1-k)*A+k*B. Nel caso speciale di k=0.5, M è il punto medio del segmento AB. Quindi se k=0 risulta M:=A, mentre se k=1 risulta M:=B
 \newcommand{\medio}[4][0.5]{\coordinate(#2)at($(#3)-#1*(#3)+#1*(#4)$);}
 
 % \opposto{<- P'}{P}{O} crea l'opposto P' di P rispetto al centro di simmetria O
@@ -978,3 +978,19 @@
 	\ifkeyempty{lbl}{}{\setkeyvalueifempty{centro}{cassacentro}}
 	\ifkeyempty{centro}{}{\stylelbl[#1]{$(#2)+(\ang:0.5*#3)+(\ang+90:0.5*#4)$};}
 }
+
+% \raggioluce[keys]{P1}{P2}{P3}... disegna un raggio di luce (con le varie frecce)
+\makeatletter
+\newcommand{\raggioluce}[3][]{
+	\tikzset{keyfld/.cd,
+		col/.initial = orange,
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		arrow/.initial = ->, % può essere ->, <-, <-> (o lasciata vuota)
+		arrow dist/.initial = 0.8, % a che distanza percentuale mettere la freccia
+	} \setkeyfld{#1};
+	\medio[\kv{arrow dist}]{raggioluceposizionefreccia}{#2}{#3};
+	\draw[\kv{col},\kv{width},\kv{pattern},\kv{arrow}] (#3)--(raggioluceposizionefreccia) (#2)--(raggioluceposizionefreccia);
+	\@ifnextchar\bgroup{\raggioluce[#1]{#3}}{}
+}
+\makeatother
