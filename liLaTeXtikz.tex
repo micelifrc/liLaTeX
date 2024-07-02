@@ -245,7 +245,14 @@
 \newcommand{\intpaths}[3]{\path [name intersections={of=#2 and #3,by=#1}];}
 
 % \intrette{<- I}{A}{B}{C}{D} trova il punto di intersezione I fra le rette AB e CD
-\newcommand{\intrette}[5]{\tkzInterLL(#2,#3)(#4,#5) \tkzGetPoint{#1};}
+\newcommand{\intrette}[5]{
+	\coordinate(intretteA)at(#2);
+	\coordinate(intretteB)at(#3);
+	\coordinate(intretteC)at(#4);
+	\coordinate(intretteD)at(#5);
+	\tkzInterLL(intretteA,intretteB)(intretteC,intretteD)
+	\tkzGetPoint{#1};
+}
 
 
 %%%%%%%%%%%%%%%%	GRIGLIE SISTEMI DI RIFERIMENTO
@@ -1292,7 +1299,7 @@
 
 %%%%%%%%%%%%%%%% 	DISEGNI ARTICOLATI
 
-% \casetta[keys]{pos} disegna una casetta. Pos è il centro della base della casetta
+% \casetta[keys]{pos} disegna una casetta. pos è il centro della base della casetta
 \newcommand{\casetta}[2][]{
 	\tikzset{keyfld/.cd,
 		col/.initial= blue,
@@ -1300,8 +1307,8 @@
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		scale/.initial = 1,
 		s/.initial, % equivalente a scale
-		w/.initial, % equivalente a width
-		h/.initial, % equivalente a height
+		w/.initial, % la larghezza della casetta (del tetto)
+		h/.initial, % l'altezza della casetta
 		x/.initial, % equivalente a width
 		y/.initial, % equivalente a height
 	} \setkeyfld{#1};
@@ -1318,4 +1325,59 @@
 	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.1*\kv{x},0.55*\kv{y})$)rectangle++(-0.2*\kv{x},0.12*\kv{y}) ($(#2)+(-0.2*\kv{x},0.55*\kv{y})$)--++(0,0.12*\kv{y}); % finestra in alto a sinistra
 	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.4*\kv{x},0.8*\kv{y})$)--++(0,-0.8*\kv{y})--++(0.8*\kv{x},0)--++(0,0.8*\kv{y}); % corpo
 	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.5*\kv{x},0.8*\kv{y})$)--++(0.5*\kv{x},0.2*\kv{y})--++(0.5*\kv{x},-0.2*\kv{y})--++(-\kv{x},0); % tetto
+}
+
+% \uomo[keys]{pos} disegna un omino stilizzato. pos è il centro della sua base
+\newcommand{\uomo}[2][]{
+	\tikzset{keyfld/.cd,
+		col/.initial,
+		width/.initial = thick, % può essere thin, thick, ...
+		h/.initial = 1, % l'altezza dell'omino
+		lung braccio/.initial = 0.3, % il braccio è lungo \kv{lung braccio}*\kv{h}
+		ang braccio 1/.initial = 0, % l'angolo con cui disegnare il primo braccio
+		ang braccio 2/.initial, % se lasciato vuoto non viene disegnato
+		ang gamba 1/.initial = -60, % l'angolo della prima gamba
+		ang gamba 2/.initial = -90, % l'angolo della seconda gamba
+		mano 1/.initial = ManoDx, % il nome da dare alla prima mano
+		mano 2/.initial = ManoSx, % il nome da dare alla seconda mano (se disegnata)
+		piede 1/.initial = PiedeDx, % il nome da dare del primo piede
+		piede 2/.initial = PiedeSx, % il nome da dare del primo piede
+	} \setkeyfld{#1};
+	\draw[\kv{col},\kv{width}]($(#2)+(0,0.9*\kv{h})$)circle(0.1*\kv{h}); % testa
+	\draw[\kv{col},\kv{width}]($(#2)+(0,0.8*\kv{h})$)--++(0,-0.1*\kv{h}); % collo
+	\draw[\kv{col},ultra thick]($(#2)+(0,0.7*\kv{h})$)--++(0,-0.3*\kv{h}); % corpo
+	\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\kv{h})$)--++(\kv{ang braccio 1}:\kv{lung braccio}*\kv{h})node(\kv{mano 1}){}; % braccio 1
+	\ifkeyempty{ang braccio 2}{}{\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\kv{h})$)--++(\kv{ang braccio 2}:\kv{lung braccio}*\kv{h})node(\kv{mano 2}){};} % braccio 2
+	\intrette{\kv{piede 1}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\kv{h})$}{$(#2)+(0,0.4*\kv{h})+(\kv{ang gamba 1}:1)$}; % la posizione del primo piede
+	\intrette{\kv{piede 2}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\kv{h})$}{$(#2)+(0,0.4*\kv{h})+(\kv{ang gamba 2}:1)$}; % la posizione del secondo piede
+	\draw[\kv{col},\kv{width}](\kv{piede 1})--($(#2)+(0,0.4*\kv{h})$)--(\kv{piede 2}); % le gambe
+}
+
+% \donna[keys]{pos} disegna una donnina stilizzata. pos è il centro della sua base
+\newcommand{\donna}[2][]{
+	\tikzset{keyfld/.cd,
+		col/.initial,
+		width/.initial = thick, % può essere thin, thick, ...
+		h/.initial = 1, % l'altezza dell'omino
+		lung braccio/.initial = 0.3, % il braccio è lungo \kv{lung braccio}*\kv{h}
+		ang braccio 1/.initial = 0, % l'angolo con cui disegnare il primo braccio
+		ang braccio 2/.initial, % se lasciato vuoto non viene disegnato
+		ang gamba 1/.initial = -60, % l'angolo della prima gamba
+		ang gamba 2/.initial = -90, % l'angolo della seconda gamba
+		mano 1/.initial = ManoDx, % il nome da dare alla prima mano
+		mano 2/.initial = ManoSx, % il nome da dare alla seconda mano (se disegnata)
+		piede 1/.initial = PiedeDx, % il nome da dare del primo piede
+		piede 2/.initial = PiedeSx, % il nome da dare del primo piede
+	} \setkeyfld{#1};
+	\draw[\kv{col},\kv{width}]($(#2)+(0,0.9*\kv{h})$)circle(0.1*\kv{h}); % testa
+	\draw[\kv{col},\kv{width}]($(#2)+(0,0.8*\kv{h})$)--++(0,-0.1*\kv{h}); % collo
+	\draw[\kv{col},ultra thick]($(#2)+(0,0.7*\kv{h})$)--++(0,-0.3*\kv{h}); % corpo
+	\draw[\kv{col},\kv{width}]($(#2)+(0,0.4*\kv{h})$)--++(-0.2*\kv{h},-0.2*\kv{h})--++(+0.4*\kv{h},0)--++(-0.2*\kv{h},+0.2*\kv{h}); % gonna
+	\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\kv{h})$)--++(\kv{ang braccio 1}:\kv{lung braccio}*\kv{h})node(\kv{mano 1}){}; % braccio 1
+	\ifkeyempty{ang braccio 2}{}{\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\kv{h})$)--++(\kv{ang braccio 2}:\kv{lung braccio}*\kv{h})node(\kv{mano 2}){};} % braccio 2
+	\intrette{\kv{piede 1}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\kv{h})$}{$(#2)+(0,0.4*\kv{h})+(\kv{ang gamba 1}:1)$}; % la posizione del primo piede
+	\intrette{\kv{piede 2}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\kv{h})$}{$(#2)+(0,0.4*\kv{h})+(\kv{ang gamba 2}:1)$}; % la posizione del secondo piede
+	\medio{GambaDxGonna}{\kv{piede 1}}{$(#2)+(0,0.4*\kv{h})$};
+	\medio{GambaSxGonna}{\kv{piede 2}}{$(#2)+(0,0.4*\kv{h})$};
+	\draw[\kv{col},\kv{width}](GambaDxGonna)--(\kv{piede 1}) (GambaSxGonna)--(\kv{piede 2}); % le gambe
 }
