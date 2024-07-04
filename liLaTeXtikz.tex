@@ -1426,3 +1426,84 @@
 	\medio{GambaSxGonna}{\kv{piede 2}}{$(#2)+(0,0.4*\kv{h})$};
 	\draw[\kv{col},\kv{width}](GambaDxGonna)--(\kv{piede 1}) (GambaSxGonna)--(\kv{piede 2}); % le gambe
 }
+
+% \auto[keys]{pos} disegna un'automobile. pos è il centro della sua base
+\newcommand{\auto}[2][]{
+	\tikzset{keyfld/.cd,
+		col/.initial,
+		width/.initial = thick, % può essere thin, thick, ...
+		side/.initial = ->, % può essere settato a <- se vogliamo ribaltare l'auto
+		w/.initial = 3, % la lunghezza dell'auto
+		h/.initial = 2, % l'altezza dell'auto
+		x/.initial, % equivalente a w
+		y/.initial, % equivalente a h
+		scale/.initial = 1, % la scala da usare
+		s/.initial, % equivalente a s
+	} \setkeyfld{#1};
+	\copykeyvaluesifempty
+		{x}{w}
+		{y}{h}
+		{s}{scale}
+	\ifkeyequal{side}{->}{\def\autoflipper{+1}}{\def\autoflipper{-1}}
+	\tikzdef{\autosizex}{\autoflipper*\kv{s}*\kv{x}};
+	\tikzdef{\autosizey}{\kv{s}*\kv{y}};
+	% ruote
+	\coordinate(autocentroruotaposteriore)at($(#2)+(-0.3*\autosizex,0.1*\autosizey)$);
+	\coordinate(autocentroruotaanteriore)at($(#2)+(+0.15*\autosizex,0.1*\autosizey)$);
+	\draw[\kv{col},\kv{width}](autocentroruotaposteriore)circle(0.1*\autosizey);
+	\draw[\kv{col},\kv{width}](autocentroruotaanteriore)circle(0.1*\autosizey);
+	\coordinate(autobottomfront)at($(#2)+(0.4*\autosizex,0.12*\autosizey)$);
+	\coordinate(autobottomback)at($(#2)+(-0.5*\autosizex,0.12*\autosizey)$);
+	\interLC{autoruotaanteriorefront}{autoruotaanterioreback}{autobottomfront}{autobottomback}{autocentroruotaanteriore}{0.12*\autosizey};
+	\interLC{autoruotaposteriorefront}{autoruotaposterioreback}{autobottomfront}{autobottomback}{autocentroruotaposteriore}{0.12*\autosizey};
+	\ifkeyequal{side}{->}{
+		\arcocirc[\kv{col},\kv{width}]{autocentroruotaposteriore}{autoruotaposteriorefront}{autoruotaposterioreback};
+		\arcocirc[\kv{col},\kv{width}]{autocentroruotaanteriore}{autoruotaanteriorefront}{autoruotaanterioreback};
+	}{
+		\arcocirc[\kv{col},\kv{width}]{autocentroruotaposteriore}{autoruotaposterioreback}{autoruotaposteriorefront};
+		\arcocirc[\kv{col},\kv{width}]{autocentroruotaanteriore}{autoruotaanterioreback}{autoruotaanteriorefront};
+	}
+	%carrozzeria
+	\draw[\kv{col},\kv{width},rounded corners=\kv{s}*0.5mm] (autoruotaposteriorefront)--(autoruotaanterioreback) (autoruotaanteriorefront)--(autobottomfront)--($(#2)+(0.5*\autosizex,0.25*\autosizey)$)--++(0,0.1*\autosizey)--++(-0.2*\autosizex,0.15*\autosizey)--++(0,0.5*\autosizey)--($(#2)+(-0.5*\autosizex,\autosizey)$)--(autobottomback)--(autoruotaposterioreback);
+}
+
+% \camion[keys]{pos} disegna un camion. pos è il centro della sua base
+\newcommand{\camion}[2][]{
+	\tikzset{keyfld/.cd,
+		col/.initial,
+		width/.initial = thick, % può essere thin, thick, ...
+		side/.initial = ->, % può essere settato a <- se vogliamo ribaltare il camion
+		w/.initial = 6, % la lunghezza del camion
+		h/.initial = 3, % l'altezza del camion
+		x/.initial, % equivalente a w
+		y/.initial, % equivalente a h
+		scale/.initial = 1, % la scala da usare
+		s/.initial, % equivalente a s
+	} \setkeyfld{#1};
+	\copykeyvaluesifempty
+		{x}{w}
+		{y}{h}
+		{s}{scale}
+	\ifkeyequal{side}{->}{\def\camionflipper{+1}}{\def\camionflipper{-1}}
+	\tikzdef{\camionsizex}{\camionflipper*\kv{s}*\kv{x}};
+	\tikzdef{\camionsizey}{\kv{s}*\kv{y}};
+	% ruote
+	\coordinate(camioncentroruotaposteriore)at($(#2)+(-0.4*\camionsizex,0.1*\camionsizey)$);
+	\coordinate(camioncentroruotaanteriore)at($(#2)+(+0.35*\camionsizex,0.1*\camionsizey)$);
+	\draw[\kv{col},\kv{width}](camioncentroruotaposteriore)circle(0.1*\camionsizey);
+	\draw[\kv{col},\kv{width}](camioncentroruotaanteriore)circle(0.1*\camionsizey);
+	\coordinate(camionbottomfront)at($(#2)+(+0.5*\camionsizex,0.12*\camionsizey)$);
+	\coordinate(camionbottomback)at($(#2)+(-0.5*\camionsizex,0.12*\camionsizey)$);
+	\interLC{camionruotaanteriorefront}{camionruotaanterioreback}{camionbottomfront}{camionbottomback}{camioncentroruotaanteriore}{0.12*\camionsizey};
+	\interLC{camionruotaposteriorefront}{camionruotaposterioreback}{camionbottomfront}{camionbottomback}{camioncentroruotaposteriore}{0.12*\camionsizey};
+	\ifkeyequal{side}{->}{
+		\arcocirc[\kv{col},\kv{width}]{camioncentroruotaposteriore}{camionruotaposteriorefront}{camionruotaposterioreback};
+		\arcocirc[\kv{col},\kv{width}]{camioncentroruotaanteriore}{camionruotaanteriorefront}{camionruotaanterioreback};
+	}{
+		\arcocirc[\kv{col},\kv{width}]{camioncentroruotaposteriore}{camionruotaposterioreback}{camionruotaposteriorefront};
+		\arcocirc[\kv{col},\kv{width}]{camioncentroruotaanteriore}{camionruotaanterioreback}{camionruotaanteriorefront};
+	}
+	%carrozzeria
+	\draw[\kv{col},\kv{width}] (camionruotaposteriorefront)--(camionruotaanterioreback) (camionruotaanteriorefront)--(camionbottomfront)--($(#2)+(0.5*\camionsizex,0.2*\camionsizey)$)--++(-\camionsizex/60,0) (camionruotaposterioreback)--(camionbottomback)--++(0,0.3*\camionsizey)--++(0.75*\camionsizex,0)--++(0,0.7*\camionsizey)--++(-0.72*\camionsizex,0)--++(0,-0.7*\camionsizey);
+	\draw[\kv{col},\kv{width},rounded corners=\kv{s}*0.5mm] ($(#2)+(0.5*\camionsizex-\camionsizex/60,0.2*\camionsizey)$)--++(0,0.2*\camionsizey)--++(-\camionsizex/20,0)--++(0,0.4*\camionsizey)--++(-0.15*\camionsizex-\camionsizex/30,0);
+}
