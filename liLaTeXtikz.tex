@@ -294,7 +294,7 @@
 		{step y}{s}
 		{s x}{step x}
 		{s y}{step y}
-	\draw[\kv{col},\kv{width},\kv{pattern}] (#2,#4) grid [xstep=\kv{s x},ystep=\kv{s y}] (#3,#5);
+	\draw[\kv{col},\kv{width},\kv{pattern}] (#2,#4) grid [xstep=\kv{s x} cm,ystep=\kv{s y} cm] (#3,#5);
 }
 % \grigliaZ[keys]{east}{north}. Ha le stesse keys di \griglia
 \newcommand{\grigliaZ}[3][]{\griglia[#1]{0}{#2}{0}{#3}}
@@ -1445,17 +1445,19 @@
 		{y}{h}
 		{s}{scale}
 	\ifkeyequal{side}{->}{\def\autoflipper{+1}}{\def\autoflipper{-1}}
-	\tikzdef{\autosizex}{\autoflipper*\kv{s}*\kv{x}};
-	\tikzdef{\autosizey}{\kv{s}*\kv{y}};
+	\tikzdef{\autosizex}{\autoflipper*\kv{s}*\kv{x}/30};
+	\tikzdef{\autosizey}{\kv{s}*\kv{y}/20};
 	% ruote
-	\coordinate(autocentroruotaposteriore)at($(#2)+(-0.3*\autosizex,0.1*\autosizey)$);
-	\coordinate(autocentroruotaanteriore)at($(#2)+(+0.15*\autosizex,0.1*\autosizey)$);
-	\draw[\kv{col},\kv{width}](autocentroruotaposteriore)circle(0.1*\autosizey);
-	\draw[\kv{col},\kv{width}](autocentroruotaanteriore)circle(0.1*\autosizey);
-	\coordinate(autobottomfront)at($(#2)+(0.4*\autosizex,0.12*\autosizey)$);
-	\coordinate(autobottomback)at($(#2)+(-0.5*\autosizex,0.12*\autosizey)$);
-	\interLC{autoruotaanteriorefront}{autoruotaanterioreback}{autobottomfront}{autobottomback}{autocentroruotaanteriore}{0.12*\autosizey};
-	\interLC{autoruotaposteriorefront}{autoruotaposterioreback}{autobottomfront}{autobottomback}{autocentroruotaposteriore}{0.12*\autosizey};
+	\coordinate(autocentroruotaposteriore)at($(#2)+(-9*\autosizex,2*\autosizey)$);
+	\coordinate(autocentroruotaanteriore)at($(#2)+(+4.5*\autosizex,2*\autosizey)$);
+	\draw[\kv{col},\kv{width}](autocentroruotaposteriore)circle(2*\autosizey);
+	\draw[\kv{col},\kv{width}](autocentroruotaanteriore)circle(2*\autosizey);
+	\draw[\kv{col},\kv{width},fill=\kv{col}](autocentroruotaposteriore)circle(0.2*\autosizey);
+	\draw[\kv{col},\kv{width},fill=\kv{col}](autocentroruotaanteriore)circle(0.2*\autosizey);
+	\coordinate(autobottomfront)at($(#2)+(12*\autosizex,2.4*\autosizey)$);
+	\coordinate(autobottomback)at($(#2)+(-15*\autosizex,2.4*\autosizey)$);
+	\interLC{autoruotaanteriorefront}{autoruotaanterioreback}{autobottomfront}{autobottomback}{autocentroruotaanteriore}{2.4*\autosizey};
+	\interLC{autoruotaposteriorefront}{autoruotaposterioreback}{autobottomfront}{autobottomback}{autocentroruotaposteriore}{2.4*\autosizey};
 	\ifkeyequal{side}{->}{
 		\arcocirc[\kv{col},\kv{width}]{autocentroruotaposteriore}{autoruotaposteriorefront}{autoruotaposterioreback};
 		\arcocirc[\kv{col},\kv{width}]{autocentroruotaanteriore}{autoruotaanteriorefront}{autoruotaanterioreback};
@@ -1464,7 +1466,7 @@
 		\arcocirc[\kv{col},\kv{width}]{autocentroruotaanteriore}{autoruotaanterioreback}{autoruotaanteriorefront};
 	}
 	%carrozzeria
-	\draw[\kv{col},\kv{width},rounded corners=\kv{s}*0.5mm] (autoruotaposteriorefront)--(autoruotaanterioreback) (autoruotaanteriorefront)--(autobottomfront)--($(#2)+(0.5*\autosizex,0.25*\autosizey)$)--++(0,0.1*\autosizey)--++(-0.2*\autosizex,0.15*\autosizey)--++(0,0.5*\autosizey)--($(#2)+(-0.5*\autosizex,\autosizey)$)--(autobottomback)--(autoruotaposterioreback);
+	\draw[\kv{col},\kv{width},rounded corners=\kv{s}*0.5mm] (autoruotaposteriorefront)--(autoruotaanterioreback) (autoruotaanteriorefront)--(autobottomfront)--($(#2)+(15*\autosizex,5*\autosizey)$)--++(0,2*\autosizey)--++(-6*\autosizex,3*\autosizey)--++(0,10*\autosizey)--($(#2)+(-15*\autosizex,20*\autosizey)$)--(autobottomback)--(autoruotaposterioreback);
 }
 
 % \camion[keys]{pos} disegna un camion. pos è il centro della sua base
@@ -1485,17 +1487,19 @@
 		{y}{h}
 		{s}{scale}
 	\ifkeyequal{side}{->}{\def\camionflipper{+1}}{\def\camionflipper{-1}}
-	\tikzdef{\camionsizex}{\camionflipper*\kv{s}*\kv{x}};
-	\tikzdef{\camionsizey}{\kv{s}*\kv{y}};
+	\tikzdef{\camionsizex}{\camionflipper*\kv{s}*\kv{x}/60};
+	\tikzdef{\camionsizey}{\kv{s}*\kv{y}/30};
 	% ruote
-	\coordinate(camioncentroruotaposteriore)at($(#2)+(-0.4*\camionsizex,0.1*\camionsizey)$);
-	\coordinate(camioncentroruotaanteriore)at($(#2)+(+0.35*\camionsizex,0.1*\camionsizey)$);
-	\draw[\kv{col},\kv{width}](camioncentroruotaposteriore)circle(0.1*\camionsizey);
-	\draw[\kv{col},\kv{width}](camioncentroruotaanteriore)circle(0.1*\camionsizey);
-	\coordinate(camionbottomfront)at($(#2)+(+0.5*\camionsizex,0.12*\camionsizey)$);
-	\coordinate(camionbottomback)at($(#2)+(-0.5*\camionsizex,0.12*\camionsizey)$);
-	\interLC{camionruotaanteriorefront}{camionruotaanterioreback}{camionbottomfront}{camionbottomback}{camioncentroruotaanteriore}{0.12*\camionsizey};
-	\interLC{camionruotaposteriorefront}{camionruotaposterioreback}{camionbottomfront}{camionbottomback}{camioncentroruotaposteriore}{0.12*\camionsizey};
+	\coordinate(camioncentroruotaposteriore)at($(#2)+(-24*\camionsizex,3*\camionsizey)$);
+	\coordinate(camioncentroruotaanteriore)at($(#2)+(+21*\camionsizex,3*\camionsizey)$);
+	\draw[\kv{col},\kv{width}](camioncentroruotaposteriore)circle(3*\camionsizey);
+	\draw[\kv{col},\kv{width}](camioncentroruotaanteriore)circle(3*\camionsizey);
+	\draw[\kv{col},\kv{width},fill=\kv{col}](camioncentroruotaposteriore)circle(0.2*\camionsizey);
+	\draw[\kv{col},\kv{width},fill=\kv{col}](camioncentroruotaanteriore)circle(0.2*\camionsizey);
+	\coordinate(camionbottomfront)at($(#2)+(+30*\camionsizex,3.6*\camionsizey)$);
+	\coordinate(camionbottomback)at($(#2)+(-30*\camionsizex,3.6*\camionsizey)$);
+	\interLC{camionruotaanteriorefront}{camionruotaanterioreback}{camionbottomfront}{camionbottomback}{camioncentroruotaanteriore}{3.6*\camionsizey};
+	\interLC{camionruotaposteriorefront}{camionruotaposterioreback}{camionbottomfront}{camionbottomback}{camioncentroruotaposteriore}{3.6*\camionsizey};
 	\ifkeyequal{side}{->}{
 		\arcocirc[\kv{col},\kv{width}]{camioncentroruotaposteriore}{camionruotaposteriorefront}{camionruotaposterioreback};
 		\arcocirc[\kv{col},\kv{width}]{camioncentroruotaanteriore}{camionruotaanteriorefront}{camionruotaanterioreback};
@@ -1504,6 +1508,80 @@
 		\arcocirc[\kv{col},\kv{width}]{camioncentroruotaanteriore}{camionruotaanterioreback}{camionruotaanteriorefront};
 	}
 	%carrozzeria
-	\draw[\kv{col},\kv{width}] (camionruotaposteriorefront)--(camionruotaanterioreback) (camionruotaanteriorefront)--(camionbottomfront)--($(#2)+(0.5*\camionsizex,0.2*\camionsizey)$)--++(-\camionsizex/60,0) (camionruotaposterioreback)--(camionbottomback)--++(0,0.3*\camionsizey)--++(0.75*\camionsizex,0)--++(0,0.7*\camionsizey)--++(-0.72*\camionsizex,0)--++(0,-0.7*\camionsizey);
-	\draw[\kv{col},\kv{width},rounded corners=\kv{s}*0.5mm] ($(#2)+(0.5*\camionsizex-\camionsizex/60,0.2*\camionsizey)$)--++(0,0.2*\camionsizey)--++(-\camionsizex/20,0)--++(0,0.4*\camionsizey)--++(-0.15*\camionsizex-\camionsizex/30,0);
+	\draw[\kv{col},\kv{width}] (camionruotaposteriorefront)--(camionruotaanterioreback) (camionruotaanteriorefront)--(camionbottomfront)--($(#2)+(30*\camionsizex,6*\camionsizey)$)--++(-\camionsizex,0) (camionruotaposterioreback)--(camionbottomback)--++(0,9*\camionsizey)--++(45*\camionsizex,0)--++(0,17.4*\camionsizey)--++(-43.5*\camionsizex,0)--++(0,-17.4*\camionsizey);
+	\draw[\kv{col},\kv{width},rounded corners=\kv{s}*0.5mm] ($(#2)+(29*\camionsizex,6*\camionsizey)$)--++(0,6*\camionsizey)--++(-3*\camionsizex,0)--++(0,12*\camionsizey)--++(-11*\camionsizex,0);
+}
+
+% \moto[keys]{pos} disegna un motociclista. pos è il centro della base della moto
+\newcommand{\moto}[2][]{
+	\tikzset{keyfld/.cd,
+		col/.initial,
+		width/.initial = thick, % può essere thin, thick, ...
+		side/.initial = ->, % può essere settato a <- se vogliamo ribaltare la moto
+		w/.initial = 2, % la lunghezza della moto
+		h/.initial = 1.5, % l'altezza della moto (col motociclista)
+		x/.initial, % equivalente a w
+		y/.initial, % equivalente a h
+		scale/.initial = 1, % la scala da usare
+		s/.initial, % equivalente a s
+	} \setkeyfld{#1};
+	\copykeyvaluesifempty
+		{x}{w}
+		{y}{h}
+		{s}{scale}
+	\ifkeyequal{side}{->}{\def\motoflipper{+1}}{\def\motoflipper{-1}}
+	\tikzdef{\motosizex}{\motoflipper*\kv{s}*\kv{x}/20};
+	\tikzdef{\motosizey}{\kv{s}*\kv{y}/15};
+	\coordinate(motocentroruotaposteriore)at($(#2)+(-10*\motosizex+\motoflipper*2*\motosizey,2*\motosizey)$);
+	\coordinate(motocentroruotaanteriore)at($(#2)+(+10*\motosizex-\motoflipper*2*\motosizey,2*\motosizey)$);
+	\draw[\kv{col},\kv{width}](motocentroruotaposteriore)circle(2*\motosizey);
+	\draw[\kv{col},\kv{width}](motocentroruotaanteriore)circle(2*\motosizey);
+	\draw[\kv{col},\kv{width},fill=\kv{col}](motocentroruotaposteriore)circle(0.2*\motosizey);
+	\draw[\kv{col},\kv{width},fill=\kv{col}](motocentroruotaanteriore)circle(0.2*\motosizey);
+	\ifkeyequal{side}{->}
+	{\coordinate(motofrontattachpoint)at($(#2)+(+10*\motosizex-\motoflipper*2*\motosizey,3*\motosizey)+(110:3*\motosizey)$);}
+	{\coordinate(motofrontattachpoint)at($(#2)+(+10*\motosizex-\motoflipper*2*\motosizey,3*\motosizey)+(70:3*\motosizey)$);}
+	\draw[\kv{col},\kv{width}](motocentroruotaanteriore)--(motofrontattachpoint);
+	\draw[\kv{col},\kv{width}](motocentroruotaposteriore)--($(motocentroruotaanteriore)+(-\motoflipper*3*\motosizey,0)$)--++(0,\motosizey)arc(90+\motoflipper*90:90:3*\motosizey)--++(\motosizex,0)arc(90-\motoflipper*90:90:4*\motosizey)--++(0,-2*\motosizey)--++(-4*\motosizex,0)arc(90:90+\motoflipper*90:\motosizey cm and 2*\motosizey cm)--++(-5*\motosizex,0)--++(-\motosizex,\motosizey)--++(-4*\motosizex,0)--++(0,-\motosizey)arc(90:90-\motoflipper*90:5*\motosizey cm and 3*\motosizey cm)--++(0,-\motosizey);
+	\draw[\kv{col},\kv{width}]($(#2)+(-4*\motosizex,3*\motosizey)$)--++(5*\motosizex,2*\motosizey)--++(-4*\motosizex,\motosizey)--++(5*\motosizex,5*\motosizey)node(motocollopunto){}++(-\motosizex,-\motosizey)--++(4*\motosizex,-3*\motosizey)node(motomanubriopunto){};
+	\draw[\kv{col},\kv{width},fill=\kv{col}](motomanubriopunto)circle(0.1*\motosizey);
+	\coordinate(motocentrocasco)at($(motocollopunto)+(0,2*\motosizey)$);
+	\draw[\kv{col},\kv{width}]($(motocentrocasco)+(90-\motoflipper*60:2*\motosizey)$)--($(motocentrocasco)+(0,\motosizey)$)--($(motocentrocasco)+(0,-\motosizey)$)--($(motocentrocasco)+(-90+\motoflipper*60:2*\motosizey)$);
+	\draw[\kv{col},\kv{width}](motocentrocasco)circle(2*\motosizey);
+}
+
+% \bici[keys]{pos} disegna un ciclista. pos è il centro della base della bicicletta
+\newcommand{\bici}[2][]{
+	\tikzset{keyfld/.cd,
+		col/.initial,
+		width/.initial = thick, % può essere thin, thick, ...
+		side/.initial = ->, % può essere settato a <- se vogliamo ribaltare la bicicletta
+		w/.initial = 1.6, % la lunghezza della bicicletta
+		h/.initial = 2, % l'altezza della bicicletta (col ciclista)
+		x/.initial, % equivalente a w
+		y/.initial, % equivalente a h
+		scale/.initial = 1, % la scala da usare
+		s/.initial, % equivalente a s
+	} \setkeyfld{#1};
+	\copykeyvaluesifempty
+		{x}{w}
+		{y}{h}
+		{s}{scale}
+	\ifkeyequal{side}{->}{\def\biciflipper{+1}}{\def\biciflipper{-1}}
+	\tikzdef{\bicisizey}{\kv{s}*\kv{y}/20};
+	\tikzdef{\bicisizex}{\biciflipper*\bicisizey};
+	\coordinate(bicicentroruotaposteriore)at($(#2)+(-0.5*\biciflipper*\kv{s}*\kv{x}+3*\bicisizex,+3*\bicisizey)$);
+	\coordinate(bicicentroruotaanteriore)at($(#2)+(+0.5*\biciflipper*\kv{s}*\kv{x}-3*\bicisizex,+3*\bicisizey)$);
+	\draw[\kv{col},\kv{width}](bicicentroruotaposteriore)circle(3*\bicisizey);
+	\draw[\kv{col},\kv{width}](bicicentroruotaanteriore)circle(3*\bicisizey);
+	\coordinate(bicicatena)at($(bicicentroruotaposteriore)+(4*\bicisizex,0)$);
+	\coordinate(bicifulcro)at($(bicicatena)+(-4*\bicisizex*4/7,4*\bicisizey)$);
+	\draw[\kv{col},\kv{width}](bicicentroruotaanteriore)--++(-\bicisizex,4*\bicisizey)--++(-\bicisizex,-0.25*\bicisizey)--++(0.5*\bicisizex,2*\bicisizey)node(bicifrontpoint){}--++(\bicisizex,+0.25*\bicisizey)--++(0,\bicisizey);
+	\draw[\kv{col},\kv{width}](bicicatena)--($(bicifrontpoint)+(0.25*\bicisizex,-\bicisizey)$)--(bicifulcro)--(bicicentroruotaposteriore)--(bicicatena)--++(-2*\bicisizex,7*\bicisizey)node(bicisellino){};
+	\draw[\kv{col},\kv{width}]($(bicisellino)+(-\bicisizex,0)$)--++(2*\bicisizex,0);
+	\draw[\kv{col},\kv{width},fill=\kv{col}](bicicentroruotaposteriore)circle(0.3*\bicisizey);
+	\draw[\kv{col},\kv{width},fill=\kv{col}](bicicentroruotaanteriore)circle(0.3*\bicisizey);
+	\draw[\kv{col},\kv{width},fill=\kv{col}](bicicatena)circle(0.7*\bicisizey);
+	\draw[\kv{col},\kv{width}](bicicatena)--++(2*\bicisizex,5*\bicisizey)--++(-3*\bicisizex,2*\bicisizey)--++(-1.6*\bicisizex,0)--++(2.5*\bicisizex,6*\bicisizey)node(bicicollo){}++(-0.5*\bicisizex,-\bicisizey)--($(bicifrontpoint)+(\bicisizex,+0.75*\bicisizey)$);
+	\draw[\kv{col},\kv{width}]($(bicicollo)+(0,2*\bicisizey)$)circle(2*\bicisizey);
 }
