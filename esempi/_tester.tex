@@ -1,17 +1,20 @@
 \documentclass[italian, a4paper]{article}
 %\documentclass[crop]{standalone} % per le immagini
-\newcommand{\TipoDoc}{plain}
+\newcommand{\TipoDoc}{empty}
 \input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
 
 \begin{document}
 
 \begin{immagine}[violet]
 \griglia[col=pink,s=0.1,width=ultra thin]{1}{3}{3}{4.5};
-\grigliaZ{10}{5};
+\grigliaO{10}{5};
 \bici[col=Green,side=->]{2,0};
 \camion[col=blue,side=<-]{7,0};
 \auto[col=red,side=<-]{7,3};
 \moto[side=<-]{2,3};
+
+\punto[lbl=$a$,col=red]{0,-3};
+\punto[lbl=a,col=Green,lbl style=rm]{2,-3};
 \end{immagine}
 
 \end{document}

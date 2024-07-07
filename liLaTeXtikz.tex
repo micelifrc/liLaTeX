@@ -12,6 +12,7 @@
 	{\end{tikzpicture}\ifdefstring{\TipoDoc}{immagine}{}{\end{figure}}}
 
 % analogo ad immagine, ma permette di aggiungere una caption
+% chiama come \begin{immaginecap}[opzioni]{caption} ... \end{immaginecap}
 \newenvironment{immaginecap}[2][]
 	{\def\immaginecapCaption{#2}\begin{figure}[!ht]\centering\begin{tikzpicture}[#1]}
 	{\end{tikzpicture}\caption{\immaginecapCaption}\end{figure}}
@@ -33,6 +34,7 @@
 	% passiamo alla key directory keyfld, e ridefiniamo come #1 tutti le keys specificate in #1
 	\tikzset{keyfld/.cd,#1}%
 	% definiamo un soprannome \kv per il path alle keys. In questo modo, per riferirci al VALORE di una chiave chiamata K dovremo scrivere \kv{K}, anziché la più lunga /tikz/keyfld/K. Quindi K indica la chiave, mentre \kv{K} indica il suo valore
+	\def\kp##1{/tikz/keyfld/##1}
 	\def\kv##1{\pgfkeysvalueof{/tikz/keyfld/##1}}
 }
 
@@ -46,7 +48,7 @@
 \newcommand{\ifkeyempty}[3]{\ifkeyequal{#1}{\pgfkeysnovalue}{#2}{#3}}
 
 % aggiorna il valore della key #1 al valore #2. Chiama ad esempio come \setkeyvalue{color}{blue} o come \setkeyvalue{h}{\kv{b}}
-\newcommand{\setkeyvalue}[2]{\tikzset{keyfld/.cd,#1=#2}}
+\newcommand{\setkeyvalue}[2]{\pgfkeyssetvalue{\kp{#1}}{#2}}
 % copia il valore della key #2 nella key #1
 \newcommand{\copykeyvalue}[2]{\setkeyvalue{#1}{\kv{#2}}}
 % aggiorna il valore della key #1 al valore #2 solo se #1 è empty
@@ -77,8 +79,15 @@
 % restituisce il nome del comando #1 senzo lo slash
 \newcommand{\commandstring}[1]{\removeslash{#1}}
 
+% crea un \inputwithoutdollar uguale all'input #1 ma senza i $
+% Attenzione! non funziona se l'input è fornito da una key (non so perché)
+\newcommand*{\removedollar}[1]{{\catcode`\$=9\scantokens{\xdef\inputwihoutdollar{#1}}}}
+
 % rimuove lo \ dall'input
 \newcommand{\removeslash}[1]{{\catcode92=9 \endlinechar-1 \scantokens{#1}}}
+
+% rimuove i $ dall'input
+\newcommand{\removemathmode}[1]{{\catcode24=9 \endlinechar-1 \scantokens{#1}}}
 
 % calcola la distanza (in cm) fra #1 e #2
 \newcommand{\getdistanza}[2]{
@@ -146,12 +155,18 @@
 		{PRIVlbl lbl col}{PRIVlbl col}
 		{PRIVlbl col lbl}{PRIVlbl lbl col}
 	\ifkeyempty{PRIVlbl lbl}{\coordinate (\kv{PRIVlbl lbl name}) at (#2);}{
-		\ifkeyempty{PRIVlbl lbl style}{ \node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}\kv{PRIVlbl lbl}}; }{}
-		\ifkeyequal{PRIVlbl lbl style}{rm}{ \node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}$\mathrm{\kv{PRIVlbl lbl}}$}; }{}
-		\ifkeyequal{PRIVlbl lbl style}{PRIVlbl bf}{ \node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}$\mathbf{\kv{PRIVlbl lbl}}$}; }{}
-		\ifkeyequal{PRIVlbl lbl style}{PRIVlbl cal}{ \node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}$\mathcal{\kv{PRIVlbl lbl}}$}; }{}
+		\ifkeyempty{PRIVlbl lbl style}{ \node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}\kv{PRIVlbl lbl}}; }{
+			\removedollarfromkey[PRIVlbl lbl]{x};
+			\removedollarfromkey[PRIVlbl lbl]{y};
+			\ifkeyequal{PRIVlbl lbl style}{rm}{ \node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}$\mathrm{\kv{PRIVlbl lbl}}$}; }{}
+			\ifkeyequal{PRIVlbl lbl style}{bf}{ \node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}$\mathbf{\kv{PRIVlbl lbl}}$}; }{}
+			\ifkeyequal{PRIVlbl lbl style}{cal}{ \node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}$\mathcal{\kv{PRIVlbl lbl}}$}; }{}
+		}
 	}
 }
+
+% \removedollarfromkey[key name]{value} se la key #1 ha valore $#2$, viene ridefinita come #2
+\newcommand{\removedollarfromkey}[2][lbl]{\ifkeyequal{#1}{$#2$}{\setkeyvalue{#1}{#2}}{}}
 
 
 %%%%%%%%%%%%%%%%	PUNTO
@@ -278,7 +293,7 @@
 % \griglia[keys]{west}{east}{south}{north}
 \newcommand{\griglia}[5][]{
 	\tikzset{keyfld/.cd,
-		col/.initial = gray,
+		col/.initial = gray!50,
 		width/.initial = thin, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		step/.initial = 1, % la distanza fra due barre
@@ -287,6 +302,7 @@
 		step y/.initial, % se specificato indica la distanza fra due barre lungo l'asse y
 		s x/.initial, % analogo di step x
 		s y/.initial, % analogo di step y
+		col fill/.initial, % se specificato l'interno della griglia viene colorato
 	} \setkeyfld{#1};
 	\copykeyvaluesifempty
 		{s}{step}
@@ -294,10 +310,11 @@
 		{step y}{s}
 		{s x}{step x}
 		{s y}{step y}
+	\ifkeyempty{col fill}{}{\fill[\kv{col fill}] (#2,#4)rectangle(#3,#5);}
 	\draw[\kv{col},\kv{width},\kv{pattern}] (#2,#4) grid [xstep=\kv{s x} cm,ystep=\kv{s y} cm] (#3,#5);
 }
-% \grigliaZ[keys]{east}{north}. Ha le stesse keys di \griglia
-\newcommand{\grigliaZ}[3][]{\griglia[#1]{0}{#2}{0}{#3}}
+% \grigliaO[keys]{east}{north}. Ha le stesse keys di \griglia
+\newcommand{\grigliaO}[3][]{\griglia[#1]{0}{#2}{0}{#3}}
 
 % \cartamillimetrata[keys]{west}{east}{south}{north} % una porzione di carta millimetrata
 \newcommand{\cartamillimetrata}[5][]{
@@ -310,9 +327,14 @@
 		pattern2/.initial, % può essere solid, dashed, dotted, ...
 		step1/.initial = 0.1, % la distanza fra due barre minori (normalmente 0.1)
 		step2/.initial = 0.5, % la distanza fra due barre maggiori (normalmente 0.5)
+		s1/.initial, % sinonimo di step1
+		s2/.initial, % sinonimo di step2
 	} \setkeyfld{#1};
-	\draw[\kv{col1},\kv{width1},\kv{pattern1}] (#2,#4) grid [step=\kv{step1}] (#3,#5);
-	\draw[\kv{col2},\kv{width2},\kv{pattern2}] (#2,#4) grid [step=\kv{step2}] (#3,#5);
+	\copykeyvaluesifempty
+		{s1}{step1}
+		{s2}{step2}
+	\draw[\kv{col1},\kv{width1},\kv{pattern1}] (#2,#4) grid [step=\kv{s1}] (#3,#5);
+	\draw[\kv{col2},\kv{width2},\kv{pattern2}] (#2,#4) grid [step=\kv{s2}] (#3,#5);
 }
 
 % può solo essere usata con \TipoDoc=immagine. Crea una pagina intera di carta millimetrata
@@ -329,14 +351,13 @@
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		lbl/.initial = $x$,
 		lbl style/.initial, % può essere lasciato vuoto o può essere rm, bf, cal
-		lbl size/.initial,
 		lbl name/.initial = assexlbl, % il nome da dare al label
+		lbl size/.initial,
 		lbl dist/.initial = 0.3,
 		lbl col/.initial,
 		col lbl/.initial, % analogo a lbl col
 		flip lbl/.initial = false, % rendi true se vuoi ribaltare il label
 	} \setkeyfld{#1};
-	\copykeyvalueifempty{col lbl}{col};
 	\ifkeyequal{flip lbl}{true}{\def\assexflipper{180}}{\def\assexflipper{0}};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(0,\kv{y})+(\kv{ang shift}:#2)$) -- ($(0,\kv{y})+(\kv{ang shift}:#3)$)node(assexpunta){};
 	\PRIVstylelbl[
@@ -368,7 +389,6 @@
 		col lbl/.initial, % analogo a lbl col
 		flip lbl/.initial = false, % rendi true se vuoi ribaltare il label
 	} \setkeyfld{#1};
-	\copykeyvalueifempty{col lbl}{col};
 	\ifkeyequal{flip lbl}{true}{\def\asseyflipper{180}}{\def\asseyflipper{0}};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(\kv{x},0)+(\kv{ang shift}+90:#2)$) -- ($(\kv{x},0)+(\kv{ang shift}+90:#3)$)node(asseypunta){};
 	\PRIVstylelbl[
@@ -393,16 +413,38 @@
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		lbl x/.initial = $x$,
 		lbl y/.initial = $y$,
+		lbl style/.initial,
+		lbl x style/.initial,
+		lbl y style/.initial,
 		lbl x name/.initial = assixylblx, % il nome da dare al label per y
 		lbl y name/.initial = assixylbly, % il nome da dare al label per y
 		lbl dist/.initial = 0.3,
-		col lbl/.initial,
+		lbl col/.initial,
+		col lbl/.initial, % uguale a lbl col
 	} \setkeyfld{#1};
-	\copykeyvalueifempty{col lbl}{col};
+	\copykeyvaluesifempty
+		{lbl x style}{lbl style}
+		{lbl y style}{lbl style}
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (#2,\kv{y})--(#3,\kv{y})node(assixypuntax){};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (\kv{x},#4)--(\kv{x},#5)node(assixypuntay){};
-	\node[\kv{col lbl}](\kv{lbl x name}) at ($(assixypuntax)+(-90:\kv{lbl dist})$){\kv{lbl x}};
-	\node[\kv{col lbl}](\kv{lbl y name}) at ($(assixypuntay)+(180:\kv{lbl dist})$){\kv{lbl y}};
+	\PRIVstylelbl[
+		PRIVlbl lbl style=\kv{lbl x style},
+		PRIVlbl lbl=\kv{lbl x},
+		PRIVlbl lbl size=\kv{lbl size},
+		PRIVlbl lbl name=\kv{lbl x name},
+		PRIVlbl col=\kv{col},
+		PRIVlbl lbl col=\kv{lbl col},
+		PRIVlbl col lbl=\kv{col lbl},
+	]{$(assixypuntax)+(-90:\kv{lbl dist})$};
+	\PRIVstylelbl[
+		PRIVlbl lbl style=\kv{lbl y style},
+		PRIVlbl lbl=\kv{lbl y},
+		PRIVlbl lbl size=\kv{lbl size},
+		PRIVlbl lbl name=\kv{lbl y name},
+		PRIVlbl col=\kv{col},
+		PRIVlbl lbl col=\kv{lbl col},
+		PRIVlbl col lbl=\kv{col lbl},
+	]{$(assixypuntay)+(180:\kv{lbl dist})$};
 }
 
 % \assixyO[keys]{centro}{x-left}{x-right}{y-left}{y-right} disegna gli assi cartesiani
@@ -414,16 +456,38 @@
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		lbl x/.initial = $x$,
 		lbl y/.initial = $y$,
+		lbl style/.initial,
+		lbl x style/.initial,
+		lbl y style/.initial,
 		lbl x name/.initial = assixylblx, % il nome da dare al label per y
 		lbl y name/.initial = assixylbly, % il nome da dare al label per y
 		lbl dist/.initial = 0.3,
-		col lbl/.initial,
+		lbl col/.initial,
+		col lbl/.initial, % uguale a lbl col
 	} \setkeyfld{#1};
-	\copykeyvalueifempty{col lbl}{col};
+	\copykeyvaluesifempty
+		{lbl x style}{lbl style}
+		{lbl y style}{lbl style}
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (#3,0|-#2)--(#4,0|-#2)node(assixypuntax){};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (0,#5-|#2)--(0,#6-|#2)node(assixypuntay){};
-	\node[\kv{col lbl}](\kv{lbl x name}) at ($(assixypuntax)+(-90:\kv{lbl dist})$){\kv{lbl x}};
-	\node[\kv{col lbl}](\kv{lbl y name}) at ($(assixypuntay)+(180:\kv{lbl dist})$){\kv{lbl y}};
+	\PRIVstylelbl[
+		PRIVlbl lbl style=\kv{lbl x style},
+		PRIVlbl lbl=\kv{lbl x},
+		PRIVlbl lbl size=\kv{lbl size},
+		PRIVlbl lbl name=\kv{lbl x name},
+		PRIVlbl col=\kv{col},
+		PRIVlbl lbl col=\kv{lbl col},
+		PRIVlbl col lbl=\kv{col lbl},
+	]{$(assixypuntax)+(-90:\kv{lbl dist})$};
+	\PRIVstylelbl[
+		PRIVlbl lbl style=\kv{lbl y style},
+		PRIVlbl lbl=\kv{lbl y},
+		PRIVlbl lbl size=\kv{lbl size},
+		PRIVlbl lbl name=\kv{lbl y name},
+		PRIVlbl col=\kv{col},
+		PRIVlbl lbl col=\kv{lbl col},
+		PRIVlbl col lbl=\kv{col lbl},
+	]{$(assixypuntay)+(180:\kv{lbl dist})$};
 }
 
 % \assexbar[keys]{\x}{lbl} disegna una barretta verticale sull'asse x in posizione \x per segnare il label lbl
@@ -434,15 +498,20 @@
 		arrow/.initial,
 		width/.initial = very thin, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
-		size/.initial = .2, % la dimensione della barretta verticale
-		col lbl/.initial,
+		length/.initial = 0.2, % la lunghezza della barretta verticale
+		l/.initial, % uguale a length
+		lbl col/.initial,
+		col lbl/.initial, % uguagle a lbl col
 		flip/.initial = false, % se posto a true il label viene messo verso l'alto anziché verso il basso
 	} \setkeyfld{#1};
-	\ifnum\value{TipoDocVerificaCounter}=0 \setkeyvalueifempty{col}{gray} \fi % se non è una verifica la barra viene colorata di grigio
-	\copykeyvalueifempty{col lbl}{col};
+	%\ifnum\value{TipoDocVerificaCounter}=0 \setkeyvalueifempty{col}{gray} \fi % se non è una verifica la barra viene colorata di grigio
+	\copykeyvaluesifempty
+		{l}{length}
+		{lbl col}{col}
+		{col lbl}{lbl col}
 	\ifkeyequal{flip}{false}
-	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](#2,\kv{y}+0.5*\kv{size})--++(0,-\kv{size})node[anchor=north,\kv{col lbl}]{#3};}
-	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](#2,\kv{y}-0.5*\kv{size})--++(0,+\kv{size})node[anchor=south,\kv{col lbl}]{#3};}
+	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](#2,\kv{y}+0.5*\kv{l})--++(0,-\kv{l})node[anchor=north,\kv{col lbl}]{#3};}
+	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](#2,\kv{y}-0.5*\kv{l})--++(0,+\kv{l})node[anchor=south,\kv{col lbl}]{#3};}
 }
 
 % \asseybar[keys]{\y}{lbl} disegna una barretta orizzontale sull'asse y in posizione \y per segnare il label lbl
@@ -453,21 +522,26 @@
 		arrow/.initial,
 		width/.initial = very thin, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
-		size/.initial = .2, % la dimensione della barretta verticale
-		col lbl/.initial,
+		length/.initial = 0.2, % la lunghezza della barretta orizzontale
+		l/.initial, % uguale a length
+		lbl col/.initial,
+		col lbl/.initial, % uguagle a lbl col
 		flip/.initial = false, % se posto a true il label viene messo verso l'alto anziché verso il basso
 	} \setkeyfld{#1};
-	\ifnum\value{TipoDocVerificaCounter}=0 \setkeyvalueifempty{col}{gray} \fi % se non è una verifica la barra viene colorata di grigio
-	\copykeyvalueifempty{col lbl}{col};
+	%\ifnum\value{TipoDocVerificaCounter}=0 \setkeyvalueifempty{col}{gray} \fi % se non è una verifica la barra viene colorata di grigio
+	\copykeyvaluesifempty
+		{l}{length}
+		{lbl col}{col}
+		{col lbl}{lbl col}
 	\ifkeyequal{flip}{false}
-	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](\kv{x}+0.5*\kv{size},#2)--++(-\kv{size},0)node[anchor=east,\kv{col lbl}]{#3};}
-	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](\kv{x}-0.5*\kv{size},#2)--++(+\kv{size},0)node[anchor=west,\kv{col lbl}]{#3};}
+	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](\kv{x}+0.5*\kv{l},#2)--++(-\kv{l},0)node[anchor=east,\kv{col lbl}]{#3};}
+	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](\kv{x}-0.5*\kv{l},#2)--++(+\kv{l},0)node[anchor=west,\kv{col lbl}]{#3};}
 }
 
 % \sistrif[keys]{centro}{angolo} crea il sistema di riferimento, ruotato dell'angolo specificato. Si usa in cinematica/dinamica per indicare le direzioni e i versi degli assi cartesiani utilizzati
 \newcommand{\sistrif}[3][]{
 	\tikzset{keyfld/.cd,
-		col/.initial = teal,
+		col/.initial = magenta,
 		arrow/.initial = ->,
 		width/.initial, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
@@ -478,24 +552,31 @@
 		front y/.initial,
 		back y/.initial,
 		flip/.initial = false, % rendi true se vuoi capovolgere il verso dell'asse y
-		label/.initial = true, % rengi false se non vuoi il label
+		label/.initial = true, % rendi false se non vuoi il label
 		lbl dist/.initial = 0.3,
 		lbl x/.initial = $x$,
 		lbl y/.initial = $y$,
-		col lbl/.initial,
+		lbl col/.initial,
+		col lbl/.initial, % sinonimo di col lbl
+		lbl style/.initial,
+		lbl x style/.initial,
+		lbl y style/.initial,
 	} \setkeyfld{#1};
 	\copykeyvaluesifempty
 		{front x}{front}
 		{front y}{front}
 		{back x}{back}
 		{back y}{back}
-		{col lbl}{col}
+		{lbl col}{col}
+		{col lbl}{lbl col}
+		{lbl x style}{lbl style}
+		{lbl y style}{lbl style}
 	\ifkeyequal{flip}{false}{\def\sistrifflipper{+1}}{\def\sistrifflipper{-1}}
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(#3:-\kv{back x})$) -- ($(#2)+(#3:\kv{front x})$)node(sistrifLblXpunta){};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(\sistrifflipper*90+#3:-\kv{back y})$) -- ($(#2)+(\sistrifflipper*90+#3:\kv{front y})$)node(sistrifLblYpunta){};
 	\ifkeyequal{label}{true}{
-		\node[\kv{col lbl}](sistrifLblXlabel)at($(sistrifLblXpunta)+(#3-90*\sistrifflipper:\kv{lbl dist})$){\kv{lbl x}};
-		\node[\kv{col lbl}](sistrifLblYlabel)at($(sistrifLblYpunta)+(#3+180:\kv{lbl dist})$){\kv{lbl y}};
+		\PRIVstylelbl[PRIVlbl lbl style=\kv{lbl x style},PRIVlbl lbl=\kv{lbl x},PRIVlbl col lbl=\kv{col lbl}]{$(sistrifLblXpunta)+(#3-90*\sistrifflipper:\kv{lbl dist})$};
+		\PRIVstylelbl[PRIVlbl lbl style=\kv{lbl y style},PRIVlbl lbl=\kv{lbl y},PRIVlbl col lbl=\kv{col lbl}]{$(sistrifLblYpunta)+(#3+180:\kv{lbl dist})$};
 	}{}
 }
 
@@ -591,11 +672,11 @@
 % chiama come \segmento[keys]{A}{B} per disegnare il segmento
 \newcommand{\segmento}[3][]{
 	\tikzset{keyfld/.cd,
-		col/.initial = black,
+		col/.initial,
 		col draw/.initial, % il colore con cui si disegna il lato
 		mark/.initial = none, % il segno da mettere al segmento
 		mark size/.initial = 0.2, % la dimensione del segno
-		col mark/.initial = black, % il colore del segno
+		col mark/.initial, % il colore del segno
 		width/.initial, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
@@ -631,11 +712,11 @@
 % chiama come \PRIVsegmento[keys]{A}{B} per disegnare il segmento (versione privata, per il solo programmatore)
 \newcommand{\PRIVsegmento}[3][]{
 	\tikzset{keyfld/.cd,
-		PRIV col/.initial = black,
+		PRIV col/.initial,
 		PRIV col draw/.initial, % il colore con cui si disegna il lato
 		PRIV mark/.initial = none, % il segno da mettere al segmento
 		PRIV mark size/.initial = 0.2, % la dimensione del segno
-		PRIV col mark/.initial = black, % il colore del segno
+		PRIV col mark/.initial, % il colore del segno
 		PRIV width/.initial, % può essere thin, thick, ...
 		PRIV pattern/.initial, % può essere solid, dashed, dotted, ...
 		PRIV arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
@@ -674,7 +755,7 @@
 % chiama come \markarco[keys]{mark}{O}{A}{B} per creare un mark nel punto medio dell'arco di circonferenza AB di centro O. m indica il marchio richiesto (fra s,z,x,o,oo,|,||,|||)
 \newcommand{\markarco}[5][]{
 	\tikzset{keyfld/.cd,
-		col/.initial = black,
+		col/.initial,
 		size/.initial = 0.2, % la dimensione del segno
 	} \setkeyfld{#1};
 	\piedebis[markarcoPiedeBisettriceTemp]{markarcoPiedeBisettrice}{#4}{#3}{#5};
@@ -688,7 +769,7 @@
 % chiama come \angolo[keys]{A}{B}{C} per disegnare l'angolo in senso antiorario
 \newcommand{\angolo}[4][]{
 	\tikzset{keyfld/.cd,
-		col/.initial = black,
+		col/.initial,
 		col draw/.initial, % il colore con cui si disegna l'angolo
 		r/.initial = 0.6, % il raggio dell'angolo
 		mark/.initial = none, % il segno da mettere all'angolo
@@ -726,7 +807,7 @@
 % chiama come \PRIVangolo[keys]{A}{B}{C} per disegnare l'angolo in senso antiorario
 \newcommand{\PRIVangolo}[4][]{
 	\tikzset{keyfld/.cd,
-		PRIV col/.initial = black,
+		PRIV col/.initial,
 		PRIV col draw/.initial, % il colore con cui si disegna l'angolo
 		PRIV r/.initial = 0.6, % il raggio dell'angolo
 		PRIV mark/.initial = none, % il segno da mettere all'angolo
@@ -759,7 +840,7 @@
 % chiama come \angoloretto[keys]{A}{B}{C} per disegnare l'angolo retto in senso antiorario
 \newcommand{\angoloretto}[4][]{
 	\tikzset{keyfld/.cd,
-		col/.initial = black,
+		col/.initial,
 		col draw/.initial, % il colore con cui si disegna l'angolo
 		r/.initial = 0.4, % il lato del segmento del quadratino
 		width/.initial, % può essere thin, thick, ...
@@ -1214,7 +1295,7 @@
 	\tikzset{keyfld/.cd,
 		col1/.initial = gray!70, % il colore della parte più esterna
 		col2/.initial = gray, % il colore della parte intermedia
-		col3/.initial = black, % il colore della parte interna
+		col3/.initial, % il colore della parte interna
 		r2/.initial = 2/3, % che percentuale di carrucola (come raggio) viene coperta dai due cerchi centrali
 		r3/.initial = 0.1, % che percentuale di carrucola (come raggio) viene coperta dal cerchio centrale
 	} \setkeyfld{#1};
@@ -1227,7 +1308,7 @@
 \newcommand{\cassa}[4][]{
 	\tikzset{keyfld/.cd,
 		ang/.initial = 0, % l'angolo di inclinazione
-		col/.initial = black,
+		col/.initial,
 		col draw/.initial,
 		col fill/.initial,
 		opacity/.initial = 20,

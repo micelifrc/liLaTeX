@@ -20,7 +20,7 @@
 \providecommand{\colSI}{} % il colore delle unità di misura (definito in seguito come arancione)
 \providecommand{\inputTikz}{1} % 0-1 dice se importare anche il file coi comandi tikz
 \providecommand{\EnumPages}{1} % può essere posto a 0 se non vogliamo numerare le pagine oppure a 1 se vogliamo numerarle
-\providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, libro, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda SSPM, scheda laboratorio, prova laboratorio, gara olimpiadi, lezione, dimostrazione, formulario}
+\providecommand{\TipoDoc}{plain} % il tipo di file. Attualmente supportati: {plain, empty, libro, immagine, verifica, verifica recupero, esercizio svolto, lista esercizi, scheda, scheda SSPM, scheda laboratorio, prova laboratorio, gara olimpiadi, lezione, dimostrazione, formulario}
 %NOTA: le flag possono essere sovrascritte dall'utente di volta in volta specificando dei \newcommand in preambolo prima di includere il pacchetto liLaTeX
 %Alcune flag, se non specificate dall'utente, vengono ridefinite in questo file nella sezione denominata "SOVRASCRITTURA DELLE FLAG"
 
@@ -67,6 +67,7 @@
 % controlla se \TipoDoc è uno dei tipi conosciuti, altrimenti genera un errore di compilazione
 \newcounter{TipoDocGuardCounter}
 \ifdefstring{\TipoDoc}{plain}{\stepcounter{TipoDocGuardCounter}}{}
+\ifdefstring{\TipoDoc}{empty}{\stepcounter{TipoDocGuardCounter}}{}
 \ifdefstring{\TipoDoc}{libro}{\stepcounter{TipoDocGuardCounter}}{}
 \ifdefstring{\TipoDoc}{immagine}{\stepcounter{TipoDocGuardCounter}}{}
 \ifdefstring{\TipoDoc}{verifica}{\stepcounter{TipoDocGuardCounter}}{}
@@ -89,6 +90,7 @@
 \ifdefstring{\TipoDoc}{verifica recupero}{\stepcounter{TipoDocVerificaCounter}}{}
 \ifdefstring{\TipoDoc}{prova laboratorio}{\stepcounter{TipoDocVerificaCounter}}{}
 
+\ifdefstring{\TipoDoc}{empty}{\renewcommand{\EnumPages}{0}}{}
 \ifdefstring{\TipoDoc}{immagine}{\renewcommand{\EnumPages}{0}}{} % le immagini non devono mai avere la numerazione delle pagine
 
 
