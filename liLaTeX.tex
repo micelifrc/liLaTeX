@@ -46,7 +46,7 @@
 \usepackage{caption} % per \caption* e \captionbox
 \usepackage[dvipsnames]{xcolor} % pacchetto dei colori
 \usepackage{tikz} % tikz è il pacchetto per le immagini. Definisce tikzfigure
-\usetikzlibrary{calc, intersections, patterns, decorations.pathmorphing} % per calcoli con tikz, per trovare intersezioni fra curve e per springs e brackets
+\usetikzlibrary{calc, intersections, patterns, tikzmark, decorations.pathmorphing} % per calcoli con tikz, per trovare intersezioni fra curve, per \arco e per springs e brackets
 \usepackage{fancyhdr} % pacchetto per l'impaginazione
 \usepackage{adjustbox} % necessario per l'ambiente \adjustbox, utile per disegnare la tabella dei voti
 \usepackage{witharrows} % usato per \[\begin{WithArrows}...\end{WithArrows}\] Da includere dopo xcolor
@@ -373,6 +373,14 @@
 \newcommand{\vett}{\begin{pmatrix}\vettIter}
 \newcommand{\vettIter}[1]{#1\@ifnextchar\bgroup{\\\vettIter}{\end{pmatrix}}}
 \makeatother
+
+% aggiunge un arco sopra a #1
+\newcommand{\arco}[1]{%
+	\tikzmarknode{a}{#1}
+	\begin{tikzpicture}[overlay,remember picture]
+		\draw ([yshift=1pt]a.north west) to[bend left=20] ([yshift=1pt]a.north east);
+	\end{tikzpicture}%
+}% end of \arco
 
 \newcommand{\seq}[1][]{\stackrel{#1}{=}} % uguaglianza con commento. Chiama come \seq[commento] (il commento è in ambiente math)
 \newcommand{\scong}[1][]{\stackrel{#1}{\cong}} % congruenza con commento. Chiama come \scong[commento] (il commento è in ambiente math)

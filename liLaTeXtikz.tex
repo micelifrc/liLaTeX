@@ -80,23 +80,11 @@
 \newcommand{\commandstring}[1]{\removeslash{#1}}
 
 % crea un \inputwithoutdollar uguale all'input #1 ma senza i $
-% Attenzione! non funziona se l'input è fornito da una key (non so perché)
+% Attenzione! Se abbiamo qualcosa come \def\nome{$a$} la funzione \removedollar{$a$} funziona correttamente, ma la funzione \removedollar{\nome} non funziona (lavora sulla stringa \nome anziché sulla stringa $a$)
 \newcommand*{\removedollar}[1]{{\catcode`\$=9\scantokens{\xdef\inputwihoutdollar{#1}}}}
 
 % rimuove lo \ dall'input
 \newcommand{\removeslash}[1]{{\catcode92=9 \endlinechar-1 \scantokens{#1}}}
-
-% rimuove i $ dall'input
-\newcommand{\removemathmode}[1]{{\catcode24=9 \endlinechar-1 \scantokens{#1}}}
-
-% calcola la distanza (in cm) fra #1 e #2
-\newcommand{\getdistanza}[2]{
-	\coordinate(getdistanzafrom)at(#1);
-	\coordinate(getdistanzato)at(#2);
-	\tkzCalcLength(getdistanzafrom,getdistanzato)
-		\tkzGetLength{getdistanzaAB}
-		\convertto{cm}{\getdistanzaAB pt}
-}
 
 % registra la distanza fra #2 e #3 in #1
 \newcommand{\distanza}[3]{
@@ -117,6 +105,9 @@
 		\tkzGetAngle{angolopolareoutput}
 		\def#1{\angolopolareoutput};
 }
+
+
+%%%%%%%%%%%%%%%% LABEL
 
 % \stylelbl[keys]{coord} scrive il label nel formato specificato
 \newcommand{\stylelbl}[2][]{
@@ -168,6 +159,7 @@
 % \removedollarfromkey[key name]{value} se la key #1 ha valore $#2$, viene ridefinita come #2
 \newcommand{\removedollarfromkey}[2][lbl]{\ifkeyequal{#1}{$#2$}{\setkeyvalue{#1}{#2}}{}}
 
+%TODO idealmente vorremmo creare una funzione come removedollarfromkey che funzioni con tutte le keys (senza bisogno di specificare il valore di #2)
 
 %%%%%%%%%%%%%%%%	PUNTO
 % Attenzione! coordinate create come \punto (o suoi derivati) sono incompatibili con l'opzione fill per eventuali poligoni. Questo vuol dire che se vogliamo disegnare un poligono colorato, dobbiamo definire i punti come \coordinate, poi usare fill, e infine ripassare i vertici con \punto
@@ -337,7 +329,7 @@
 	\draw[\kv{col2},\kv{width2},\kv{pattern2}] (#2,#4) grid [step=\kv{s2}] (#3,#5);
 }
 
-% può solo essere usata con \TipoDoc=immagine. Crea una pagina intera di carta millimetrata
+% può solo essere usata con \TipoDoc = immagine. Crea una pagina intera di carta millimetrata
 \newcommand{\cartamillimetratapagina}[1][]{\cartamillimetrata[#1]{0}{21}{0.3}{30};}
 
 % \assex[keys]{x-left}{x-right} crea l'asse x
@@ -589,14 +581,14 @@
 % \piedealt{<- P}{A}{B}{C} trova P (il piede dell'altezza BP)
 \newcommand{\piedealt}[4]{\proj{#1}{#3}{#2}{#4};}
 
-% \piedebis[temp]{<- P}{A}{B}{C} trova P (il piede della bisettrice dell'angolo ABC)
-\newcommand{\piedebis}[5][piedebisTemp]{
-	\coordinate(piedebisA)at(#3);
-	\coordinate(piedebisB)at(#4);
-	\coordinate(piedebisC)at(#5);
+% \piedebis{<- P}{A}{B}{C} trova P (il piede della bisettrice dell'angolo ABC)
+\newcommand{\piedebis}[4]{
+	\coordinate(piedebisA)at(#2);
+	\coordinate(piedebisB)at(#3);
+	\coordinate(piedebisC)at(#4);
 	\tkzDefLine[bisector](piedebisA,piedebisB,piedebisC)
-		\tkzGetPoint{#1}
-	\intrette{#2}{#4}{#1}{#3}{#5};
+		\tkzGetPoint{piedebisTemp}
+	\intrette{#1}{piedebisTemp}{#3}{#2}{#4};
 }
 
 % \centrotriangolo[type]{<- P}{A}{B}{C} trova il centro del triangolo (funzione usata per definire i successivi 5 comandi)
@@ -626,6 +618,8 @@
 		col lati/.initial,
 		col angoli/.initial,
 		fill angoli/.initial = false,
+		col fill angoli/.initial,
+		opacity angoli/.initial = 30,
 		width/.initial, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		lbl vertici/.initial = true,
@@ -637,14 +631,20 @@
 		{col vertici}{col}
 		{col lati}{col}
 		{col angoli}{col}
+	\ifkeyequal{fill angoli}{false}{}{
+		\ifkeyempty{col angoli}
+		{\setkeyvalueifempty{col fill angoli}{black!\kv{opacity angoli}}}
+		{\setkeyvalueifempty{col fill angoli}{\kv{col angoli}!\kv{opacity angoli}}}
+	}
+	\ifkeyempty{col fill angoli}{}{\setkeyvalue{fill angoli}{true}}
 	\ifkeyequal{lbl angoli}{true}{
-		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV lbl=$\alpha$]{#3}{#2}{#4};
-		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV lbl=$\beta$]{#4}{#3}{#2};
-		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV lbl=$\gamma$]{#2}{#4}{#3};
+		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV col fill=\kv{col fill angoli},PRIV lbl=$\alpha$]{#3}{#2}{#4};
+		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV col fill=\kv{col fill angoli},PRIV lbl=$\beta$]{#4}{#3}{#2};
+		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV col fill=\kv{col fill angoli},PRIV lbl=$\gamma$]{#2}{#4}{#3};
 	}{
-		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli}]{#3}{#2}{#4};
-		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli}]{#4}{#3}{#2};
-		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli}]{#2}{#4}{#3};
+		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV col fill=\kv{col fill angoli}]{#3}{#2}{#4};
+		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV col fill=\kv{col fill angoli}]{#4}{#3}{#2};
+		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV col fill=\kv{col fill angoli}]{#2}{#4}{#3};
 	}
 	\ifkeyequal{lbl lati}{true}{
 		\PRIVsegmento[PRIV col=\kv{col lati},PRIV lbl=a,PRIV lbl style=rm]{#3}{#4};
@@ -676,7 +676,7 @@
 		col draw/.initial, % il colore con cui si disegna il lato
 		mark/.initial = none, % il segno da mettere al segmento
 		mark size/.initial = 0.2, % la dimensione del segno
-		col mark/.initial, % il colore del segno
+		col mark/.initial = black, % il colore del segno
 		width/.initial, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
@@ -700,7 +700,7 @@
 		PRIV arrow=\kv{arrow},
 		PRIV name path=\kv{name path},
 		PRIV lbl=\kv{lbl},
-		PRIV lbl style=lbl style,
+		PRIV lbl style=\kv{lbl style},
 		PRIV lbl name=\kv{lbl name},
 		PRIV lbl dist=\kv{lbl dist},
 		PRIV lbl size=\kv{lbl size},
@@ -716,7 +716,7 @@
 		PRIV col draw/.initial, % il colore con cui si disegna il lato
 		PRIV mark/.initial = none, % il segno da mettere al segmento
 		PRIV mark size/.initial = 0.2, % la dimensione del segno
-		PRIV col mark/.initial, % il colore del segno
+		PRIV col mark/.initial = black, % il colore del segno
 		PRIV width/.initial, % può essere thin, thick, ...
 		PRIV pattern/.initial, % può essere solid, dashed, dotted, ...
 		PRIV arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
@@ -740,22 +740,22 @@
 	\ifkeyempty{PRIV lbl name}{}{
 		\medio{segmentoPuntoMedio}{segmentoA}{segmentoB};
 		\ruotapuntoN[\kv{PRIV lbl dist}]{\kv{PRIV lbl name}}{segmentoA}{segmentoPuntoMedio}{90};
+		\PRIVstylelbl[
+			PRIVlbl lbl style=\kv{PRIV lbl style},
+			PRIVlbl lbl=\kv{PRIV lbl},
+			PRIVlbl lbl size=\kv{PRIV lbl size},
+			PRIVlbl lbl name=\kv{PRIV lbl name},
+			PRIVlbl col=\kv{PRIV col},
+			PRIVlbl lbl col=\kv{PRIV lbl col},
+			PRIVlbl col lbl=\kv{PRIV col lbl},
+		]{\kv{PRIV lbl name}};
 	}
-	\PRIVstylelbl[
-		PRIVlbl lbl style=\kv{PRIV lbl style},
-		PRIVlbl lbl=\kv{PRIV lbl},
-		PRIVlbl lbl size=\kv{PRIV lbl size},
-		PRIVlbl lbl name=\kv{PRIV lbl name},
-		PRIVlbl col=\kv{PRIV col},
-		PRIVlbl lbl col=\kv{PRIV lbl col},
-		PRIVlbl col lbl=\kv{PRIV col lbl},
-	]{\kv{PRIV lbl name}};
 }
 
 % chiama come \markarco[keys]{mark}{O}{A}{B} per creare un mark nel punto medio dell'arco di circonferenza AB di centro O. m indica il marchio richiesto (fra s,z,x,o,oo,|,||,|||)
 \newcommand{\markarco}[5][]{
 	\tikzset{keyfld/.cd,
-		col/.initial,
+		col/.initial = black,
 		size/.initial = 0.2, % la dimensione del segno
 	} \setkeyfld{#1};
 	\piedebis[markarcoPiedeBisettriceTemp]{markarcoPiedeBisettrice}{#4}{#3}{#5};
@@ -778,7 +778,7 @@
 		arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
 		fill/.initial = false, % può essere true o false
 		col fill/.initial, % il colore del filling
-		opacity/.initial = 0.3, % un numero fra 0 e 1 ch indica l'intensità della colorazione
+		opacity/.initial = 30, % un numero fra 0 e 1 che indica l'intensità della colorazione
 		lbl/.initial,
 		lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
 		lbl size/.initial,
@@ -796,7 +796,7 @@
 		PRIV fill=\kv{fill},
 		PRIV col fill=\kv{col fill},
 		PRIV opacity=\kv{opacity},
-		PRIV lbl=\kv{lbl};
+		PRIV lbl=\kv{lbl},
 		PRIV lbl dist=\kv{lbl dist},
 		PRIV lbl size=\kv{lbl size},
 		PRIV lbl col=\kv{lbl col},
@@ -832,9 +832,9 @@
 	\coordinate(angoloPuntoA)at(#2);
 	\coordinate(angoloPuntoB)at(#3);
 	\coordinate(angoloPuntoC)at(#4);
-	\ifkeyequal{PRIV fill}{true}{\tkzFillAngle[size=\kv{PRIV r},opacity=\kv{PRIV opacity},fill=\kv{PRIV col fill}](angoloPuntoA,angoloPuntoB,angoloPuntoC)}{}
+	\ifkeyequal{PRIV fill}{true}{\tkzFillAngle[size=\kv{PRIV r},opacity=\kv{PRIV opacity}*0.01,fill=\kv{PRIV col fill}](angoloPuntoA,angoloPuntoB,angoloPuntoC)}{}
 	\tkzMarkAngle[mark=\kv{PRIV mark},size=\kv{PRIV r},draw=\kv{PRIV col draw},\kv{PRIV width},\kv{PRIV pattern},\kv{PRIV arrow}](angoloPuntoA,angoloPuntoB,angoloPuntoC)
-	\ifkeyempty{PRIV lbl}{}{\tkzLabelAngle[pos=\kv{PRIV r}+\kv{PRIV lbl dist},\kv{PRIV lbl col}](angoloPuntoA,angoloPuntoB,angoloPuntoC){\kv{PRIV lbl size}\kv{PRIV lbl}}}
+	\ifkeyempty{PRIV lbl}{}{\tkzLabelAngle[pos=(\kv{PRIV r}+\kv{PRIV lbl dist}),\kv{PRIV lbl col}](angoloPuntoA,angoloPuntoB,angoloPuntoC){\kv{PRIV lbl size}\kv{PRIV lbl}}}
 }
 
 % chiama come \angoloretto[keys]{A}{B}{C} per disegnare l'angolo retto in senso antiorario
@@ -848,7 +848,7 @@
 		arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
 		fill/.initial = false, % può essere true o false
 		col fill/.initial, % il colore del filling
-		opacity/.initial = 0.3, % un numero fra 0 e 1 ch indica l'intensità della colorazione
+		opacity/.initial = 30, % un numero fra 0 e 1 ch indica l'intensità della colorazione
 	} \setkeyfld{#1};
 	\setkeyvalueifempty{col draw}{\kv{col}};
 	\ifkeyempty{col fill}{}{\setkeyvalue{fill}{true}};
@@ -857,7 +857,7 @@
 	\coordinate(angolorettoPuntoB)at(#3);
 	\coordinate(angolorettoPuntoC)at(#4);
 	\ifkeyequal{fill}{true}
-	{\tkzMarkRightAngle[size=\kv{r},\kv{width},\kv{pattern},fill=\kv{col fill},opacity=\kv{opacity}](angolorettoPuntoA,angolorettoPuntoB,angolorettoPuntoC)}{}
+	{\tkzMarkRightAngle[size=\kv{r},\kv{width},\kv{pattern},fill=\kv{col fill},opacity=\kv{opacity}*0.01](angolorettoPuntoA,angolorettoPuntoB,angolorettoPuntoC)}{}
 	\tkzMarkRightAngle[size=\kv{r},draw=\kv{col draw},\kv{width},\kv{pattern},\kv{arrow}](angolorettoPuntoA,angolorettoPuntoB,angolorettoPuntoC)
 }
 
@@ -871,7 +871,6 @@
 		prol length/.initial = 0.8,
 		col/.initial,
 		width/.initial, % può essere thin, thick, ...
-		pattern/.initial, % può essere solid, dashed, dotted, ...
 		pattern draw/.initial, % può essere solid, dashed, dotted, ...
 		pattern prol/.initial = dashed, % può essere solid, dashed, dotted, ...
 		name path/.initial, % può essere usato per dare un nome al path (per il tratto continuo)
@@ -884,7 +883,6 @@
 		lbl col/.initial,
 		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
 	} \setkeyfld{#1};
-	\copykeyvalueifempty{pattern draw}{pattern}
 	\ifkeyempty{draw length}{
 		\ifkeyempty{name path}
 			{\draw[\kv{col},\kv{width},\kv{pattern draw}](#2)--(#3);}
@@ -926,7 +924,6 @@
 		prol length/.initial = 0.8,
 		col/.initial,
 		width/.initial, % può essere thin, thick, ...
-		pattern/.initial, % può essere solid, dashed, dotted, ...
 		pattern draw/.initial, % può essere solid, dashed, dotted, ...
 		pattern prol/.initial = dashed, % può essere solid, dashed, dotted, ...
 		name path/.initial, % può essere usato per dare un nome al path (per il tratto continuo)
@@ -939,7 +936,6 @@
 		lbl col/.initial,
 		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
 	} \setkeyfld{#1};
-	\copykeyvalueifempty{pattern draw}{pattern}
 	\ifkeyempty{draw length}{
 		\ifkeyempty{name path}
 			{\draw[\kv{col},\kv{width},\kv{pattern draw}](#2)--(#3);}
@@ -1218,14 +1214,20 @@
 % chiama come \plotcos[opzioni]{from:to}{ampiezza} o come \plotsin[opzioni]{from:to}{ampiezza}
 \newcommand{\plotcos}[3][]{\plot[#1]{#2}{\x}{(#3)*cos(\x*180/pi)};}
 \newcommand{\plotsin}[3][]{\plot[#1]{#2}{\x}{(#3)*sin(\x*180/pi)};}
-% chiama come \plotcos[opzioni]{from:to}{ampiezza}{shift} o come \plotsin[opzioni]{from:to}{ampiezza}{shift}
+
+% chiama come \plotcosshift[opzioni]{from:to}{ampiezza}{shift} o come \plotsinshift[opzioni]{from:to}{ampiezza}{shift}
 \newcommand{\plotcosshift}[4][]{\plotcos[#1,shift={(#4)}]{#2}{#3};}
 \newcommand{\plotsinshift}[4][]{\plotsin[#1,shift={(#4)}]{#2}{#3};}
+
+% chiama come \plotcosfr[opzioni]{from:to}{ampiezza}{N} o come \plotsinfr[opzioni]{from:to}{ampiezza}{N} dove N indica il numero di oscillazioni per ogni unità di x
+\newcommand{\plotcosfr}[4][]{\plot[#1]{#2}{\x}{(#3)*cos(\x*360*#4)};}
+\newcommand{\plotsinfr}[4][]{\plot[#1]{#2}{\x}{(#3)*sin(\x*360*#4)};}
 
 
 %%%%%%%%%%%%%%%%	UTILS
 
 % \extractcoordpair[separatore]{<- \x}{<-  \y}{P} estrae le due coordinate di P e le scrive in \x e in \y. Se P è dato in coordinate polari o rappresenta un range allora il separatore da usare è : (anziché ,)
+% #4 deve essere escritto esplicitamente. Quindi possiamo scrivere #4 come (3,5), ma non come P
 \newcommand{\extractcoordpair}[4][,]{
 	\def\extractcoordpairseparator{#1}
 	\def\extractcoordpairx{}
@@ -1252,11 +1254,12 @@
 % \estendistr#1{#2} aggiunge #2 alla fine della stringa #1
 \def\estendistr#1#2{\expandafter\def\expandafter#1\expandafter{#1#2}}
 
+\newcounter{poligonoNumPointsBuilder}
+
 % \poligono[opzioni]{A,B,C,...} disegna un poligono
 \newcommand{\poligono}[2][]{
 	\def\poligonoInputBuilder{(} % la stringa (A)--(B)--(C)--(A) Viene costruita progressivamente
 	\def\poligonoFirstPointBuilder{} % la stringa A
-	\newcounter{poligonoNumPointsBuilder}
 	\setcounter{poligonoNumPointsBuilder}{1}
 	\poligonoIter#2;
 	\draw[#1]\poligonoInputBuilder;
@@ -1295,19 +1298,18 @@
 	\tikzset{keyfld/.cd,
 		col1/.initial = gray!70, % il colore della parte più esterna
 		col2/.initial = gray, % il colore della parte intermedia
-		col3/.initial, % il colore della parte interna
+		col3/.initial = black, % il colore della parte interna
 		r2/.initial = 2/3, % che percentuale di carrucola (come raggio) viene coperta dai due cerchi centrali
-		r3/.initial = 0.1, % che percentuale di carrucola (come raggio) viene coperta dal cerchio centrale
+		r3/.initial = 1/10, % che percentuale di carrucola (come raggio) viene coperta dal cerchio centrale
 	} \setkeyfld{#1};
 	\draw[\kv{col3},fill=\kv{col1}] (#2) circle (#3);
 	\draw[\kv{col2},fill=\kv{col2}] (#2) circle (#3*\kv{r2});
 	\draw[\kv{col3},fill=\kv{col3}] (#2) circle (#3*\kv{r3});
 }
 
-% \cassa[keys]{punto iniziale}{lunghezza x}{lunghezza y}
-\newcommand{\cassa}[4][]{
+% \cassa[keys]{punto iniziale}{lunghezza x}{lunghezza y}{angolo}
+\newcommand{\cassa}[5][]{
 	\tikzset{keyfld/.cd,
-		ang/.initial = 0, % l'angolo di inclinazione
 		col/.initial,
 		col draw/.initial,
 		col fill/.initial,
@@ -1319,14 +1321,14 @@
 		lbl/.initial,
 		lbl style/.initial = bf, % se specificato usiamo questo stile. Le opzioni sono rm, bf, cal
 		lbl size/.initial,
-		lbl col/.initial,
+		lbl col/.initial = black,
 		col lbl/.initial,
 	} \setkeyfld{#1};
 	\setkeyvaluesifempty
 		{col draw}{\kv{col}}
 		{col fill}{\kv{col}!\kv{opacity}}
-	\ifkeyequal{fill}{true}{\fill[\kv{col fill}] (#2)--++(\kv{ang}:#3)--++(\kv{ang}+90:#4)--++(\kv{ang}+180:#3)--++(\kv{ang}+270:#4);}{}
-	\draw[\kv{col draw},\kv{width},\kv{pattern}] (#2)--++(\kv{ang}:#3)--++(\kv{ang}+90:#4)--++(\kv{ang}+180:#3)--++(\kv{ang}+270:#4);
+	\ifkeyequal{fill}{true}{\fill[\kv{col fill}] (#2)--++(#5:#3)--++(#5+90:#4)--++(#5+180:#3)--++(#5+270:#4);}{}
+	\draw[\kv{col draw},\kv{width},\kv{pattern}] (#2)--++(#5:#3)--++(#5+90:#4)--++(#5+180:#3)--++(#5+270:#4);
 	\ifkeyempty{lbl}{}{\setkeyvalueifempty{centro}{cassacentro}}
 	\ifkeyempty{centro}{}{
 		\PRIVstylelbl[
@@ -1334,10 +1336,9 @@
 			PRIVlbl lbl=\kv{lbl},
 			PRIVlbl lbl size=\kv{lbl size},
 			PRIVlbl lbl name=\kv{centro},
-			PRIVlbl col=\kv{col},
 			PRIVlbl lbl col=\kv{lbl col},
 			PRIVlbl col lbl=\kv{col lbl},
-		]{$(#2)+(\ang:0.5*#3)+(\ang+90:0.5*#4)$};
+		]{$(#2)+(#5:0.5*#3)+(#5+90:0.5*#4)$};
 	}
 }
 
@@ -1353,7 +1354,7 @@
 	} \setkeyfld{#1};
 	\medio[\kv{arrow dist}]{raggioluceposizionefreccia}{#2}{#3};
 	\draw[\kv{col},\kv{width},\kv{pattern},\kv{arrow}] (#3)--(raggioluceposizionefreccia) (#2)--(raggioluceposizionefreccia);
-	\@ifnextchar\bgroup{\raggioluce[#1]{#3}}{}
+	\@ifnextchar\bgroup{\expandafter\raggioluce[#1]{#3}}{}
 }
 \makeatother
 
@@ -1365,22 +1366,30 @@
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		shape/.initial = brace,
 		amplitude/.initial = 5, % in pt
+		dist/.initial = 0.05, % la distanza della molla dai punti A e B
 		mirror/.initial = false,
 		lbl/.initial,
 		lbl style/.initial, % se specificato usiamo questo stile. Le opzioni sono rm, bf, cal
 		lbl col/.initial,
 		col lbl/.initial,
-		lbl dist/.initial = .5,
+		lbl dist/.initial = 0.5,
 		lbl name/.initial,
 	} \setkeyfld{#1};
-	\ifkeyequal{mirror}{false}
-	{\draw[\kv{col},\kv{width},\kv{pattern},decorate,decoration={\kv{shape},amplitude=\kv{amplitude}pt}](#3) --(#2);}
-	{\draw[\kv{col},\kv{width},\kv{pattern},decorate,decoration={\kv{shape},amplitude=\kv{amplitude}pt}](#2) --(#3);}
+	\ifkeyequal{mirror}{false}{
+		\ruotapuntoN[\kv{dist}]{graffapuntoA}{#2}{#3}{+90};
+		\ruotapuntoN[\kv{dist}]{graffapuntoB}{#3}{#2}{-90};
+	}{
+		\ruotapuntoN[\kv{dist}]{graffapuntoA}{#3}{#2}{+90};
+		\ruotapuntoN[\kv{dist}]{graffapuntoB}{#2}{#3}{-90};
+	}
+	\draw[\kv{col},\kv{width},\kv{pattern},decorate,decoration={\kv{shape},amplitude=\kv{amplitude}pt}](graffapuntoA) --(graffapuntoB);
 	\ifkeyempty{lbl}{}{\setkeyvalueifempty{lbl name}{graffanamelbl}}
 	\ifkeyempty{lbl name}{}{
-		\medio{graffaPM}{#3}{#2};
-		\ifkeyequal{mirror}{false}{\def\graffaanglbl{90};}{\def\graffaanglbl{270};}
-		\ruotapunto{graffapuntoruotato}{#2}{graffaPM}{\graffaanglbl};
+		\medio{graffaPM}{graffapuntoA}{graffapuntoB};
+		\ifkeyequal{mirror}{false}{\def\graffaanglbl{90};}{\def\graffaanglbl{270};}	
+		\ifkeyequal{mirror}{false}
+		{\ruotapunto{graffapuntoruotato}{graffapuntoB}{graffaPM}{\graffaanglbl};}
+		{\ruotapunto{graffapuntoruotato}{graffapuntoA}{graffaPM}{\graffaanglbl};}
 		\verso[\kv{lbl dist}]{graffalblpos}{graffaPM}{graffapuntoruotato};
 		\PRIVstylelbl[
 			PRIVlbl lbl style=\kv{lbl style},
@@ -1400,11 +1409,13 @@
 		col/.initial = gray,
 		width/.initial, % può essere thin, thick, ...
 		scale/.initial = 1,
+		s/.initial, % equivalente a scale
 		step/.initial = 0.15,
 		r/.initial = 0.2,
 		aspect/.initial = 0.3,
 	} \setkeyfld{#1};
-	\draw[\kv{col},\kv{width},decoration={aspect=\kv{aspect}, segment length=\kv{scale}*\kv{step}cm,amplitude=\kv{scale}*\kv{r}cm,coil},decorate] (#3) -- (#2);
+	\copykeyvalueifempty{s}{scale};
+	\draw[\kv{col},\kv{width},decoration={aspect=\kv{aspect}, segment length=\kv{scale}*\kv{step}cm,amplitude=\kv{s}*\kv{r}cm,coil},decorate] (#3) -- (#2);
 }
 
 % \sfera[colore]{centro}{raggio} crea una sfera tridimensionale
@@ -1416,7 +1427,7 @@
 % \casetta[keys]{pos} disegna una casetta. pos è il centro della base della casetta
 \newcommand{\casetta}[2][]{
 	\tikzset{keyfld/.cd,
-		col/.initial= blue,
+		col/.initial,
 		width/.initial, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		scale/.initial = 1,
@@ -1459,18 +1470,22 @@
 		mano 2/.initial = ManoSx, % il nome da dare alla seconda mano (se disegnata)
 		piede 1/.initial = PiedeDx, % il nome da dare del primo piede
 		piede 2/.initial = PiedeSx, % il nome da dare del primo piede
+		scale/.initial = 1,
+		s/.initial, % equivalente a scale
 	} \setkeyfld{#1};
+	\copykeyvalueifempty{s}{scale};
 	\ifkeyempty{ang braccio}{}{\copykeyvalue{ang braccio 1}{ang braccio};}
 	\ifkeyempty{ang gamba}{}{\copykeyvalue{ang gamba 1}{ang gamba};}
 	\ifkeyequal{side}{->}{\def\uomoflipper{}}{\def\uomoflipper{180-}}
-	\draw[\kv{col},\kv{width}]($(#2)+(0,0.9*\kv{h})$)circle(0.1*\kv{h}); % testa
-	\draw[\kv{col},\kv{width}]($(#2)+(0,0.8*\kv{h})$)--++(0,-0.1*\kv{h}); % collo
-	\draw[\kv{col},ultra thick]($(#2)+(0,0.7*\kv{h})$)--++(0,-0.3*\kv{h}); % corpo
-	\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\kv{h})$)--++(\uomoflipper\kv{ang braccio 1}:\kv{lung braccio}*\kv{h})node(\kv{mano 1}){}; % braccio 1
-	\ifkeyempty{ang braccio 2}{}{\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\kv{h})$)--++(\uomoflipper\kv{ang braccio 2}:\kv{lung braccio}*\kv{h})node(\kv{mano 2}){};} % braccio 2
-	\intrette{\kv{piede 1}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\kv{h})$}{$(#2)+(0,0.4*\kv{h})+(\uomoflipper\kv{ang gamba 1}:1)$}; % la posizione del primo piede
-	\intrette{\kv{piede 2}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\kv{h})$}{$(#2)+(0,0.4*\kv{h})+(\uomoflipper\kv{ang gamba 2}:1)$}; % la posizione del secondo piede
-	\draw[\kv{col},\kv{width}](\kv{piede 1})--($(#2)+(0,0.4*\kv{h})$)--(\kv{piede 2}); % le gambe
+	\tikzdef\uomoh{\kv{s}*\kv{h}}
+	\draw[\kv{col},\kv{width}]($(#2)+(0,0.9*\uomoh)$)circle(0.1*\uomoh); % testa
+	\draw[\kv{col},\kv{width}]($(#2)+(0,0.8*\uomoh)$)--++(0,-0.1*\uomoh); % collo
+	\draw[\kv{col},ultra thick]($(#2)+(0,0.7*\uomoh)$)--++(0,-0.3*\uomoh); % corpo
+	\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\uomoh)$)--++(\uomoflipper\kv{ang braccio 1}:\kv{lung braccio}*\uomoh)node(\kv{mano 1}){}; % braccio 1
+	\ifkeyempty{ang braccio 2}{}{\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\uomoh)$)--++(\uomoflipper\kv{ang braccio 2}:\kv{lung braccio}*\uomoh)node(\kv{mano 2}){};} % braccio 2
+	\intrette{\kv{piede 1}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\uomoh)$}{$(#2)+(0,0.4*\uomoh)+(\uomoflipper\kv{ang gamba 1}:1)$}; % la posizione del primo piede
+	\intrette{\kv{piede 2}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\uomoh)$}{$(#2)+(0,0.4*\uomoh)+(\uomoflipper\kv{ang gamba 2}:1)$}; % la posizione del secondo piede
+	\draw[\kv{col},\kv{width}](\kv{piede 1})--($(#2)+(0,0.4*\uomoh)$)--(\kv{piede 2}); % le gambe
 }
 
 % \donna[keys]{pos} disegna una donnina stilizzata. pos è il centro della sua base
@@ -1491,20 +1506,24 @@
 		mano 2/.initial = ManoSx, % il nome da dare alla seconda mano (se disegnata)
 		piede 1/.initial = PiedeDx, % il nome da dare del primo piede
 		piede 2/.initial = PiedeSx, % il nome da dare del primo piede
+		scale/.initial = 1,
+		s/.initial, % equivalente a scale
 	} \setkeyfld{#1};
+	\copykeyvalueifempty{s}{scale};
 	\ifkeyempty{ang braccio}{}{\copykeyvalue{ang braccio 1}{ang braccio};}
 	\ifkeyempty{ang gamba}{}{\copykeyvalue{ang gamba 1}{ang gamba};}
 	\ifkeyequal{side}{->}{\def\donnaflipper{}}{\def\donnaflipper{180-}}
-	\draw[\kv{col},\kv{width}]($(#2)+(0,0.9*\kv{h})$)circle(0.1*\kv{h}); % testa
-	\draw[\kv{col},\kv{width}]($(#2)+(0,0.8*\kv{h})$)--++(0,-0.1*\kv{h}); % collo
-	\draw[\kv{col},ultra thick]($(#2)+(0,0.7*\kv{h})$)--++(0,-0.3*\kv{h}); % corpo
-	\draw[\kv{col},\kv{width}]($(#2)+(0,0.4*\kv{h})$)--++(-0.2*\kv{h},-0.2*\kv{h})--++(+0.4*\kv{h},0)--++(-0.2*\kv{h},+0.2*\kv{h}); % gonna
-	\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\kv{h})$)--++(\donnaflipper\kv{ang braccio 1}:\kv{lung braccio}*\kv{h})node(\kv{mano 1}){}; % braccio 1
-	\ifkeyempty{ang braccio 2}{}{\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\kv{h})$)--++(\donnaflipper\kv{ang braccio 2}:\kv{lung braccio}*\kv{h})node(\kv{mano 2}){};} % braccio 2
-	\intrette{\kv{piede 1}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\kv{h})$}{$(#2)+(0,0.4*\kv{h})+(\donnaflipper\kv{ang gamba 1}:1)$}; % la posizione del primo piede
-	\intrette{\kv{piede 2}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\kv{h})$}{$(#2)+(0,0.4*\kv{h})+(\donnaflipper\kv{ang gamba 2}:1)$}; % la posizione del secondo piede
-	\medio{GambaDxGonna}{\kv{piede 1}}{$(#2)+(0,0.4*\kv{h})$};
-	\medio{GambaSxGonna}{\kv{piede 2}}{$(#2)+(0,0.4*\kv{h})$};
+	\tikzdef\donnah{\kv{s}*\kv{h}}
+	\draw[\kv{col},\kv{width}]($(#2)+(0,0.9*\donnah)$)circle(0.1*\donnah); % testa
+	\draw[\kv{col},\kv{width}]($(#2)+(0,0.8*\donnah)$)--++(0,-0.1*\donnah); % collo
+	\draw[\kv{col},ultra thick]($(#2)+(0,0.7*\donnah)$)--++(0,-0.3*\donnah); % corpo
+	\draw[\kv{col},\kv{width}]($(#2)+(0,0.4*\donnah)$)--++(-0.2*\donnah,-0.2*\donnah)--++(+0.4*\donnah,0)--++(-0.2*\donnah,+0.2*\donnah); % gonna
+	\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\donnah)$)--++(\donnaflipper\kv{ang braccio 1}:\kv{lung braccio}*\donnah)node(\kv{mano 1}){}; % braccio 1
+	\ifkeyempty{ang braccio 2}{}{\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\donnah)$)--++(\donnaflipper\kv{ang braccio 2}:\kv{lung braccio}*\donnah)node(\kv{mano 2}){};} % braccio 2
+	\intrette{\kv{piede 1}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\donnah)$}{$(#2)+(0,0.4*\donnah)+(\donnaflipper\kv{ang gamba 1}:1)$}; % la posizione del primo piede
+	\intrette{\kv{piede 2}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\donnah)$}{$(#2)+(0,0.4*\donnah)+(\donnaflipper\kv{ang gamba 2}:1)$}; % la posizione del secondo piede
+	\medio{GambaDxGonna}{\kv{piede 1}}{$(#2)+(0,0.4*\donnah)$};
+	\medio{GambaSxGonna}{\kv{piede 2}}{$(#2)+(0,0.4*\donnah)$};
 	\draw[\kv{col},\kv{width}](GambaDxGonna)--(\kv{piede 1}) (GambaSxGonna)--(\kv{piede 2}); % le gambe
 }
 

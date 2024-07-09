@@ -1,0 +1,1304 @@
+% compila tre volte
+\documentclass[italian, a4paper]{article}
+\newcommand{\TipoDoc}{libro}
+\newcommand{\FontSize}{11}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\def\showimmagini{1} % rendi 0 se non vuoi mostrare le immagini (può essere utile per guadagnare runtime mentre si scrive il manuale). 1 se vogliamo mostrarle
+\def\showslowimmagini{\showimmagini} % rendi 0 se non vuoi mostrare le immagini più lente (può essere utile per guadagnare runtime mentre si scrive il manuale). \showimmagini se vogliamo mostrarle
+
+\newcommand{\bs}{\textbackslash}
+\newcommand{\ttt}[1]{\texttt{#1}}
+\newcommand{\liLaTeX}{\ttt{liLaTeX}}
+\newcommand{\liLaTeXtikz}{\ttt{liLaTeXtikz}}
+\newcommand{\codice}[2][\large]{\vspace*{1mm}\noindent\fbox{\parbox{\textwidth}{#1\ttt{#2}}}}
+\newcommand{\comando}[2][\large]{\codice[#1]{#2}\vspace*{3mm}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\Green}[1]{\textcolor{Green}{#1}}
+\newcommand{\cyan}[1]{\textcolor{cyan}{#1}}
+\newcommand{\teal}[1]{\textcolor{teal}{#1}}
+\newcommand{\gray}[1]{\textcolor{gray}{#1}}
+\newcommand{\black}[1]{\textcolor{black}{#1}}
+\newcommand{\opzioni}{\textcolor{teal}{\ttt{opzioni}}}
+\newcommand{\keys}{\textcolor{teal}{\ttt{keys}}}
+\newcommand{\key}[1]{\textcolor{brown}{\ttt{#1}}}
+\newcommand{\keyval}[1]{\cyan{\ttt{#1}}}
+\newcommand{\dash}{{-}{-}}
+\newcommand{\tab}{\hspace*{4mm}}
+
+\title{Manuale del pacchetto \liLaTeXtikz}
+\author{Federico Miceli}
+\date{estate 2024}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+In questo manuale viene descritto il pacchetto grafico di \liLaTeX, chiamato \liLaTeXtikz. Si tratta di un pacchetto \LaTeX\ che estende \ttt{tikz}. Il manuale contiene quindi anche alcune indicazioni per l'uso di tikz.
+
+Questo manuale conterrà alcuni esempi minimali, in genere a conclusione di ciascuna sezione. Per esempi più estesi e articolati si rimanda alla cartella denominata \textit{esempi\_immagini}.
+\end{abstract}
+\tableofcontents
+
+\newpage
+\section{Il pacchetto tikz di \LaTeX}
+\subsection{Creare coordinate e nodi}
+\subsubsection{Il comando \ttt{\bs coordinate}}
+Per creare dei punti in tikz ci sono due comandi principali, con le seguenti sintassi:
+
+\codice{\bs coordinate (\blue{nome}) at (\blue{$x$,$y$});}
+crea una coordinata di nome \blue{nome} nella posizione indicata.
+
+La posizione può essere indicata con coordinate cartesiane (\blue{$x,y$}), oppure con coordinate polari (\blue{$\vartheta:r$}).
+
+\subsubsection{Il comando \ttt{\bs node}}
+In alternativa, possiamo creare il punto come
+
+\comando{\bs node[\opzioni] (\blue{nome}) at (\blue{$x,y$}) \{\blue{label}\};}
+Il comando \ttt{\bs node} funziona in modo analogo a \ttt{\bs coordinate}, ma aggiunge un label nella posizione indicata (dove si trova il punto).
+
+Fra le \opzioni\ è possibile specificare alcune caratteristiche da dare al label. La più comune è il colore. Ad esempio, se vogliamo creare un nodo chiamato \ttt{P} in posizione $(3,2)$, in cui vogliamo scrivere la lettera $A$ in rosso, scriveremo
+
+\ttt{\bs node[red] (P) at ($3,2$) \{\$A\$\};}
+
+\subsubsection{Le opzioni \ttt{-|} e \ttt{|-}}
+Se abbiamo due punti $A=(x_A,y_A)$ e $B=(x_B,y_B)$, la scrittura $A|-B$ crea il punto di coordinate $(x_A,y_B)$. La scrittura $A-|B$ crea invece il punto di coordinate $(x_B,y_A)$.
+
+\subsubsection{Operazioni algebriche col pacchetto \ttt{calc}}
+\ttt{calc} è un pacchetto che ci permette di svolgere semplici operazioni algebriche con le coordinate dei punti. Se ad esempio abbiamo definito due coordinate chiamate \ttt{A} e \ttt{B}, possiamo definire una nuova coordinata \ttt{C} in posizione \ttt{A+B} scrivendo
+
+\ttt{\bs coordinate (C) at (\$(A)+(B)\$);}
+
+Le coordinate possono anche essere moltiplicate per dei numeri. Ad esempio se \ttt{A} ha coordinate $(1,3)$ e \ttt{B} ha coordinate $(2,-1)$, allora il punto \ttt{C}, definito come
+
+\ttt{\bs coordinate (C) at (\$2*(A)-0.5*(B)\$);}
+
+avrà coordinate $(1,6.5)$.
+
+Non sembrano esserci problemi a sommare coordinate cartesiane con coordinate polari.
+
+\subsection{Disegnare con il comando \ttt{\bs draw}}
+Il comando \ttt{\bs draw} è il comando di \ttt{tikz} utilizzato per disegnare semplici linee.
+
+Per disegnare una linea spezzata $A-B-C$ utilizziamo la sintassi
+
+\comando{\bs draw[\opzioni] (\blue{A})\dash(\blue{B})\dash(\blue{C});}
+
+Se vogliamo disegnare una linea verticale che parte da $A$ e sale di $1$ (verso $y$) possiamo invece usare la scrittura
+
+\ttt{\bs draw[\opzioni] (A)\dash++(0,1);}
+
+Questo tipo di operazione può essere continuata, disegnando via via nuovi pezzi.
+
+\subsubsection{Il comando \ttt{\bs path}}
+Il comando \ttt{\bs path} è identico al comando \ttt{\bs draw}, con la differenza che il tratto non viene realmente disegnato. Questo può essere utile se ci interessa un tratto (ad esempio una circonferenza) per definire altri punti, ma non vogliamo che il tratto venga disegnato.
+
+\subsubsection{Piegare un tratto con \ttt{bend}}
+Normalmente il tratto disegnato è un segmento. È però possibile \textit{piegare} il segmento, trasformandolo in un arco di circonferenza. La scrittura
+
+\comando{\bs draw[\opzioni] (\blue{A})to[bend left=\blue{30}](\blue{B});}
+
+Questo disegna un arco di circonferenza da $A$ a $B$ che passa a sinistra del segmento $AB$ (percorrendolo da $A$ a $B$) e formando angoli di $30^\circ$ (fra segmento e tangente all'arco di circonferenza).
+
+ovviamente è anche possibile scegliere \ttt{\gray{band right}}.
+
+\subsubsection{Dare un nome a un punto in un \ttt{\bs draw}}
+Possiamo anche dare un nome a un punto creato facendo un disegno. Ad esempio il seguente comando
+
+\ttt{\bs draw (2,4)\dash(5,3)node(P)\{\}\dash(7,4);}
+
+disegna una linea spezzata da $(2,4)$ a $(5,3)$ e poi a $(7,4)$. Inoltre crea un punto chiamato $P$ in posizione $(5,3)$.
+
+\subsubsection{Disegnare archi di circonferenze ed ellissi con l'opzione \ttt{arc}}\label{drawarcsec}
+
+Possiamo anche disegnare un arco di circonferenza o di ellisse. Per farlo utilizziamo la scrittura
+
+\comando{\bs draw[\opzioni] (\blue{A}) arc (\blue{$\vartheta_A:\vartheta_B:r$});}
+
+Questo disegna un arco di circonferenza di raggio $r$ che parte dal punto $A$. Nel disegnare l'arco si suppone che $A$ si trovi all'angolo $\vartheta_A$ della circonferenza, e che si voglia disegnare l'arco fino all'angolo $\vartheta_B$.
+
+Per disegnare un arco di ellisse (di semiassi $\blue{a}$ e $\blue{b}$) è possibile utilizzare la notazione analoga
+
+\comando{\bs draw[\opzioni] (\blue{A}) arc (\blue{$\vartheta_A:\vartheta_B:a \black{\ttt{ cm  and }} b \black{\ttt{ cm}}$});}
+
+\subsubsection{Disegnare rettangoli, circonferenze ed ellissi con \ttt{\bs draw}}
+Se vogliamo disegnare un rettangolo $ABCD$ possiamo scrivere
+
+\comando{\bs draw[\opzioni] (\blue{A})rectangle(\blue{C});}
+
+(basta scegliere due vertici opposti).
+
+In alternativa, se il vettore $\vc{AC}=(5,3)$ (quindi il rettangolo ha base $5$ e altezza $3$, e $A$ è il vertice in basso a sinistra), possiamo usare la scrittura
+
+\ttt{\bs draw[\opzioni] (\blue{A})rectangle++(\blue{5,3});}
+
+Possiamo inoltre disegnare una circonferenza di centro $C$ e centro $r$ come
+
+\comando{\bs draw[\opzioni] (\blue{C})circle(\blue{r});}
+
+Analogamente, possiamo disegnare un'ellisse di centro $C$ e semiassi $a$ e $b$ con la sintassi
+
+\comando{\bs draw[\opzioni] (\blue{C})ellipse(\blue{$a \black{\ttt{ cm  and }} b \black{\ttt{ cm}}$});}
+
+\subsubsection{Le opzioni per \ttt{\bs draw}}\label{opzsec}
+Il comando \ttt{\bs draw} accetta nella sua sintassi alcune \opzioni. Queste sono le più diffuse:
+\begin{itemize}
+\item possiamo specificare un colore (come \ttt{\textcolor{red}{red}, \textcolor{blue}{blue}, \textcolor{Green}{Green}, \textcolor{green}{green}, \textcolor{cyan}{cyan}, \textcolor{yellow}{yellow}, \textcolor{orange}{orange}, \textcolor{violet}{violet}, \textcolor{magenta}{magenta}, \textcolor{teal}{teal}, \textcolor{pink}{pink}, \textcolor{brown}{brown}, \textcolor{gray}{gray}, \textcolor{black}{black}, \textcolor{black}{white}}). Questo indicherà il colore delle linee;
+\item se desideriamo colorare l'interno della figura disegnata, ciò può essere specificato con l'opzione \gray{fill}. Ad esempio, se vogliamo colorare l'interno del poligono disegnato di rosso, ciò può essere fatto specificando, fra le \opzioni, la stringa \cyan{fill=blue}. Più comunemente vogliamo fare un blu più ``trasparente''. Possiamo ottenerlo come \cyan{fill=blue!50}, o come \cyan{fill=blue!30} (se lo vogliamo ancora più trasparente);
+\item lo spessore del tratto può essere specificato cone \gray{width}. Possiamo dare opzioni come \cyan{thin}, \cyan{thick}, \cyan{very thick} o \cyan{ultra thick}. Se vogliamo un tratto più spesso di \cyan{ultra thick} (o più sottile di \cyan{ultra thin}), ciò può essere ottenuto come \gray{line width=\cyan{0.25mm}} (specificando lo spessore desiderato);
+\item possiamo definire il tipo di tratto (il \gray{pattern}). Ad esempio possiamo chiedere una linea tratteggiata come \cyan{dashed}, oppure puntinata con \cyan{dotted};
+\item possiamo specificare una freccia (un'\gray{arrow}), come \cyan{->}, \cyan{<-}, \cyan{<->} o \cyan{|<->|};
+\item possiamo dare un nome al bordo del disegno specificando \gray{name path=\cyan{cammello}} (in questo caso il tratto si chiama \cyan{cammello}). Questo può essere utile per alcuni comandi, in particolare per trovare l'intersezione fra diversi commini usando il comando \ttt{\bs intpaths} trattato nella sezione \ref{intersezionisec}.
+\end{itemize}
+
+\subsection{L'opzione \ttt{\bs foreach}}
+Il pacchetto \ttt{tikz} supporta anche i loop \ttt{foreach}. Per farlo, utilizziamo la seguente sintassi
+
+\comando{\bs foreach \blue{\bs i} in \{\blue{0,1,...,10}\} \{\textcolor{brown}{body}\}}
+
+In questo caso il \ttt{\textcolor{brown}{body}} può contenere anche più righe di codice, che possono anche usare il valore dell'iteratore \blue{\ttt{\bs i}}. Può inoltre contenere a sua volta un \ttt{\bs foreach}, il che ci permette di creare nested loops.
+
+Il range \ttt{\{\blue{0,1,...,10}\}} deve contenere i due estremi (in questo caso $\blue{0}$ e $\blue{10}$, che sono entrambi inclusi) e il secondo termine della successione (in questo caso $\blue{2}$), necessario per capire di quanto incrementare da un'iterazione alla successiva. Ad esempio, se specificassimo il range \ttt{\{\blue{0,2,...,10}\}}, allora \blue{\bs i} assumerebbe solo i valori pari.
+
+Il range può anche essere fornito completamente a mano, per elencazione (se è ``strano'', e può anche essere costituito da una lista di punti anziché una lista di numeri).
+
+\subsection{Esempio di uso del pacchetto \ttt{tikz} di base}
+Il codice seguente produce l'immagine allegata:
+
+\codice{\bs begin\{figure\}[!ht] \bs centering\\
+\bs begin\{tikzpicture\}\\
+\bs foreach \bs x in \{0,1,...,10\} \{ \bs draw[gray,very thin] (\bs x,0) \dash++ (0,6); \}\\
+\bs foreach \bs y in \{0,1,...,6\} \{ \bs draw[gray,very thin] (0,\bs y) \dash++ (10,0); \}\\
+\bs coordinate (A) at (2,1);\\
+\bs draw[blue] (A) \dash++ (5,2) node(B)\{\$B\$\};\\
+\bs draw[red] (A) to[bend right=30] (B);\\
+\bs draw[Green,dotted] (B) circle (2);\\
+\bs draw[violet,dashed] (B) ellipse (3cm and 1cm);\\
+\bs node[teal] (C) at (\$(A)+(60:4)\$) \{\$C\$\};\\
+\bs draw[orange,<->] (B) \dash (C) \dash++ (-2,-1) arc(150:225:2);\\
+\bs draw[magenta,thick] (B) \dash++ (1,0) arc(90:0: 1cm and 2cm);\\
+\bs end\{tikzpicture\}\\
+\bs end\{figure\}}
+
+\ifnum\showimmagini=1
+\begin{figure}[!ht]\centering
+\begin{tikzpicture}
+\foreach \x in {0,1,...,10} {\draw[gray,very thin] (\x,0)--++(0,6);}
+\foreach \y in {0,1,...,6} {\draw[gray,very thin] (0,\y)--++(10,0);}
+\coordinate(A)at(2,1);
+\draw[blue] (A)--++(5,2)node(B){$B$};
+\draw[red] (A)to[bend right=30](B);
+\draw[Green,dotted](B)circle(2);
+\draw[violet,dashed](B)ellipse(3cm and 1cm);
+\node[teal](C)at($(A)+(60:4)$){$C$};
+\draw[orange,<->](B)--(C)--++(-2,-1)arc(150:225:2);
+\draw[magenta,thick](B)--++(1,0)arc(90:0:1cm and 2cm);
+\end{tikzpicture}
+\end{figure}
+\fi
+
+\newpage
+\section{Introduzione al pacchetto \liLaTeXtikz}
+Il pacchetto \liLaTeXtikz\ estende il pacchetto \ttt{tikz} con una serie di comandi. Questi sono utili soprattutto per produrre disegni di geometria euclidea ed analitica, ma in piccola parte anche per produrre immagini utili nell'ambito della fisica.
+
+Molte delle funzioni implementate si appoggiano al pacchetto \ttt{tkz-euclide}, che contiene numerosi comandi per la produzione di immagini utili per la geometria euclidea. Il pacchetto \ttt{tkz-euclide} in realtà è molto più ampio del pacchetto \liLaTeXtikz, e contiene numerose funzioni che non sono direttamente implementate in \liLaTeXtikz. Tuttavia la sintassi usata in \ttt{tkz-euclide} a mio avviso risulta piuttosto controintuitiva e poco concisa, il che rende \liLaTeXtikz\ preferibile per la produzione di immagini semplici. \ttt{tkz-euclide} risulta invece preferibile per produrre immagini particolarmente elaborate.
+
+\section{L'ambiente \ttt{immagine}}
+In \ttt{tikz} le immagini vengono normalmente racchiuse nell'ambiente \ttt{tikzpicture}. Questo vuol dire che un'immagine viene racchiusa fra una stringa \ttt{\bs begin\{tikzpicture\}[\opzioni]} e una stringa \ttt{\bs end\{tikzpicture\}}
+
+In \liLaTeXtikz\ utilizziamo invece l'ambiente \ttt{immagine}. Un'immagine viene quindi racchiusa fra una stringa \ttt{\bs begin\{immagine\}[\opzioni]} e una stringa \ttt{\bs end\{immagine\}}. La sintassi è quindi
+
+\comando{\bs begin\{immagine\}[\opzioni] \textcolor{brown}{body} \bs end\{immagine\}}
+
+Le opzioni possono specificare il colore o la scala. Ad esempio, scrivendo
+
+\ttt{\bs begin\{immagine\}[\blue{red,scale=0.5}] \textcolor{brown}{body} \bs end\{immagine\}}
+
+produrremo un'immagine in cui il colore di default è il rosso (anziché il nero) e in cui tutte le misure sono dimezzate.
+
+\subsection{Gli ambienti \ttt{immaginecap} e \ttt{immaginecap*}}
+Gli ambienti \ttt{immaginecap} e \ttt{immaginecap*} funzionano in modo analogo all'ambiente \ttt{immagine} e vanno usati quando intendiamo inserire una caption all'immagine. La sintassi (analoga per i due ambienti) è
+
+\comando{\bs begin\{immaginecap\}[\opzioni]\{\blue{caption}\} \textcolor{brown}{body} \bs end\{immaginecap\}}
+
+La differenza è che \ttt{immaginecap} numera le caption, mentre \ttt{immaginecap*} non include la numerazione delle caption.
+
+\section{L'ambiente \ttt{rotazione}}
+Un altro importante ambiente è l'ambiente \ttt{rotazione}, definito tramite la seguente sintassi
+
+\comando{\bs begin\{rotazione\}[centro := \keyval{$(0,0)$}]\{angolo\} \textcolor{brown}{body} \bs end\{rotazione\}}
+
+L'\ttt{angolo} indica l'angolo di rotazione (in gradi in senso antiorario), mentre il \ttt{centro} indica il centro di rotazione (se non specificato si assume una rotazione attorno all'origine).
+
+\textbf{Attenzione!} se all'interno del \textcolor{brown}{body} si inserisce una coordinata come $(2,1)$ questa verrà regolarmente ruotata. Se però si crea un punto $A=(2,1)$ fuori dall'ambiente \ttt{rotazione} e si usa $A$ dentro all'ambiente rotazione questo non verrà ruotato. Il comportamento (controintuitivo) è illustrato nel seguente esempio:
+
+\codice{\bs node (O) at (2,0) \{\$O\$\};\\
+\bs coordinate (A) at (3,0.5);\\
+\bs begin\{rotazione\}[O]\{+90\}\\
+\tab\bs node[red] (Al) at (A) \{\$A\$\};\\
+\tab\bs node[blue] (Bl) at (3,0.5) \{\$B\$\};\\
+\bs end\{rotazione\}}
+
+\ifnum\showimmagini=1
+\begin{immagine}
+\node(O)at(2,0){$O$};
+\coordinate(A)at(3,0.5);
+\begin{rotazione}[O]{+90}
+	\node[red](Al)at(A){$A$};
+	\node[blue](Bl)at(3,0.5){$B$};
+\end{rotazione}
+\end{immagine}
+\fi
+
+\newpage
+\section{L'uso delle keys in \liLaTeXtikz}
+Il pacchetto \liLaTeXtikz\ contiene diversi comandi. Alcuni di questi comandi hanno delle \opzioni\ come argomenti opzionali. Questi tendenzialmente sono gli stessi previsti per \ttt{\bs draw} e illustrati nella sezione \ref{opzsec}.
+
+Altri comandi come argomento opzionale accettano invece delle \keys.
+
+Per le keys è prevista una sintassi un po' più articolata. Ad esempio, per disegnare un segmento con \ttt{\bs draw} (che usa delle \opzioni) scriviamo \ttt{\bs draw[red]...;}. Per disegnare un segmento rosso col comando \ttt{\bs segmento} (che usa delle \keys) scriviamo invece \ttt{\bs segmento[col=red]...;}. Così facendo si sta dando il valore \keyval{red} alla chiave chiamata \key{col} (che nel caso di \ttt{\bs comando} rappresenta il colore del segmento).
+
+\subsection{Chiavi comuni e loro valori predefiniti}\label{keysec}
+Questo è un elenco delle \keys\ più comuni e dei valori di default che contengono di solito:
+\begin{itemize}
+\item \key{col} indica il colore dell'oggetto da disegnare, e di un suo eventuale label. Se non specificato è in genere inizializzato come il colore dell'immagine (generalmente \keyval{black}).
+\item \key{col draw} in alcuni casi specifica il colore delle linee. Se non specificato copia \key{col}.
+\item \key{col lbl} e il suo sinonimo \key{lbl col} indicano il colore del label. Se non specificato copia il valore in \key{col}.
+\item \key{col fill} il colore del filling. Se non specificato copia il valore in \key{col}.
+\item \key{opacity} se specificato \key{col fill} (se lasciato vuoto) copia \key{col}!\key{opacity} anziché \key{col}.
+\item \ttt{\key{fill} := \keyval{false}} può essere settato a \keyval{true} se vogliamo colorare l'interno della figura. Diventa automaticamente \keyval{true} se specifichiamo \key{col fill}.
+\item \key{width} lo spessore della linea. Se non specificato la linea viene disegnata di spessore normale (ovvero \keyval{semithick}). Accetta valori come \keyval{thin} e \keyval{thick}, ma anche \keyval{very thick} e \keyval{ultra thick} (o \keyval{very thin} e \keyval{ultra thin}).
+\item \key{pattern} è il pattern della linea. Il valore di default è la linea continua (ovvero \keyval{solid}) ma può assumere anche valori come \keyval{dashed} o \keyval{dotted}.
+\item \key{arrow} permette di specificare se vogliamo che la linea si concluda con una freccia. In genere il default è vuoto, ma si possono specificare frecce come \keyval{<-}, \keyval{->}, \keyval{<->}, \keyval{|<->|} o \keyval{|->}.
+\item \key{lbl} il nome da dare al label. Se non specificato in genere non viene creato un label.
+\item \key{lbl style} può cambiare lo stile con cui viene scritto il label. In genere è vuoto, ma può assumere i valori \keyval{rm}, \keyval{bf} o \keyval{cal}. In questi casi il label sarà scritto, rispettivamente, come \ttt{\bs mathrm}, \ttt{\bs mathbf}, \ttt{\bs mathcal}). Se si specifica \key{lbl style} non si deve scrivere il \key{lbl} in math mode (non si devono scrivere i \$).
+\item \key{lbl size} vuoto di default. Se specificato (con valori come \keyval{large}, \keyval{small} o \keyval{tiny}) cambia la dimensione del label.
+\item \ttt{\key{lbl dist} := \keyval{0.3}} la distanza del label dal nodo.
+\item \key{lbl name} il nome da dare alla posizione del label. Il valore di default cambia di funzione in funzione.
+\item \ttt{\key{mark} := \keyval{none}} il segno da mettere su un segmento / angolo / arco. Le opzioni sono \keyval{none} (se non vogliamo nessun segno) oppure: \keyval{s}, \keyval{z}, \keyval{x}, \keyval{o}, \keyval{oo}, \keyval{|}, \keyval{||}, \keyval{|||} (lista esaustiva).
+\item \ttt{\key{mark size} := \keyval{0.2}} la dimensione del segno definito con \key{mark}.
+\item \key{col mark} il colore del segno (se non specificato diventa \keyval{black}).
+\item \ttt{\key{side} := \keyval{->}} può assumere anche il valore \keyval{<-} e indica come deve essere orientata l'immagine (utile per alcune immagini ``complesse'').
+\end{itemize}
+
+\subsection{Il key-manager in \liLaTeXtikz}
+Il key-manager di \liLaTeXtikz\ è una parte interna a \liLaTeXtikz\ di cui l'utente normale non deve preoccuparsi, ma che risulta importante per chi intende modificare/estendere il pacchetto.
+
+Contiene alcune funzioni importanti che vengono elencate qui di seguito:
+
+\codice{\bs ifkeyempty\{\blue{KEY}\}\{\blue{TRUE}\}\{\blue{FALSE}\};}
+controlla se la key \blue{KEY} è vuota. Se è vuota esegue il comando \blue{TRUE}, altrimenti esegue il comando \blue{FALSE}.
+
+\codice{\bs ifkeyequal\{\blue{KEY}\}\{\blue{str}\}\{\blue{TRUE}\}\{\blue{FALSE}\};}
+controlla se la key \blue{KEY} è uguale alla stringa \blue{str}. Se è uguale esegue il comando \blue{TRUE}, altrimenti esegue il comando \blue{FALSE}.
+
+Il comando
+
+\codice{\bs setkeyvalue\{\blue{KEY}\}\{\blue{val}\};}
+assegna il valore \blue{val} alla key \blue{KEY}, mentre il comando
+
+\codice{\bs copykeyvalue\{\blue{KEYto}\}\{\blue{KEYfr}\};}
+copia il valore della key \blue{KEYfr} nella key \blue{KEYto}.
+
+I comandi \ttt{\bs setkeyvalueifempty\{\blue{KEY}\}\{\blue{val}\};} e \ttt{\bs copykeyvalueifempty\{\blue{KEYto}\}\{\blue{KEYfr}\};} funzionano in modi analoghi, ma si attivano solo se la key da sovrascrivere (quella nel primo input) è vuota.
+
+Ci sono infine i comandi
+
+\comando{\bs setkeyvaluesifempty\{\blue{KEY1}\}\{\blue{val1}\}\{\blue{KEY2}\}\{\blue{val2}\}\{\blue{KEY3}\}\{\blue{val3}\}\dots;}
+
+\codice{\bs copykeyvaluesifempty\{\blue{KEYto1}\}\{\blue{KEYfr1}\}\{\blue{KEYto2}\}\{\blue{KEYfr2}\}\{\blue{KEYto3}\}\{\blue{KEYfr3}\}\dots;}
+che ripetono rispettivamente \ttt{\bs setkeyvalueifempty} e \ttt{\bs copykeyvalueifempty} per tutte le coppie specificate.
+
+\subsection{Le funzioni PRIV}\label{PRIVsec}
+All'interno del pacchetto \liLaTeXtikz\ sono presenti alcune funzioni il cui nome inizia con la stringa \ttt{PRIV}. Queste sono funzioni \textit{private} e non devono essere utilizzate dall'utente. Il loro scopo è di essere utilizzate internamente da altre funzioni all'interno del pacchetto \liLaTeXtikz.
+
+Le \keys\ di queste funzioni hanno dei nomi un po' particolari (che iniziano, a loro volta, con la stringa \ttt{PRIV}), in modo da non poter essere sovrascritte accidentalmente dall'utente quando vengono specificati i valori di \keys\ di funzioni pubbliche (quelle non private).
+
+L'utente medio non deve ignorare queste funzioni, che risultano invece molto importanti per chi desidera modificare/estendere il pacchetto \liLaTeXtikz.
+
+\newpage
+\section{La funzione \ttt{\bs griglia}}
+A volte siamo interessati a disegnare una griglia (una parte di foglio a quadretti). Per farlo utilizziamo il comando
+
+\codice{\bs griglia[\keys]\{\blue{Ovest}\}\{\blue{Est}\}\{\blue{Sud}\}\{\blue{Nord}\};}
+Dove gli argomenti \ttt{Ovest}, \ttt{Est}, \ttt{Sud} e \ttt{Nord} indicano i confini della griglia.
+
+Se dobbiamo porre \ttt{Est} e \ttt{Sud} entrambi a zero, possiamo usare anche la seguente sintassi equivalente:
+
+\comando{\bs grigliaO[\keys]\{\blue{Est}\}\{\blue{Nord}\};}
+
+Le \keys\ sono:
+\begin{itemize}[nolistsep]
+\item \ttt{\key{col} := \keyval{gray!50}}, \ttt{\key{width} := \keyval{thin}}, \key{pattern} come spiegate nella sezione \ref{keysec};
+\item \key{col fill}. Se specificato l'interno delle griglia viene colorato col colore specificato;
+\item \ttt{\key{s} = \key{step} := \keyval{1}} specificano la distanza fra due linee. Volendo possono essere definite separatamente per le due direzioni come \ttt{\key{s x} = \key{step x}} e \ttt{\key{s y} = \key{step y}}.
+\end{itemize}
+
+Vediamo un esempio:
+
+\codice{\bs grigliaO[s y=0.5,col=pink]\{3\}\{2\};\\
+\bs griglia[s=0.4]\{4\}\{7\}\{0\}\{1\};\\
+\bs griglia[col fill=yellow!30]\{8\}\{10.5\}\{0\}\{2.5\};}
+
+\ifnum\showimmagini=1
+\begin{immagine}
+\grigliaO[s y=0.5,col=pink]{3}{2};
+\griglia[s=0.4]{4}{7}{0}{1};
+\griglia[col fill=yellow!30]{8}{10.5}{0}{2.5};
+\end{immagine}
+\fi
+
+\subsection{La carta millimetrata}
+In fisica siamo spesso interessati a riprodurre parti di carta millimetrata. Ciò può essere fatto utilizzando il comando
+
+\codice{\bs cartamillimetrata[\keys]\{\blue{Ovest}\}\{\blue{Est}\}\{\blue{Sud}\}\{\blue{Nord}\};}
+dove \ttt{Ovest}, \ttt{Est}, \ttt{Sud} e \ttt{Nord} hanno gli stessi significati appena spiegati per la funzione \ttt{\bs griglia}.
+
+In questo caso le \keys sono:
+\begin{itemize}[nolistsep]
+\item \ttt{\key{col1} := \keyval{pink!50}}, \ttt{\key{width1} := \keyval{ultra thin}}, \key{pattern1} e \ttt{\key{s1} = \key{step1} := \keyval{0.1}} analoghi ai loro analoghi in \ttt{\bs griglia} (per il tratto più sottile).
+\item \ttt{\key{col2} := \keyval{gray!70}}, \key{width2} := \keyval{thin}, \key{pattern2} e \ttt{\key{s2} = \key{step2} := \keyval{0.5}} analoghi per il tratto più spesso.
+\end{itemize}
+
+C'è anche la possibilità di creare un'intera pagina di carta millimetrata usando il comando
+
+\codice{\bs cartamillimetratapagina[\keys];}
+con le stesse \keys.
+
+\textbf{Attenzione!} Il comando \ttt{\bs cartamillimetratapagina} funziona solo se \ttt{\bs TipoDoc = \keyval{immagine}}. Per inserire una pagina di carta millimetrata all'interno di un altro documento conviene quindi generare la pagina di carta millimetrata in un altro documento, e poi includere la pagina in questione all'interno del documento reale usando un \ttt{\bs includepdf}.
+
+\newpage
+\section{Gli assi cartesiani}
+Spesso è utile disegnare sistemi di riferimento cartesiani. In questa sezione del manuale vedremo alcuni comandi utili per disegnare assi cartesiani di vari tipi.
+
+\subsection{Gli assi del piano cartesiano}
+Se disegniamo un piano cartesiano siamo interessati anche a disegnare gli assi cartesiani.
+
+Gli assi cartesiani possono essere disegnati uno per volta usando i comandi
+
+\comando{\bs assex[\keys]\{\blue{Ovest}\}\{\blue{Est}\};}\\
+\comando{\bs assey[\keys]\{\blue{Sud}\}\{\blue{Nord}\};}
+
+con le \keys:
+\begin{itemize}[nolistsep]
+\item \key{col}, \key{width}, \key{pattern}, \ttt{\key{arrow} := \keyval{->}}, \key{lbl}, \key{lbl style}, \key{lbl name}, \key{lbl size}, \key{lbl dist}, \ttt{\key{lbl col} = \key{col lbl}} coi significati della sezione \ref{keysec}.
+\item \ttt{\key{y} := \keyval{0}} (solo per \ttt{\bs assex}) specifica la coordinata $y$ dell'asse delle ascisse. Analogamente \ttt{\key{x} := \keyval{0}} (solo per \ttt{\bs assey}) specifica la coordinata $x$ dell'asse delle ordinate.
+\item \ttt{\key{flip lbl} := \keyval{false}} se reso \keyval{true} il label viene ruotato di $180^\circ$.
+\item \ttt{\key{ang shift} := \keyval{0}} una rotazione extra per il label (oltre a quella prevista dalla posizione iniziale).
+\end{itemize}
+
+Volendo è anche possibile definire i due assi cartesiani insieme col comando
+
+\comando{\bs assexy[\keys]\{\blue{Ovest}\}\{\blue{Est}\}\{\blue{Sud}\}\{\blue{Nord}\};}
+
+o equivalentemente (se vogliamo traslare il centro) come
+
+\comando{\bs assexyO[\keys]\{centro\}\{\blue{Ovest}\}\{\blue{Est}\}\{\blue{Sud}\}\{\blue{Nord}\};}
+
+Entrambi i comandi hanno le seguenti \keys:
+\begin{itemize}[nolistsep]
+\item \key{col}, \key{width}, \key{pattern}, \ttt{\key{arrow} := \keyval{->}}, \ttt{\key{lbl dist} := \keyval{0.3}}, \ttt{\key{lbl col} = \key{col lbl}} coi significati della sezione \ref{keysec}.
+\item \ttt{\key{lbl x} := \keyval{\$x\$}} e \ttt{\key{lbl y} := \keyval{\$y\$}} sono i due label.
+\item \key{lbl x name} e \key{lbl y name} sovrascrivono sono i nomi dei due label.
+\item \key{lbl x style} e \key{lbl y style} sovrascrivono \key{lbl style} per i due diversi label.
+\item \ttt{\key{x} := \keyval{0}} e \ttt{\key{y} := \keyval{0}} (solo per \ttt{\bs assexy}) specifica le coordinate del centro del sistema di riferimento.
+\end{itemize}
+
+\subsubsection{Le barre per gli assi cartesiani}
+Spesso vogliamo aggiungere delle barre per indicare alcuni valori numerici sugli assi cartesiani. Questi in genere vengono usati all'interno di un loop \ttt{\bs foreach}. Questo può essere fatto coi comandi:
+
+\comando{\bs assexbar[\keys]\{\blue{\bs x}\}\{\blue{lbl}\};}\\
+\comando{\bs asseybar[\keys]\{\blue{\bs y}\}\{\blue{lbl}\};}
+
+Le coordinate \ttt{\bs x} e \ttt{\bs y} nei due comandi indicano le posizioni della tacca, mentre \ttt{lbl} indica il label che vogliamo scrivere. Le \keys\ sono:
+\begin{itemize}[nolistsep]
+\item \key{col}, \ttt{\key{width} := \keyval{very thin}}, \key{pattern}, \key{arrow}, \ttt{\key{lbl col} = \key{col lbl}} coi significati della sezione \ref{keysec}.
+\item \ttt{\key{l} = \key{length} := \keyval{0.2}} la lunghezza della barretta.
+\item \ttt{\key{\bs flip} := \keyval{true}} se posto uguale a \keyval{true} pone i label verso l'alto (nel caso di \ttt{\bs assexbar}) o verso destra (nel caso di \ttt{\bs asseybar}).
+\item \ttt{\key{y} := \keyval{0}} (solo per \ttt{\bs assexbar}) e \ttt{\key{x} := \keyval{0}} (solo per \ttt{\bs asseybar}) è l'altra coordinata del centro della barretta.
+\end{itemize}
+
+Il seguente esempio illustra come utilizzare il sistema cartesiano in un caso semplice.
+
+\codice{\bs griglia[s=0.5]\{-1\}\{10\}\{-1\}\{5\};\\
+\bs assixy\{-1\}\{9.7\}\{-1\}\{4.7\};\\
+\bs foreach \bs x in \{1,2,...,9\} \bs assexbar\{\bs x\}\{\$\bs x\$\};\\
+\bs foreach \bs y in \{-1,1,2,...,8\} \bs asseybar[flip=true]\{0.5*\bs y\}\{\$\bs y\$\};}
+
+\ifnum\showimmagini=1
+\begin{immagine}
+\griglia[s=0.5]{-1}{10}{-1}{5};
+\assixy{-1}{9.7}{-1}{4.7};
+\foreach \x in {1,2,...,9} \assexbar{\x}{$\x$};
+\foreach \y in {-1,1,2,...,8} \asseybar[flip=true]{0.5*\y}{$\y$};
+\end{immagine}
+\fi
+
+\subsection{Sistemi di riferimento in fisica col comando \ttt{\bs sistrif}}
+Il comando \ttt{\bs sistrif} consente di inserire un sistema di riferimento (eventualmente ruotato) all'interno di un'immagine di fisica. Lo si usa con la sintassi seguente:
+
+\codice{\bs sistrif[\keys]\{\blue{centro}\}\{\blue{angolo}\};}
+dove \ttt{centro} indica il centro del sistema di riferimento (dove vogliamo disegnare l'origine), mentre \ttt{angolo} indica l'angolo di inclinazione dell'asse $x$. Le \keys\ sono:
+\begin{itemize}[nolistsep]
+\item \ttt{\key{col} := \keyval{magenta}}, \ttt{\key{lbl col} = \key{col lbl}}, \key{width}, \key{pattern}, \ttt{\key{arrow} := \keyval{->}}, \ttt{\key{lbl dist} := \keyval{0.3}}, \key{lbl style} come spiegate nella sezione \ref{keysec}. Si riferiscono a entrambi gli assi cartesiani.
+\item \ttt{\key{front} := \keyval{2}} e \ttt{\key{back} := \keyval{0.3}} indicano le lunghezze dei due assi cartesiani in avanti (per valori positivi) e indietro (per valori negativi). Possono essere sovrascritti separatamente per i due assi con le \keys\ \key{front x}, \key{front y}, \key{back x} e \key{back y}.
+\item \ttt{\key{lbl x} := \keyval{\$x\$}} e \ttt{\key{lbl y} := \keyval{\$y\$}} sono i label per i due assi cartesiani. Se si vuole togliere un label scrivere, ad esempio, \ttt{\key{lbl x}=}.
+\item \ttt{\key{label} := \keyval{true}}. Se reso \keyval{false} vengono rimossi entrambi i label.
+\item \key{lbl style} può essere sovrascritto con \key{lbl x style} e \key{lbl y style} per specificarlo separatamente per le due keys.
+\item \ttt{\key{filp} := \keyval{false}} è da rendere uguale a \keyval{true} se vogliamo che l'asse $y$ si trovi ruotato di $90^\circ$ in senso \textit{orario} (anziché \textit{antiorario}) rispetto all'asse $y$.
+\end{itemize}
+
+Vediamo un semplice esempio:
+
+\codice{\bs sistrif\{0,0\}\{0\};\\
+\bs sistrif[col=teal,lbl x=\$t\$]\{4,0\}\{30\};\\
+\bs sistrif[col=gray!70,lbl x=a,lbl style=rm,flip=true]\{8,1\}\{60\};}
+
+\ifnum\showimmagini=1
+\begin{immagine}
+\sistrif{0,0}{0};
+\sistrif[col=teal,lbl x=$t$]{4,0}{30};
+\sistrif[col=gray!70,lbl x=a,lbl style=rm,flip=true]{8,1}{60};
+\end{immagine}
+\fi
+
+\newpage
+\section{I punti con \ttt{\bs punto}}
+La funzione principale di \liLaTeXtikz\ è la funzione che crea dei punti usando la sintassi
+
+\comando{\bs punto[\keys]\{\blue{coordinate}\};}
+
+con le \keys:
+\begin{itemize}[nolistsep]
+\item \key{col}, \ttt{\key{lbl col} = \key{col lbl}}, \key{lbl}, \key{lbl style}, \key{lbl name}, \key{lbl size}, \ttt{\key{lbl dist} := \keyval{0.3}} come spiegate nella sezione \ref{keysec}.
+\item \ttt{\key{lbl ang} := \keyval{-90}} l'angolo a cui si trova il label (se specificato).
+\item \ttt{\key{name} := \keyval{puntoNome}} il nome da dare al punto (non al label).
+\item \ttt{\key{size} := \keyval{1.5}} la dimensione del punto (in \ttt{pt}).
+\item \ttt{\key{shape} := \keyval{circle}} la forma del punto. Può essere posto a \keyval{rectangle}.
+\end{itemize}
+
+\subsection{I punti con sintassi concisa come \ttt{\bs pnt}, \ttt{\bs pntlbl} e \ttt{\bs pntl}}
+
+Spesso vogliamo specificare solo alcune delle keys di \ttt{\bs punto}. Per farlo ci sono i seguenti comandi più concisi, che internamente richiamano \ttt{\bs punto}. Vogliamo invece chiamare esplicitamente \ttt{\bs punto} se vogliamo personalizzare altri parametri:
+
+\codice{\bs pnt[\textcolor{gray}{col}]\{\blue{name}\}\{\blue{coordinate}\};}
+utile se non vogliamo inserire un label.
+
+Se invece vogliamo un label, la versione più generale è
+
+\comando{\bs pntlbl[\textcolor{gray}{col}]\{\blue{name}\}\{\blue{lbl}\}\{\blue{lbl ang}\}\{\blue{coordinate}\};}
+
+Ci sono infine versioni di \ttt{\bs pntlbl} ancora più concise, in cui il label coincide col nome (circa):
+
+\comando{\bs pntl[\textcolor{gray}{col}]\{\blue{name}\}\{\blue{lbl ang}\}\{\blue{coordinate}\}; \hspace*{1cm}\textcolor{gray}{\% \key{lbl} := \$\blue{name}\$}}
+
+\comando{\bs pntlp[\textcolor{gray}{col}]\{\blue{nome}\}\{\blue{lbl ang}\}\{\blue{coordinate}\}; \hspace*{1cm}\textcolor{gray}{\% \key{name} := \blue{nome}p, \key{lbl} := \$\blue{nome}'\$}}
+
+\comando{\bs pntls[\textcolor{gray}{col}]\{\blue{nome}\}\{\blue{lbl ang}\}\{\blue{coordinate}\}; \hspace*{1cm}\textcolor{gray}{\% \key{name} := \blue{nome}s, \key{lbl} := \$\blue{nome}''\$}}
+
+Vediamo un semplice esempio illustrativo.
+
+\codice{\bs grigliaO\{9\}\{2\};\\
+\bs punto[shape=rectangle,size=2.5]\{1,1\};\\
+\bs pnt[orange]\{T\}\{2,1\};\\
+\bs pntlbl[violet]\{A\}\{\$A\$\}\{45\}\{4,1\};\\
+\bs draw[->,magenta] (T)\dash(A);\\
+\bs pntl[blue]\{P\}\{-90\}\{6,1\};\\
+\bs pntlp[red]\{P\}\{-90\}\{7,1\}; \textcolor{gray}{\% il punto si chiama Pp}\\
+\bs pntls[Green]\{P\}\{0\}\{8,1\}; \textcolor{gray}{\% il punto si chiama Ps}\\
+\bs draw[->,teal] (Pp) to[bend left=90] (Ps);}
+
+\ifnum\showimmagini=1
+\begin{immagine}
+\grigliaO{9}{2};
+\punto[shape=rectangle,size=2.5]{1,1};
+\pnt[orange]{T}{2,1};
+\pntlbl[violet]{A}{$A$}{45}{4,1};
+\draw[->,magenta] (T)--(A);
+\pntl[blue]{P}{-90}{6,1};
+\pntlp[red]{P}{-90}{7,1}; % il punto si chiama Pp
+\pntls[Green]{P}{0}{8,1}; % il punto si chiama Ps
+\draw[->,teal] (Pp) to[bend left=90] (Ps);
+\end{immagine}
+\fi
+
+\textbf{Attenzione!} I punti definiti con \ttt{\bs punto} e i suoi derivati non sono compatibili con la chiave \key{fill} di \ttt{\bs draw}. Se vogliamo usare la chiave \key{fill} serve quindi definire i punti tramite \ttt{\bs coordinate}, e poi ripassarli in un secondo momento (dopo aver usato la chiave \key{fill} dove ci serve).
+
+\newpage
+\section{L'aggiunta dei label con \ttt{\bs stylelbl}}
+Aggiungere label può essere molto scomodo. Soprattutto se vogliamo scrivere il label usando un ambiente matematico (\ttt{\bs mathrm}, \ttt{\bs mathbf} o \ttt{\bs mathcal}). Per fare ciò, nel pacchetto \liLaTeXtikz\ è definito un comando specifico:
+
+\codice{\bs stylelbl[\keys]\{\blue{posizione}\};}
+dove \ttt{coord} è la posizione del punto dove creare il label. Le \keys\ sono:
+\begin{itemize}[nolistsep]
+\item \key{lbl}, \key{lbl size}, \ttt{\key{lbl name} := \keyval{scriptlblName}}, \ttt{\key{col lbl} = \key{lbl col} = \key{col}} come spiegate nella sezione \ref{keysec}.
+\item \key{lbl style} è il label style da usare. Può essere lasciato vuoto se non vogliamo nessuno stile, o può essere posto ai seguenti valori:
+\begin{itemize}[nolistsep]
+\item se \ttt{\key{lbl style} := \keyval{rm}} il label viene scritto come \ttt{\bs mathrm};
+\item se \ttt{\key{lbl style} := \keyval{bf}} il label viene scritto come \ttt{\bs mathbf};
+\item se \ttt{\key{lbl style} := \keyval{cal}} il label viene scritto come \ttt{\bs mathcal}.
+\end{itemize}
+\end{itemize}
+\textbf{Attenzione!} se il \key{lbl style} viene specificato (non viene lasciato vuoto), allora il \key{lbl} non può essere scritto in ambiente matematico (che verrà aggiunto automaticamente dall'ambiente \ttt{\bs stylelbl}). Le uniche eccezioni sono se \ttt{\key{lbl} := \keyval{\$x\$}} e \ttt{\key{lbl} := \keyval{\$y\$}} (per cui \ttt{\bs stylelbl} rimuove i simboli di \$).
+
+Quindi un comando come
+
+\ttt{\bs stylelbl[lbl=\$a\$,lbl style=rm]\{0,0\};}
+
+genera un errore. Possiamo invece usare impunemente un comando come
+
+\ttt{\bs stylelbl[lbl=a,lbl style=rm]\{0,0\};}
+
+\textbf{Attenzione!} Per chi vuole modificare/estendere il pacchetto \liLaTeXtikz\ non bisogna usare la funzione \ttt{\bs stylelbl}, ma la sua versione privata \ttt{\bs PRIVstylelbl} (vedi la sezione \ref{PRIVsec} per una spiegazione più dettagliata sulle funzioni private).
+
+\section{Intersezioni con \ttt{\bs intrette} e \ttt{\bs intpaths}}\label{intersezionisec}
+Il comando \ttt{\bs interette} ci permette di creare un punto $P$ come l'intersezione fra due rette $AB$ e $CD$. La sintassi è
+
+\comando{\bs intrette\{\Green{P}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\}\{\blue{D}\};}
+
+Possiamo anche trovare un punto $P$ di intersezione fra due paths chiamati \ttt{path1} e \ttt{path2} usando la sintassi
+
+\comando{\bs intpaths\{\Green{P}\}\{\blue{path1}\}\{\blue{path2}\};}
+
+I due comandi sono illustrati nel seguente esempio:
+
+\codice{\bs grigliaO\{10\}\{3\};\\
+\bs draw(1,0)\dash(7,3) (0,2)\dash++(10,0);\\
+\bs intrette\{P\}\{1,0\}\{3,1\}\{0,2\}\{1,2\};\\
+\bs pntl[blue]\{P\}\{90\}\{P\};\\
+\bs draw[Green,dashed,name path=circ] (P) circle (1);\\
+\bs draw[name path=line,->] (P)\dash++(-45:2);\\
+\bs intpaths\{Q\}\{circ\}\{line\};\\
+\bs punto[col=red]\{Q\};}
+
+\ifnum\showimmagini=1
+\begin{immagine}
+\grigliaO{10}{3};
+\draw(1,0)--(7,3) (0,2)--++(10,0);
+\intrette{P}{1,0}{3,1}{0,2}{1,2};
+\pntl[blue]{P}{90}{P};
+\draw[Green,dashed,name path=circ](P)circle(1);
+\draw[name path=line,->](P)--++(-45:2);
+\intpaths{Q}{circ}{line};
+\punto[col=red]{Q};
+\end{immagine}
+\fi
+
+\newpage\section{Funzioni con punti in input e un numero come output}
+All'interno del pacchetto \liLaTeXtikz\ sono presenti alcune funzioni che restituiscono un numero in output (prendendo dei punti come input). Queste sono le funzioni principali:
+
+\codice{\bs distanza\{\Green{\bs d}\}\{\blue{A}\}\{\blue{B}\};}
+scrive in \ttt{\bs d} la distanza fra $A$ e $B$.
+
+\codice{\bs angolopolare\{\Green{\bs and}\}\{\blue{P}\}\{\blue{O}\};}
+scrive in \ttt{\bs ang} l'angolo del vettore $\vc{OP}$ (in gradi).
+
+Vediamo un semplice esempio:
+
+\codice{\bs pntl\{A\}\{180\}\{0,0\};\\
+\bs pntl\{B\}\{35\}\{35:1.5\};\\
+\bs distanza\{\bs r\}\{A\}\{B\};\\
+\bs angolopolare\{\bs a\}\{B\}\{A\};\\
+\bs draw[red,thin,dashed] (A) circle (\bs r);\\
+\bs pntlp[blue]\{B\}\{-35\}\{-\bs a:\bs r\};}
+
+\ifnum\showimmagini=1
+\begin{immagine}
+\pntl{A}{180}{0,0};
+\pntl{B}{35}{35:1.5};
+\distanza{\r}{A}{B};
+\angolopolare{\a}{B}{A};
+\draw[red,thin,dashed] (A) circle (\r);
+\pntlp[blue]{B}{-35}{-\a:\r};
+\end{immagine}
+\fi
+
+\section{Manipolazione di coordinate}
+Il pacchetto \liLaTeXtikz\ contiene diverse funzioni che ci permettono di manipolare le coordinate.
+
+Le principali sono descritte in questa sezione:
+
+\codice{\bs verso[\teal{L} := \keyval{1}]\{\Green{P}\}\{\blue{A}\}\{\blue{B}\};}
+crea un punto $P$ sulla semiretta $AB$ (a distanza \ttt{L} da $A$).
+
+\codice{\bs allont[\teal{L} := \keyval{1}]\{\Green{P}\}\{\blue{A}\}\{\blue{B}\};}
+crea un punto $P$ sulla semiretta $BA$ (a distanza \ttt{L} da $A$).
+
+\codice{\bs parallelo[\teal{L} := \keyval{1}]\{\Green{P}\}\{\blue{S}\}\{\blue{A}\}\{\blue{B}\};}
+crea un punto $P$, ottenuto traslando $S$ per una lunghezza $L$ nel verso nel vettore $\vc{AB}$.
+
+\codice{\bs perpendicolare[\teal{L} := \keyval{1}]\{\Green{P}\}\{\blue{S}\}\{\blue{A}\}\{\blue{B}\};}
+crea un punto $P$, ottenuto traslando $S$ per una lunghezza $L$ nel verso perpendicolare a $\vc{AB}$ (si suppone $SAB$ in senso antiorario).
+
+\codice{\bs medio[\teal{k} := \keyval{0.5}]\{\Green{M}\}\{\blue{A}\}\{\blue{B}\};}
+definisce $M$ come il punto $(1-k)*A+k*B$. Nel caso speciale di $k=0.5$, $M$ è il punto medio del segmento $AB$. Quindi se $k=0$ risulta $M:=A$, mentre se $k=1$ risulta $M:=B$.
+
+\codice{\bs opposto\{\Green{P'}\}\{\blue{P}\}\{\blue{O}\};}
+definisce il punto $P'$ come l'opposto di $P$ rispetto ad $O$ (quindi $O$ risulterà essere il punto medio di $PP'$).
+
+\codice{\bs simmetrico\{\Green{P'}\}\{\blue{P}\}\{\blue{A}\}\{\blue{B}\};}
+definisce il punto $P'$ come il simmetrico di $P$ rispetto alla retta $AB$.
+
+\codice{\bs proj\{\Green{H}\}\{\blue{P}\}\{\blue{A}\}\{\blue{B}\};}
+definisce il punto $H$ come la proiezione ortogonale di $P$ sulla retta $AB$.
+
+\codice{\bs sumvett\{\Green{C}\}\{\blue{A}\}\{\blue{B}\}\{\blue{D}\};}
+definisce il punto $C$ in modo che $\vc{AC}=\vc{AB}+\vc{AD}$. Questo vuol dire in particolare che $C$ sarà definito in modo che il quadrilatero $ABCD$ sia un parallelogramma.
+
+\codice{\bs ruotapunto\{\Green{R}\}\{\blue{P}\}\{\blue{O}\}\{\blue{a}\};}
+definisce il punto $R$ ottenuto ruotando $P$ in senso antiorario di un angolo \ttt{a} (con centro di rotazione in $O$).
+
+\codice{\bs ruotapuntoN[\teal{N} := \keyval{1}]\{\Green{R}\}\{\blue{P}\}\{\blue{O}\}\{\blue{a}\};}
+analogo a \ttt{\bs ruotapunto} ma normalizza il vettore $\vc{OR}$ in modo che misuri \ttt{L}.
+
+\codice{\bs triangoloequilatero\{\Green{C}\}\{\blue{A}\}\{\blue{B}\};}
+crea un punto $C$ in modo che il triangolo $ABC$ sia equilatero (con vertici in senso antiorario).
+
+Vediamo un esempio in cui sono illustrate le funzioni di questa sezione.
+
+\codice{\bs grigliaO\{12\}\{5\};\\
+\bs pntl\{A\}\{-90\}\{3,1\};\\
+\bs pntl\{B\}\{90\}\{5,3\};\\
+\bs pntl\{C\}\{135\}\{2,2\};\\
+\bs verso\{D\}\{A\}\{B\};\\
+\bs pntl[violet]\{D\}\{0\}\{D\};\\
+\bs allont[2]\{E\}\{B\}\{C\};\\
+\bs pntl[red]\{E\}\{135\}\{E\};\\
+\bs parallelo[2]\{F\}\{D\}\{B\}\{E\};\\
+\bs pntl[blue]\{F\}\{-45\}\{F\};\\
+\bs perpendicolare\{G\}\{D\}\{B\}\{E\};\\
+\bs pntl[teal]\{G\}\{-45\}\{G\};\\
+\bs medio[0.7]\{M\}\{B\}\{C\};\\
+\bs pntl[orange]\{M\}\{90\}\{M\};\\
+\bs opposto\{Mp\}\{M\}\{C\};\\
+\bs pntlp[green]\{M\}\{90\}\{Mp\};\\
+\bs simmetrico\{Bp\}\{B\}\{D\}\{F\};\\
+\bs pntlp[green]\{B\}\{-30\}\{Bp\};\\
+\bs proj\{H\}\{B\}\{D\}\{F\};\\
+\bs pntl[magenta]\{H\}\{-120\}\{H\};\\
+\bs sumvett\{V\}\{B\}\{E\}\{F\};\\
+\bs pntl[cyan]\{V\}\{-90\}\{V\};\\
+\bs ruotapunto\{R\}\{E\}\{V\}\{-150\};\\
+\bs pntl[pink]\{R\}\{-90\}\{R\};\\
+\bs ruotapuntoN[3]\{Rp\}\{E\}\{V\}\{-150\};\\
+\bs pntlp[pink]\{R\}\{-90\}\{Rp\};\\
+\bs triangoloequilatero\{T\}\{R\}\{Rp\};\\
+\bs pntl[brown]\{T\}\{90\}\{T\};\\
+\bs draw[gray] (Mp)\dash(C)\dash(M)\dash(B)\dash(E)\dash(V)\dash(F)\dash(H)\dash(D)\dash(G);\\
+\bs draw[gray] (A)\dash(D)\dash(B) (F)\dash(B)\dash(H)\dash(Bp) (V)\dash(R)\dash(Rp)\dash(T)\dash(R);}
+
+\ifnum\showimmagini=1
+\begin{immagine}[scale=0.9]
+\grigliaO{12}{5};
+\pntl{A}{-90}{3,1};
+\pntl{B}{90}{5,3};
+\pntl{C}{135}{2,2};
+\verso{D}{A}{B};
+\pntl[violet]{D}{0}{D};
+\allont[2]{E}{B}{C};
+\pntl[red]{E}{135}{E};
+\parallelo[2]{F}{D}{B}{E};
+\pntl[blue]{F}{-45}{F};
+\perpendicolare{G}{D}{B}{E};
+\pntl[teal]{G}{-45}{G};
+\medio[0.7]{M}{B}{C};
+\pntl[orange]{M}{90}{M};
+\opposto{Mp}{M}{C};
+\pntlp[green]{M}{90}{Mp};
+\simmetrico{Bp}{B}{D}{F};
+\pntlp[green]{B}{-30}{Bp};
+\proj{H}{B}{D}{F};
+\pntl[magenta]{H}{-120}{H};
+\sumvett{V}{B}{E}{F};
+\pntl[cyan]{V}{-90}{V};
+\ruotapunto{R}{E}{V}{-150};
+\pntl[pink]{R}{-90}{R};
+\ruotapuntoN[3]{Rp}{E}{V}{-150};
+\pntlp[pink]{R}{-90}{Rp};
+\triangoloequilatero{T}{R}{Rp};
+\pntl[brown]{T}{90}{T};
+\draw[gray] (Mp)--(C)--(M)--(B)--(E)--(V)--(F)--(H)--(D)--(G);
+\draw[gray] (A)--(D)--(B) (F)--(B)--(H)--(Bp) (V)--(R)--(Rp)--(T)--(R);
+\end{immagine}
+\fi
+
+\section{Il triangolo}
+Se abbiamo un triangolo $ABC$ (si assume sempre che i vertici siano in ordine antiorario), possiamo trovare i piedi $P$ di altezza, mediana e bisettrice condotte da $B$ con i comandi
+
+\codice{\bs piedealt\{\Green{P}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
+\codice{\bs piedemed\{\Green{P}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
+\comando{\bs piedebis\{\Green{P}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}
+
+In modi analoghi possiamo trovare il baricentro $M$, l'ortocentro $H$, il circocentro $O$, e l'incentro $I$ del triangolo $ABC$ coi seguenti comandi:
+
+\codice{\bs baricentro\{\Green{M}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
+\codice{\bs ortocentro\{\Green{H}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
+\codice{\bs circocentro\{\Green{O}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
+\comando{\bs incentro\{\Green{I}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}
+
+In modo analogo, possiamo trovare l'excentro $E$ riferito al vertice $B$ come
+
+\comando{\bs excentro\{\Green{E}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}
+
+Abbiamo infine il comando
+
+\comando{\bs triangolobase[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}
+che disegna il triangolo nei vertici $A$, $B$, $C$ specificati. In questo caso le \keys\ sono:
+\begin{itemize}[nolistsep]
+\item \key{col}, \key{width}, \key{pattern} come descritti nella sezione \ref{keysec}.
+\item \key{col vertici}, \key{col lati} e \key{col angoli} specificano separatamente i colori per le varie componenti del triangolo (se non specificate copiano \key{col}).
+\item \ttt{\key{lbl vertici} := \keyval{true}}, \ttt{\key{lbl lati} := \keyval{true}} e \ttt{\key{lbl angoli} := \keyval{true}} dicono se creare dei label per vertici (nel caso saranno $A$, $B$ e $C$), lati (nel caso saranno $\ra$, $\rb$ e $\rc$) e angoli (nel caso saranno $\alpha$, $\beta$ e $\gamma$).
+\item \ttt{\key{lbl vertici dist} := \keyval{0.3}} la distanza dei label dei vertici dai vertici stessi.
+\item \ttt{\key{fill angoli} := \keyval{false}} se reso \keyval{true} gli angoli verranno riempiti, altrimenti resteranno vuoti.
+\item \key{col fill angoli} il colore del filling degli angoli (se specificato vengono riempiti).
+\item \ttt{\key{opacity angoli} := \keyval{30}} il livello di trasparenza degli angoli. Utilizzato solo se \key{col fill angoli} viene lasciato vuoto ma viene specificato \ttt{\key{fill angoli} := \keyval{true}}.
+\end{itemize}
+
+Vediamo l'effetto di \ttt{\bs triangolobase}:
+
+\codice{\bs triangolobase\{0,3\}\{-2,0\}\{6,1\};}
+
+\ifnum\showimmagini=1
+\begin{immagine}
+\triangolobase{0,3}{-2,0}{6,1};
+\end{immagine}
+\fi
+
+\newpage\section{Retta e semiretta}
+Possiamo disegnare una retta $AB$ o una semiretta $AB$ con i comandi
+
+\codice{\bs retta[\keys]\{\blue{A}\}\{\blue{B}\};}\\
+\codice{\bs semiretta[\keys]\{\blue{A}\}\{\blue{B}\};}
+con le seguenti \keys:
+\begin{itemize}[nolistsep]
+\item \key{col}, \key{width}, \key{lbl}, \key{lbl style}, \key{lbl name}, \ttt{\key{lbl dist} := \keyval{0.2}}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl}} come illustrati nella sezione \ref{keysec}.
+\item \key{pattern draw} e \ttt{\key{pattern prol} := \keyval{dashed}} specificano il \ttt{pattern} per il tratto continuo e per quello tratteggiato.
+\item \key{name path} dà un nome al tratto continuo.
+\item \key{draw length}, se specificato aggiunge un tratto continuo lungo \key{draw length} oltre i vertici $A$ e $B$ (solo $B$ per \ttt{\bs semiretta}).
+\item \ttt{\key{prol length} := \keyval{0.8}} la lunghezza del tratto tratteggiato.
+\item \ttt{\key{flip lbl} := \keyval{false}} se reso \keyval{true} ribalta i label.
+\end{itemize}
+
+\section{Poligono e Poligonale}
+Nel pacchetto \liLaTeXtikz\ ci sono anche due comandi utili per disegnare un poligono e una poligonale (una linea spezzata). Si usano con la sintassi:
+
+\codice{\bs poligono[\opzioni]\{\blue{A,B,C,\dots}\};}
+\comando{\bs poligonale[\opzioni]\{\blue{A,B,C,\dots}\};}
+
+Il loro funzionamento è illustrato nel seguente esempio:
+
+\codice{\bs pntl\{A\}\{-90\}\{3,0\};\\
+\bs pntl\{B\}\{180\}\{1,1\};\\
+\bs pntl\{C\}\{90\}\{4,2\};\\
+\bs pntl\{D\}\{0\}\{6,1.5\};\\
+\bs pntl\{E\}\{-90\}\{7,0\};\\
+\bs pntl[red]\{F\}\{0\}\{10,1\};\\
+\bs poligono[Green,fill=yellow]\{A,B,C,D,E\};\\
+\bs poligonale[violet,thick]\{A,C,E,F\};}
+
+\ifnum\showimmagini=1
+\begin{immagine}
+\pntl{A}{-90}{3,0};
+\pntl{B}{180}{1,1};
+\pntl{C}{90}{4,2};
+\pntl{D}{0}{6,1.5};
+\pntl{E}{-90}{7,0};
+\pntl[red]{F}{0}{10,1};
+\poligono[Green,fill=yellow]{A,B,C,D,E};
+\poligonale[violet,thick]{A,C,E,F};
+\end{immagine}
+\fi
+
+\textbf{Attenzione!} Come illustrato anche nell'esempio la chiave \key{fill} non è compatibile con punti definiti tramite \ttt{\bs punto} o simili. Per ovviare al problema serve definire i punti come \ttt{\bs coordinate} prima di usare \ttt{\bs poligono} e poi ripassare i punti in un secondo momento.
+
+
+\newpage\section{Circonferenze}
+La funzione
+
+\codice{\bs circCR[\keys]\{\blue{C}\}\{\blue{R}\};}
+disegna una circonferenza di centro $C$ e raggio $R$. Le \keys\ sono:
+\begin{itemize}[nolistsep]
+\item \key{col}, \key{width}, \key{pattern}, \key{name path}, \ttt{\key{fill} := \keyval{false}}, \key{col fill}, \ttt{\key{opacity} := \keyval{30}}, \key{lbl}, \key{lbl style}, \key{lbl name}, \key{lbl size}e \ttt{\key{lbl col} = \key{col lbl}} come descritte nella sezione \ref{keysec}.
+\item \ttt{\key{lbl ang} := \keyval{-150}} è l'angolo a cui viene posizionato il label (rispetto al centro della circonferenza).
+\item \ttt{\key{lbl dist} := \keyval{0.3}} è la distanza del label dalla circonferenza.
+\end{itemize}
+
+Se invece vogliamo disegnare una circonferenza sapendo il centro $C$ e un suo punto $P$, possiamo usare le due funzioni (con le stesse \keys\ di \ttt{\bs circCR}):
+
+\codice{\bs circCP[\keys]\{\blue{C}\}\{\blue{P}\};}\\
+\comando{\bs circCPr[\keys]\{\blue{C}\}\{\blue{P}\}\{\Green{r}\};}
+La differenza è che \ttt{\bs circCPr} registra in \ttt{r} la lunghezza del raggio della circonferenza disegnata.
+
+Infine, possiamo disegnare una circonferenza passante per tre punti $A$, $B$ e $C$. Nel farlo possiamo registrare il centro in $O$ o il raggio in $\rr$ usando i vari comandi qui definiti (hanno tutti le stesse \keys\ di \ttt{\bs circCR}).
+\codice{\bs circPPP[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
+\codice{\bs circPPPc[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\}\{\Green{O}\};}\\
+\codice{\bs circPPPr[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\}\{\Green{c}\};}\\
+\comando{\bs circPPPcr[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\}\{\Green{O}\}\{\Green{c}\};}
+
+Il seguente esempio illustra come usare i comandi per disegnare le circonferenze
+
+\codice{\bs pntl[red]\{A\}\{-90\}\{0,0\};\\
+\bs pntl[blue]\{B\}\{90\}\{2,1\};\\
+\bs circCPr[col=red,width=thin]\{A\}\{B\}\{\bs r\};\\
+\bs circCR[col=blue,width=thin]\{B\}\{\bs r\};\\
+\bs pntl[Green]\{C\}\{0\}\{2,-1\};\\
+\bs circPPPc[col=orange,pattern=dotted]\{A\}\{B\}\{C\}\{O\};\\
+\bs pntl[orange]\{O\}\{-90\}\{O\};}
+
+\ifnum\showimmagini=1
+\begin{immagine}
+\pntl[red]{A}{-90}{0,0};
+\pntl[blue]{B}{90}{2,1};
+\circCPr[col=red,width=thin]{A}{B}{\r};
+\circCR[col=blue,width=thin]{B}{\r};
+\pntl[Green]{C}{0}{2,-1};
+\circPPPc[col=orange,pattern=dotted]{A}{B}{C}{O};
+\pntl[orange]{O}{-90}{O};
+\end{immagine}
+\fi
+
+\newpage\subsection{Ottenere punti da circonferenze}
+È anche possibile trovare delle coordinate interessanti partendo da delle circonferenze.
+
+Il comando
+
+\codice{\bs interLC\{\Green{P1}\}\{\Green{P2}\}\{\blue{A}\}\{\blue{B}\}\{\blue{O}\}\{\blue{R}\};}
+trova i due punti di intersezione fra la retta $AB$ e la circonferenza di centro $O$ e raggio $R$ (si assume che $AB$ sia secante). Quindi registra questi due punti di intersezione in $P1$ e in $P2$.
+
+Se $A$ è interno alla circonferenza, allora $P1$ sarà il punto di intersezione sulla semiretta $BA$, mentre $P2$ sarà il punto di intersezione sulla semiretta $AB$.
+
+Se invece $A$ è esterno alla circonferenza, allora orientando la retta $AB$ (da $A$ verso $B$), $P1$ è la prima intersezione e $P2$ è la seconda intersezione.
+
+Se invece vogliamo trovare i due punti di intersezione $P1$ e $P2$ fra due circonferenze di centri $C1$ e $C2$ e raggi $R1$ e $R2$ possiamo usare il comando
+
+\comando{\bs interCC\{\Green{P1}\}\{\Green{P2}\}\{\blue{O1}\}\{\blue{R1}\}\{\blue{O2}\}\{\blue{R2}\};}
+
+Se $P$ è un punto esterno alla circonferenza di centro $O$ e raggio $R$, possiamo anche trovare i due punti di tangenza $T1$ e $T2$ uscenti da $P$. Per farlo ci basta usare il comando
+
+\comando{\bs tangentiPC\{\Green{T1}\}\{\Green{T2}\}\{\blue{P}\}\{\blue{O}\}\{\blue{R}\};}
+
+Infine, date due circonferenze di centri $O1$ e $O2$ e raggi $R1$ e $R2$ (serve che $O1 \neq O2$ e $R1 \neq R2$) possiamo trovare il punto $P$ in cui si intersecano le due rette tangenti comuni alle due circonferenze. Per farlo usiamo il comando
+
+\comando{\bs PtangenzaCC\{\Green{P}\}\{\blue{O1}\}\{\blue{R1}\}\{\blue{O2}\}\{\blue{R2}\};}
+
+Vediamo un semplice esempio applicativo.
+
+\codice{\bs pntlbl[blue]\{Oa\}\{\$O\_1\$\}\{180\}\{0,0\};\\
+\bs pntlbl[red]\{Ob\}\{\$O\_2\$\}\{0\}\{2,1\};\\
+\bs draw[red](Ob)circle(1);\\
+\bs circCPr[col=blue]\{Oa\}\{Ob\}\{\bs r\};\\
+\bs pntl\{A\}\{-90\}\{-3,-2\};\\
+\bs pntl\{B\}\{-90\}\{-2,-2\};\\
+\bs draw[thin,gray](A)\dash++(8,0);\\
+\bs interLC\{C\}\{D\}\{A\}\{B\}\{Oa\}\{\bs r\};\\
+\bs pntl[orange]\{C\}\{-90\}\{C\};\\
+\bs pntl[orange]\{D\}\{-90\}\{D\};\\
+\bs interCC\{E\}\{F\}\{Oa\}\{\bs r\}\{Ob\}\{1\};\\
+\bs pntl[violet]\{E\}\{90\}\{E\};\\
+\bs pntl[violet]\{F\}\{-30\}\{F\};\\
+\bs PtangenzaCC\{P\}\{Oa\}\{\bs r\}\{Ob\}\{1\};\\
+\bs pntl[Green]\{P\}\{0\}\{P\};\\
+\bs tangentiPC\{G\}\{H\}\{P\}\{Oa\}\{\bs r\};\\
+\bs draw[Green] (G)\dash(P)\dash(H);}
+
+\ifnum\showimmagini=1
+\begin{immagine}
+\pntlbl[blue]{Oa}{$O_1$}{180}{0,0};
+\pntlbl[red]{Ob}{$O_2$}{0}{2,1};
+\draw[red](Ob)circle(1);
+\circCPr[col=blue]{Oa}{Ob}{\r};
+\pntl{A}{-90}{-3,-2};
+\pntl{B}{-90}{-2,-2};
+\draw[thin,gray](A)--++(8,0);
+\interLC{C}{D}{A}{B}{Oa}{\r};
+\pntl[orange]{C}{-90}{C};
+\pntl[orange]{D}{-90}{D};
+\interCC{E}{F}{Oa}{\r}{Ob}{1};
+\pntl[violet]{E}{90}{E};
+\pntl[violet]{F}{-30}{F};
+\PtangenzaCC{P}{Oa}{\r}{Ob}{1};
+\pntl[Green]{P}{0}{P};
+\tangentiPC{G}{H}{P}{Oa}{\r};
+\draw[Green] (G)--(P)--(H);
+\end{immagine}
+\fi
+
+\newpage\subsection{Archi di circonferenza}
+A volte siamo anche interessati a disegnare degli archi di circonferenze. Questo può essere fatto usando semplicemente le opzioni della funzione \ttt{\bs draw} interna a \ttt{tikz}, come illustrato nella sezione \ref{drawarcsec}. Il pacchetto \liLaTeXtikz\ definisce però dei metodi alternativi per tracciare archi di circonferenze (ma non di ellissi).
+
+Un primo comando ci permette di tracciare un arco di circonferenza di centro $O$ che parte dal punto $A$ e si ferma quando interseca la semiretta $OB$ (ruotando in senso antiorario). Per usarlo ci serviamo della sintassi:
+
+\comando{\bs arcocirc[\opzioni]\{\blue{O}\}\{\blue{A}\}\{\blue{B}\};}
+
+In alternativa possiamo usare il comando
+
+\codice{\bs arcocircang[\opzioni]\{\blue{O}\}\{\blue{A}\}\{\blue{ang}\};}
+che ci permette di disegnare un arco di centro $O$ che parte da $A$ e gira per un angolo complessivo \ttt{ang} (espresso in gradi). Se l'angolo è positivo si assume un senso di rotazione antiorario, se invece è positivo l'arco ruota in senso orario.
+
+Abbiamo infine il comando
+
+\codice{\bs semicirc[\opzioni]\{\blue{A}\}\{\blue{B}\};}
+che disegna una semicirconferenza di diametro $AB$.
+
+\textbf{Attenzione!} Se nelle opzioni vengono specificate delle frecce come \keyval{->}, gli archi sono sempre da intendersi tracciati in senso antiorario.
+
+\section{Plot generici}
+È possibile disegnare una funzione generica usando il comando
+
+\comando{\bs plot[\opzioni]\{\blue{$x_1:x_2$}\}\{\blue{$x$}\}\{\blue{$y$}\};}
+
+Questo disegna una curva parametrizzata (con parametro \ttt{\bs x} che varia nel range $[x_1,x_2]$). Al posto di $x$ e $y$ dobbiamo scrivere la dipendenza di $x$ e $y$ da questo parametro \ttt{\bs x}.
+
+Ad esempio il seguente codice disegna la funzione $f(x)=\frac{\sin(x)}{x}$ per un intervallo $[-6:+6$]:
+
+\ttt{\bs plot\{$-6:+6$\}\{\bs x\}\{sin(\bs x*180/pi)/(\bs x)\};} {\tab\small\textcolor{gray}{\% le funzioni \ttt{sin} e \ttt{cos} prendono l'input in gradi.}}
+
+\ifnum\showimmagini=1
+\begin{immagine}
+\plot{-6:+6}{\x}{sin(\x*180/pi)/(\x)};
+\end{immagine}
+\fi
+
+\subsection{Seno e Coseno}
+Possiamo anche plottare le funzioni seno e coseno (con ampiezza $A$ per un intervallo $[x_1,x_2]$):
+
+\comando{\bs plotsin[\opzioni]\{\blue{$x_1:x_2$}\}\{\blue{A}\};}
+\comando{\bs plotcos[\opzioni]\{\blue{$x_1:x_2$}\}\{\blue{A}\};}
+
+Volendo è anche possibile plottare le funzioni seno e coseno traslate di un vettore $V$, usando i comandi
+
+\comando{\bs plotsinshift[\opzioni]\{\blue{$x_1:x_2$}\}\{\blue{A}\}\{\blue{$V$}\};}
+\comando{\bs plotcosshift[\opzioni]\{\blue{$x_1:x_2$}\}\{\blue{A}\}\{\blue{$V$}\};}
+
+Infine, è possibile plottare le funzioni seno e coseno dilatate lungo l'asse $x$ in modo che per ogni unità lungo $x$ vengano completate $N$ oscillazioni. Per farlo usiamo i comandi:
+
+\comando{\bs plotsinfr[\opzioni]\{\blue{$x_1:x_2$}\}\{\blue{A}\}\{\blue{$N$}\};}
+\comando{\bs plotcosfr[\opzioni]\{\blue{$x_1:x_2$}\}\{\blue{A}\}\{\blue{$N$}\};}
+
+\newpage\section{Coniche}
+Possiamo disegnare una conica di equazione implicita $ax^2+by^2+cx+dy+e=0$ per valori di $x\in[x_1,x_2]$ utilizzando il comando
+
+\comando{\bs conicaeq[\keys]\{\blue{$x_1:x_2$}\}\{\blue{a}\}\{\blue{b}\}\{\blue{c}\}\{\blue{d}\}\{\blue{e}\};}
+
+È anche possibile disegnare la versione più generale di equazione $ax^2+by^2+cxy+dx+ey+f=0$ usando il comando
+
+\comando{\bs conicageneq[\keys]\{\blue{$x_1:x_2$}\}\{\blue{a}\}\{\blue{b}\}\{\blue{c}\}\{\blue{d}\}\{\blue{e}\}\{\blue{f}\};}
+
+\subsection{Disegnare delle ellissi}
+Il pacchetto \liLaTeXtikz\ mette a disposizione dell'utente diverse funzioni per disegnare delle ellissi.
+
+La prima può essere usata per disegnare un'ellisse di centro $O$ e semiassi $a$ e $b$:
+
+\comando{\bs ellisse[\opzioni]\{\blue{C}\}\{\blue{a}\}\{\blue{b}\};}
+
+È anche possibile ruotare l'ellisse di un angolo \ttt{ang} (in senso antiorario attorno a $C$). Per farlo ci serviamo del comando
+
+\comando{\bs ellisserot[\opzioni]\{\blue{C}\}\{\blue{a}\}\{\blue{b}\}\{\blue{ang}\};}
+
+Infine, abbiamo un comando che ci permette di disegnare un'ellisse partendo dalla sua equazione implicita $ax^2+by^2+cx+dy+e=0$:
+
+\comando{\bs ellisseeq[\opzioni]\{\blue{a}\}\{\blue{b}\}\{\blue{c}\}\{\blue{d}\}\{\blue{e}\};}
+
+\subsection{Disegnare degli archi di parabole}
+Una prima possibilità consiste nel disegnare un arco di parabola da un punto $P_1$ a un punto $P_2$ e di vertice $V$. Per farlo serve però che $V$ sia compreso fra $P_1$ e $P_2$. In tal caso, possiamo usare il comando
+
+\comando{\bs parabolaVPP[\opzioni]\{\blue{V}\}\{\blue{$P_1$}\}\{\blue{$P_2$}\};}
+
+Volendo esiste anche il comando \ttt{\bs parabolaVPPy}, identico a \ttt{\bs parabolaVPP}. Se invece vogliamo disegnare un arco di parabola con l'asse orizzontale (sempre fra due punti $P_1$ e $P_2$ e sempre con un vertice $V$ compreso fra $P_1$ e $P_2$) allora possiamo usare il comando
+
+\comando{\bs parabolaVPPx[\opzioni]\{\blue{V}\}\{\blue{$P_1$}\}\{\blue{$P_2$}\};}
+
+Volendo possiamo anche disegnare una parabola partendo dalla sua equazione canonica $y=ax^2+bx+c$. Per farlo, dobbiamo anche specificare il range $x\in[x_1,x_2]$ per cui vogliamo disegnare la parabola:
+
+\comando{\bs parabolaeq[\opzioni]\{\blue{$x_1:x_2$}\}\{\blue{a}\}\{\blue{b}\}\{\blue{c}\};}
+
+Esiste anche il comando \ttt{\bs parabolaeqy}, identico a \ttt{\bs parabolaeq}. Se invece desideriamo disegnare un arco di parabola di equazione $x=ay^2+by+c$ (questa volta per un intervallo $y\in[y_1,y_2]$ utilizziamo il comando
+
+\comando{\bs parabolaeqx[\opzioni]\{\blue{$y_1:y_2$}\}\{\blue{a}\}\{\blue{b}\}\{\blue{c}\};}
+
+\subsection{Disegnare una funzione di proporzionalità inversa}
+Possiamo anche disegnare un tratto di funzione di proporzionalità inversa (un'iperbole equilatera ruotata di $45^\circ$). Il seguente comando ci permette di disegnare un tratto di funzione $xy=k$:
+
+\codice{\bs propinv[\opzioni]\{\blue{$x_1:x_2$}\}\{\blue{$y_1:y_2$}\}\{\blue{k}\};}
+Così facendo si disegno i punti $(x,y)$ tali per cui $xy=k$ e $x\in[x_1,x_2]$ e $y\in[y_1,y_2]$.
+
+Volendo è anche possibile disegnare una funzione di proporzionalità inversa traslata di un vettore $V$. Per farlo usiamo il comando
+
+\comando{\bs propinvshift[\opzioni]\{\blue{$x_1:x_2$}\}\{\blue{$y_1:y_2$}\}\{\blue{k}\}\{\blue{$V$}\};}
+
+\section{Segmenti, archi e angoli marcati}
+Spesso siamo interessati a disegnare oggetti marcandoli con dei segni. Le opzioni per i segni sono quelle descritte nella sezione \ref{keysec}, relativamente alla key \key{mark}.
+
+Per disegnare un segmento $AB$ segnato utilizziamo il comando
+
+\comando{\bs segmento[\keys]\{\blue{A}\}\{\blue{B}\};}
+
+In questo caso le \keys\ disponibili sono:
+\begin{itemize}[nolistsep]
+\item \key{col}, \key{width}, \key{pattern}, \key{arrow}, \key{name path}, \key{lbl}, \key{lbl style}, \key{lbl name}, \ttt{\key{lbl dist} := \keyval{0.2}}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl}}, \ttt{\key{mark} := \keyval{none}}, \ttt{\key{mark size} := \keyval{0.2}} e \ttt{\key{col mark} := \keyval{black}} come descritte nella sezione \ref{keysec}.
+\end{itemize}
+
+Può aver senso usare il comando \ttt{\bs segmento} anche se non siamo interessati a mettere un \key{mark}, dal momento che aggiunge comunque un label ben posizionato (in prossimità del punto medio del segmento).
+
+Se vogliamo mettere un \key{mark} su un arco di circonferenza $\arco{AB}$ (si suppone che la circonferenza abbia centro $O$) si usa il comando
+
+\codice{\bs markarco[\keys]\{\blue{mark}\}\{\blue{O}\}\{\blue{A}\}\{\blue{B}\};}
+Per le opzioni per \blue{mark} si rimanda alle opzioni per la chiave \key{mark} descritte nella sezione \ref{keysec}. \ttt{\bs markarco} usa le seguenti \keys:
+\begin{itemize}[nolistsep]
+\item \ttt{\key{col} := \keyval{black}} che rappresenta il colore del \blue{mark}.
+\item \ttt{\key{size} := \keyval{0.2}} che rappresenta una misura della dimensione del \blue{mark}.
+\end{itemize}
+
+\textbf{Attenzione!} \ttt{\bs segmento} disegna il segmento, a cui aggiunge un \key{mark}. Invece \ttt{\bs markarco} non disegna l'arco, ma si limita ad aggiungere il \key{mark}.
+
+Per disegnare degli angoli $A\widehat{B}C$ (eventualmente marcati) abbiamo invece i seguenti comandi (il comando \ttt{\bs angoloretto} è specifico per gli angoli retti):
+
+\comando{\bs angolo[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
+\codice{\bs angoloretto[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}
+con le seguenti keys:
+\begin{itemize}[nolistsep]
+\item \key{col}, \key{col draw}, \key{width}, \key{pattern}, \key{arrow}, \ttt{\key{fill} := \keyval{false}}, \key{col fill}, \ttt{\key{opacity} := \keyval{30}} come descritti in sezione \ref{keysec}.
+\item \key{r} ha valori di default e significati diversi per i due comandi:
+\begin{itemize}[nolistsep]
+\item \ttt{\key{r} := \keyval{0.6}} rappresenta il raggio dell'angolo per \ttt{\bs angolo};
+\item \ttt{\key{r} := \keyval{0.4}} rappresenta il lato del quadratino per \ttt{\bs angoloretto}.
+\end{itemize}
+\item \key{lbl}, \ttt{\key{lbl dist} := \keyval{0.2}}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl}}, \ttt{\key{mark} := \keyval{none}} come descritti in sezione \ref{keysec} sono disponibili solo per \ttt{\bs angolo} (non per \ttt{\bs angoloretto}).
+\end{itemize}
+
+Vediamo un semplice esempio di utilizzo di questi comandi:
+
+\codice{\bs coordinate (A) at (4,1);\\
+\bs pntl\{B\}\{-90\}\{1,0\};\\
+\bs coordinate (C) at (-1,2);\\
+\bs angolo[lbl=\$\bs beta\$,col=Green,fill=true,mark=||]\{A\}\{B\}\{C\};\\
+\bs segmento[col=red,lbl=a,lbl style=rm]\{B\}\{A\};\\
+\bs segmento[col=blue,mark=oo]\{B\}\{C\};}
+
+\ifnum\showimmagini=1
+\begin{immagine}
+\coordinate (A) at (4,1);
+\pntl{B}{-90}{1,0};
+\coordinate (C) at (-1,2);
+\angolo[lbl=$\beta$,col=Green,fill=true,mark=||]{A}{B}{C};
+\segmento[col=red,lbl=a,lbl style=rm]{B}{A};
+\segmento[col=blue,mark=oo]{B}{C};
+\end{immagine}
+\fi
+
+\newpage\section{Oggetti per la fisica}
+Nel pacchetto \liLaTeXtikz\ ci sono alcuni comandi specifici per disegnare oggetti particolarmente ricorrenti nei problemi di fisica.
+
+Questi oggetti vengono elencati in questa sezione.
+
+\subsection{La sfera}
+Il pacchetto \liLaTeXtikz\ definisce una semplice funzione per disegnare una sfera tridimensionale:
+
+\comando{\bs sfera[\key{colore} := \keyval{teal}]\{\blue{centro}\}\{\blue{raggio}\};}
+
+\subsection{La molla}
+Il pacchetto \liLaTeXtikz\ fornisce inoltre un comando specifico per disegnare una molla da un punto $A$ a un punto $B$:
+
+\codice{\bs molla[\keys]\{\blue{$A$}\}\{\blue{$B$}\};}
+con le seguenti \keys:
+\begin{itemize}[nolistsep]
+\item \ttt{\key{col} := \keyval{gray}}, \key{width}, \ttt{\key{s} = \key{scale} := \keyval{1}} con i significati spiegati nella sezione \ref{keysec}.
+\item \ttt{\key{r} := \keyval{0.2}} rappresenta il raggio del cerchio della molla (in realtà il raggio è uguale a $\key{s}\cdot\key{r}$).
+\item \ttt{\key{step} := \keyval{0.15}} misura la distanza fra due cerchi consecutivi nella molla.
+\item \ttt{\key{aspect} := \keyval{0.3}} ha a che fare con la forma della molla in prossimità dei punti $A$ e $B$. Conviene non toccare questo parametro.
+\end{itemize}
+
+Vediamo un semplice esempio di utilizzo:
+
+\codice{\bs molla\{0,0\}\{3,0\};\\
+\bs sfera\{3.3,0\}\{0.3\};}
+
+\ifnum\showimmagini=1
+\begin{immagine}
+\molla{0,0}{3,0};
+\sfera{3.3,0}{0.3};
+\end{immagine}
+\fi
+
+\subsection{La carrucola}
+Nel problemi di statica del corpo rigido e di dinamica rotazionale dobbiamo spesso utilizzare le carrucole. Il pacchetto \liLaTeXtikz\ definisce quindi il seguente comando per disegnare una carrucola di centro $C$ e raggio $\rR$:
+
+\codice{\bs carrucola[\keys]\{\blue{$C$}\}\{\blue{$\rR$}\};}
+con le seguenti \keys:
+\begin{itemize}[nolistsep]
+\item \ttt{\key{col1} := \keyval{gray!70}}, \ttt{\key{col2} := \keyval{gray}} e \ttt{\key{col3} := \keyval{black}} sono i colori dei tre cerchi che compongono la carrucola (\key{col1} è il colore più esterno, mentre \key{col3} è quello più interno).
+\item \ttt{\key{r2} := \keyval{2/3}} e \ttt{\key{r3} := \keyval{1/10}} sono i raggi dei due cerchi interni (nello specifico, il cerchio più interno avrà raggio $\key{r3}\cdot\rR$).
+\end{itemize}
+
+\subsection{La cassa per il piano inclinato}
+Siamo spesso interessati a disegnare delle casse, soprattutto sui piani inclinati (di un angolo \ttt{ang}). Per farlo, possiamo usare il seguente comando
+
+\codice{\bs cassa[\keys]\{\blue{punto iniziale}\}\{\blue{$x$}\}\{\blue{$y$}\}\{\blue{ang}\};}
+dove $x$ e $y$ indicano le lunghezze della cassa lungo le due direzioni (possono eventualmente essere negativi). Le \keys\ in questo caso sono:
+\begin{itemize}[nolistsep]
+\item \key{col}, \key{width}, \key{pattern}, \key{col draw}, \key{col fill}, \ttt{\key{opacity} := \keyval{20}}, \ttt{\key{fill} := \keyval{true}}, \key{lbl}, \ttt{\key{lbl style} := \keyval{bf}}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl} := \keyval{black}} come descritti nella sezione \ref{keysec}.
+\item \ttt{\key{centro} := \keyval{cassacentro}} è il nome che verrà dato al centro della cassa (dove viene scritto l'eventuale label).
+\end{itemize}
+
+\subsection{La parentesi graffa}
+La graffa viene spesso usata per specificare delle lunghezze nell'immagine. Per farlo, utilizziamo la sintassi seguente:
+
+\codice{\bs graffa[\keys]\{\blue{$A$}\}\{\blue{$B$}\};}
+dove la parentesi graffa ha gli estremi in $A$ e $B$. Il comando usa queste \keys:
+\begin{itemize}[nolistsep]
+\item \key{col}, \key{width}, \key{pattern}, \key{lbl}, \key{lbl style}, \key{lbl name}, \ttt{\key{lbl dist} := \keyval{0.5}} e \ttt{\key{lbl col} = \key{col lbl}} come spiegati nella sezione \ref{keysec}.
+\item \ttt{\key{mirror} := \keyval{false}}, se posto uguale a \keyval{true} ribalta la graffa. Questo in realtà è equivalente a scambiare $A$ e $B$ nell'input.
+\item \ttt{\key{amplitude} := \keyval{5}} è l'ampiezza della graffa. Tendenzialmente è un parametro da non toccare.
+\item \ttt{\key{shape} := \keyval{brace}} dice che dobbiamo disegnare una graffa (e non un altro tipo di parentesi). Anche questo è un parametro da non toccare.
+\item \ttt{\key{dist} := \keyval{0.05}} la distanza dei punti della graffa dai punti $A$ e $B$.
+\end{itemize}
+
+\textbf{Attenzione!} Spesso vogliamo usare delle unità di misura all'interno del label. Questo è incompatibile con la key \key{lbl}. Per ottenere un label di questo tipo è quindi necessario utilizzare la key \key{lbl name}, come illustrato nelle ultime righe del seguente esempio.
+
+\codice{\bs tikzdef\bs ang\{35\}\\
+\bs coordinate (O) at(0,0);\\
+\bs coordinate (NE) at (\bs ang:8);\\
+\bs coordinate (E) at (O-|NE);\\
+\bs poligono[fill=gray!20]\{O,E,NE\};\\
+\bs angolo[col=Green,fill=true,lbl=\$\bs ang\string^\bs circ\$,lbl dist=0.4]\{E\}\{O\}\{NE\};\\
+\bs coordinate (C) at (\$(NE)+(45:0.3)\$);\\
+\bs draw (\$(C)+(0.9,0)\$)\dash++(0,-1.5);\\
+\bs draw (\$(C)+(\bs ang+90:0.9)\$)\dash++(\bs ang:-2.5)node(top)\{\};\\
+\bs cassa[col=red,lbl=m\_2]\{\$(C)+(0.9-0.4,-1.5)\$\}\{0.8\}\{-1\}\{0\};\\
+\bs proj\{H\}\{top\}\{O\}\{NE\};\\
+\bs cassa[col=blue,lbl=m\_1]\{H\}\{-1.8\}\{1.2\}\{\bs ang\};\\
+\bs carrucola\{C\}\{1\};\\
+\bs graffa[lbl name=base]\{O\}\{E\};\\
+\bs node (baselbl) at (base) \{\$2\{,\}4\bs,\bs SI\{m\}\$\};\\
+\bs coordinate (A) at (\bs ang:2);\\
+\bs begin\{rotazione\}[A]\{\bs ang\}\\
+\tab\bs auto[col=red]\{A\};\\
+\bs end\{rotazione\}}
+
+\ifnum\showslowimmagini=1
+\begin{immagine}
+\tikzdef\ang{35}
+\coordinate (O) at(0,0);
+\coordinate (NE) at (\ang:8);
+\coordinate (E) at (O-|NE);
+\poligono[fill=gray!20]{O,E,NE};
+\angolo[col=Green,fill=true,lbl=$\ang^\circ$,lbl dist=0.4]{E}{O}{NE};
+\coordinate (C) at ($(NE)+(45:0.3)$);
+\draw ($(C)+(0.9,0)$)--++(0,-1.5);
+\draw ($(C)+(\ang+90:0.9)$)--++(\ang:-2.5)node(top){};
+\cassa[col=red,lbl=m_2]{$(C)+(0.9-0.4,-1.5)$}{0.8}{-1}{0};
+\proj{H}{top}{O}{NE};
+\cassa[col=blue,lbl=m_1]{H}{-1.8}{1.2}{\ang};
+\carrucola{C}{1};
+\graffa[lbl name=base]{O}{E};
+\node (baselbl) at (base) {$2{,}4\,\SI{m}$};
+\coordinate (A) at (\ang:2);
+\begin{rotazione}[A]{\ang}
+	\auto[col=red]{A};
+\end{rotazione}
+\end{immagine}
+\fi
+
+\newpage\subsection{Il raggio di luce}
+In ottica siamo spesso interessati a disegnare un raggio di luce che segue una linea spezzata. Per farlo possiamo usare il comando
+
+\codice{\bs raggioluce[\keys]\{\blue{$P_1$}\}\{\blue{$P_2$}\}\{\blue{$P_3$}\}\blue{\dots};}
+dove $P_1$, $P_2$, $P_3$, $\dots$ sono i vertici della linea spezzata. Le \keys\ sono:
+\begin{itemize}[nolistsep]
+\item \ttt{\key{col} := \keyval{orange}}, \key{width}, \key{pattern}, \ttt{\key{arrow} := \keyval{->}} come illustrati nella sezione \ref{keysec}.
+\item \ttt{\key{arrow dist} := \keyval{0.8}} un valore nell'intervallo $[0,1]$ che indica dove collocare la freccia specificata con \key{arrow} per ogni segmento della linea spezzata. Se il segmento è $AB$, ponendo \ttt{\key{arrow dist} := \keyval{0}} la freccia verrà sovrapposta ad $A$, mentre ponendo \ttt{\key{arrow dist} := \keyval{1}} la freccia verrà sovrapposta ad $B$.
+\end{itemize}
+
+Vediamo un semplice esempio di utilizzo:
+
+\codice{\bs grigliaO\{8\}\{1\};\\
+\bs raggioluce\{1,0\}\{4,1\}\{5,0\}\{7,1\}\{5,1\};}
+
+\ifnum\showimmagini=1
+\begin{immagine}
+\grigliaO{8}{1};
+\raggioluce{1,0}{4,1}{5,0}{7,1}{5,1};
+\end{immagine}
+\fi
+
+\subsection{La casetta}
+Il comando \ttt{\bs casetta} ci permette di disegnare una casetta:
+
+\codice{\bs casetta[\keys]\{\blue{$B$}\};}
+dove $B$ è il centro della base della casetta. Le \keys\ per questo comando sono:
+\begin{itemize}[nolistsep]
+\item \key{col}, \key{width}, \key{pattern}, \ttt{\key{s} = \key{scale} := \keyval{1}} come spiegate nella sezione \ref{keysec}.
+\item \ttt{\key{y} = \key{h} := \keyval{1.0}} indica l'altezza della casa, mentre \ttt{\key{x} = \key{w} := \keyval{0.6}} indica la sua larghezza (in realtà l'altezza e la larghezza sono rispettivamente $\key{s}\cdot\key{y}$ e $\key{s}\cdot\key{x}$).
+\end{itemize}
+
+\subsection{Omini stilizzati (\ttt{\bs uomo} e \ttt{\bs donna})}
+Il pacchetto \liLaTeXtikz\ definisce anche due comandi per disegnare degli omini stilizzati:
+
+\comando{\bs uomo[\keys]\{\blue{$B$}\};}\\
+\codice{\bs donna[\keys]\{\blue{$B$}\};}
+dove $B$ indica il centro della base dell'immagine e le \keys\ (uguali per i due comandi) sono:
+\begin{itemize}[nolistsep]
+\item \key{col}, \ttt{\key{width} := \keyval{thick}}, \ttt{\key{side} := \keyval{->}}, \ttt{\key{s} = \key{scale} := \keyval{1}} come illustrate nella sezione \ref{keysec}.
+\item \ttt{\key{h} := \keyval{1}} è l'altezza dell'omino (il realtà l'altezza sarà $\key{s}\cdot\key{h}$).
+\item \ttt{\key{lung braccio} := \keyval{0.3}} la lunghezza delle braccia (in realtà la lunghezza sarà $\key{lung braccio 1}\cdot\key{s}\cdot\key{h}$).
+\item \ttt{\key{ang braccio} = \key{ang braccio 1} := \keyval{0}} l'angolo del primo braccio (ricorda che se \ttt{\key{side} := \keyval{<-}} viene comunque ribaltato).
+\item \key{ang braccio 2} l'angolo del secondo braccio. Se non viene specificato non viene disegnato.
+\item \ttt{\key{ang gamba} = \key{ang gamba 1} := \keyval{-60}} l'angolo con cui viene disegnata la prima gamba.
+\item \ttt{\key{ang gamba 2} := \keyval{-90}} l'angolo della seconda gamba.
+\item \ttt{\key{mano 1} := \keyval{ManoDx}}, \ttt{\key{mano 2} := \keyval{ManoSx}}, \ttt{\key{piede 1} := \keyval{PiedeDx}}e  \ttt{\key{piede 2} := \keyval{PiedeSx}} sono i nomi da dare a mani e piedi (possono essere utili per disegnare altri oggetti successivi).
+\end{itemize}
+
+Vediamo un semplice esempio:
+
+\codice{\bs grigliaO[step=0.5]\{6\}\{1.5\};\\
+\bs casetta[s=1.5]\{2,0\};\\
+\bs uomo[col=blue]\{4,0\};\\
+\bs donna[side=<-,col=red]\{5,0\};}
+
+\ifnum\showslowimmagini=1
+\begin{immagine}
+\grigliaO[step=0.5]{6}{1.5};
+\casetta[s=1.5]{2,0};
+\uomo[col=blue]{4,0};
+\donna[side=<-,col=red]{5,0};
+\end{immagine}
+\fi
+
+\newpage\subsection{I veicoli (\ttt{\bs auto}, \ttt{\bs camion}, \ttt{\bs moto} e \ttt{\bs bici})}
+Il pacchetto \liLaTeXtikz\ definisce anche comandi per disegnare diversi tipi di veicoli:
+
+\comando{\bs auto[\keys]\{\blue{$B$}\};}\\
+\comando{\bs camion[\keys]\{\blue{$B$}\};}\\
+\comando{\bs moto[\keys]\{\blue{$B$}\};}\\
+\codice{\bs bici[\keys]\{\blue{$B$}\};}
+dove $B$ indica il centro della base del veicolo. I quattro comandi per i veicoli hanno tutti le stesse \keys:
+\begin{itemize}[nolistsep]
+\item \key{col}, \ttt{\key{width} := \keyval{thick}}, \ttt{\key{side} := \keyval{->}} e \ttt{\key{s} = \key{scale} := \keyval{1}} come illustrate nella sezione \ref{keysec}.
+\item \ttt{\key{y} = \key{h}} e \ttt{\key{x} = \key{w}} indicano rispettivamente l'altezza e la larghezza del veicolo (in realtà l'altezza e la larghezza misurano rispettivamente $\key{s}\cdot\key{y}$ e $\key{s}\cdot\key{x}$. Il valori di default cambiano in base al veicolo specificato, come qui illustrato:
+\begin{itemize}[nolistsep]
+\item per \ttt{\bs auto} valgono \ttt{\key{x} := \keyval{3}} e \ttt{\key{y} := \keyval{2}};
+\item per \ttt{\bs camion} valgono \ttt{\key{x} := \keyval{6}} e \ttt{\key{y} := \keyval{3}};
+\item per \ttt{\bs moto} valgono \ttt{\key{x} := \keyval{2}} e \ttt{\key{y} := \keyval{1.5}};
+\item per \ttt{\bs bici} valgono \ttt{\key{x} := \keyval{1.6}} e \ttt{\key{y} := \keyval{2}}.
+\end{itemize}
+\end{itemize}
+
+La seguente immagine mostra il funzionamento dei veicoli:
+
+\codice{\bs grigliaO\{15\}\{3\};\\
+\bs camion\{3,0\};\\
+\bs auto[col=red,side=<-]\{8.5,0\};\\
+\bs moto[col=blue]\{12,0\};\\
+\bs bici[col=Green,side=<-]\{14,0\};}
+
+\ifnum\showslowimmagini=1
+\begin{immagine}
+\grigliaO{15}{3};
+\camion{3,0};
+\auto[col=red,side=<-]{8.5,0};
+\moto[col=blue]{12,0};
+\bici[col=Green,side=<-]{14,0};
+\end{immagine}
+\fi
+
+\end{document}
