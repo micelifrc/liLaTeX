@@ -1192,10 +1192,7 @@ dove la parentesi graffa ha gli estremi in $A$ e $B$. Il comando usa queste \key
 \carrucola{C}{1};
 \graffa[lbl name=base]{O}{E};
 \node (baselbl) at (base) {$2{,}4\,\SI{m}$};
-\coordinate (A) at (\ang:2);
-\begin{rotazione}[A]{\ang}
-	\auto[col=red]{A};
-\end{rotazione}
+\auto[col=red,ang=\ang]{\ang:2};
 \end{immagine}
 \fi
 
@@ -1274,6 +1271,7 @@ Il pacchetto \liLaTeXtikz\ definisce anche comandi per disegnare diversi tipi di
 dove $B$ indica il centro della base del veicolo. I quattro comandi per i veicoli hanno tutti le stesse \keys:
 \begin{itemize}[nolistsep]
 \item \key{col}, \ttt{\key{width} := \keyval{thick}}, \ttt{\key{side} := \keyval{->}} e \ttt{\key{s} = \key{scale} := \keyval{1}} come illustrate nella sezione \ref{keysec}.
+\item \key{ang} se specificato ruota l'immagine attorno a $B$ dell'angolo specificato.
 \item \ttt{\key{y} = \key{h}} e \ttt{\key{x} = \key{w}} indicano rispettivamente l'altezza e la larghezza del veicolo (in realtà l'altezza e la larghezza misurano rispettivamente $\key{s}\cdot\key{y}$ e $\key{s}\cdot\key{x}$. Il valori di default cambiano in base al veicolo specificato, come qui illustrato:
 \begin{itemize}[nolistsep]
 \item per \ttt{\bs auto} valgono \ttt{\key{x} := \keyval{3}} e \ttt{\key{y} := \keyval{2}};

@@ -1539,7 +1539,9 @@
 		y/.initial, % equivalente a h
 		scale/.initial = 1, % la scala da usare
 		s/.initial, % equivalente a s
+		ang/.initial, % se specificato l'auto viene ruotata di questo angolo attorno a #2
 	} \setkeyfld{#1};
+	\ifkeyempty{ang}{
 	\copykeyvaluesifempty
 		{x}{w}
 		{y}{h}
@@ -1567,6 +1569,9 @@
 	}
 	%carrozzeria
 	\draw[\kv{col},\kv{width},rounded corners=\kv{s}*0.5mm] (autoruotaposteriorefront)--(autoruotaanterioreback) (autoruotaanteriorefront)--(autobottomfront)--($(#2)+(15*\autosizex,5*\autosizey)$)--++(0,2*\autosizey)--++(-6*\autosizex,3*\autosizey)--++(0,10*\autosizey)--($(#2)+(-15*\autosizex,20*\autosizey)$)--(autobottomback)--(autoruotaposterioreback);
+	}{ %se dobbiamo ruotare l'auto
+		\begin{rotazione}[#2]{\kv{ang}} \auto[#1,ang=]{#2} \end{rotazione}
+	}
 }
 
 % \camion[keys]{pos} disegna un camion. pos è il centro della sua base
@@ -1581,7 +1586,9 @@
 		y/.initial, % equivalente a h
 		scale/.initial = 1, % la scala da usare
 		s/.initial, % equivalente a s
+		ang/.initial, % se specificato il camion viene ruotato di questo angolo attorno a #2
 	} \setkeyfld{#1};
+	\ifkeyempty{ang}{
 	\copykeyvaluesifempty
 		{x}{w}
 		{y}{h}
@@ -1610,6 +1617,9 @@
 	%carrozzeria
 	\draw[\kv{col},\kv{width}] (camionruotaposteriorefront)--(camionruotaanterioreback) (camionruotaanteriorefront)--(camionbottomfront)--($(#2)+(30*\camionsizex,6*\camionsizey)$)--++(-\camionsizex,0) (camionruotaposterioreback)--(camionbottomback)--++(0,9*\camionsizey)--++(45*\camionsizex,0)--++(0,17.4*\camionsizey)--++(-43.5*\camionsizex,0)--++(0,-17.4*\camionsizey);
 	\draw[\kv{col},\kv{width},rounded corners=\kv{s}*0.5mm] ($(#2)+(29*\camionsizex,6*\camionsizey)$)--++(0,6*\camionsizey)--++(-3*\camionsizex,0)--++(0,12*\camionsizey)--++(-11*\camionsizex,0);
+	}{ %se dobbiamo ruotare il camion
+		\begin{rotazione}[#2]{\kv{ang}} \camion[#1,ang=]{#2} \end{rotazione}
+	}
 }
 
 % \moto[keys]{pos} disegna un motociclista. pos è il centro della base della moto
@@ -1624,7 +1634,9 @@
 		y/.initial, % equivalente a h
 		scale/.initial = 1, % la scala da usare
 		s/.initial, % equivalente a s
+		ang/.initial, % se specificato la moto viene ruotata di questo angolo attorno a #2
 	} \setkeyfld{#1};
+	\ifkeyempty{ang}{
 	\copykeyvaluesifempty
 		{x}{w}
 		{y}{h}
@@ -1648,6 +1660,9 @@
 	\coordinate(motocentrocasco)at($(motocollopunto)+(0,2*\motosizey)$);
 	\draw[\kv{col},\kv{width}]($(motocentrocasco)+(90-\motoflipper*60:2*\motosizey)$)--($(motocentrocasco)+(0,\motosizey)$)--($(motocentrocasco)+(0,-\motosizey)$)--($(motocentrocasco)+(-90+\motoflipper*60:2*\motosizey)$);
 	\draw[\kv{col},\kv{width}](motocentrocasco)circle(2*\motosizey);
+	}{ %se dobbiamo ruotare la moto
+		\begin{rotazione}[#2]{\kv{ang}} \moto[#1,ang=]{#2} \end{rotazione}
+	}
 }
 
 % \bici[keys]{pos} disegna un ciclista. pos è il centro della base della bicicletta
@@ -1662,7 +1677,9 @@
 		y/.initial, % equivalente a h
 		scale/.initial = 1, % la scala da usare
 		s/.initial, % equivalente a s
+		ang/.initial, % se specificato la bici viene ruotata di questo angolo attorno a #2
 	} \setkeyfld{#1};
+	\ifkeyempty{ang}{
 	\copykeyvaluesifempty
 		{x}{w}
 		{y}{h}
@@ -1684,4 +1701,7 @@
 	\draw[\kv{col},\kv{width},fill=\kv{col}](bicicatena)circle(0.7*\bicisizey);
 	\draw[\kv{col},\kv{width}](bicicatena)--++(2*\bicisizex,5*\bicisizey)--++(-3*\bicisizex,2*\bicisizey)--++(-1.6*\bicisizex,0)--++(2.5*\bicisizex,6*\bicisizey)node(bicicollo){}++(-0.5*\bicisizex,-\bicisizey)--($(bicifrontpoint)+(\bicisizex,+0.75*\bicisizey)$);
 	\draw[\kv{col},\kv{width}]($(bicicollo)+(0,2*\bicisizey)$)circle(2*\bicisizey);
+	}{ %se dobbiamo ruotare la bici
+		\begin{rotazione}[#2]{\kv{ang}} \bici[#1,ang=]{#2} \end{rotazione}
+	}
 }
