@@ -57,7 +57,7 @@
 %%%%%%%%%%%%%%%% SOVRASCRITTURA DELLE FLAG
 
 % sovrascrive #1 con #2 solo se #1 è vuoto
-\newcommand{\OverwriteFlagIfEmpty}[2]{\ifdefempty{#1}{\renewcommand{#1}{#2}}{}}
+\newcommand*{\OverwriteFlagIfEmpty}[2]{\ifdefempty{#1}{\renewcommand{#1}{#2}}{}}
 
 % in caso di verifica sovrascrive il \Titolo, se vuoto
 \ifdefstring{\TipoDoc}{verifica}{\OverwriteFlagIfEmpty{\Titolo}{Verifica di \Materia}}{}
@@ -97,12 +97,12 @@
 %%%%%%%%%%%%%%%% lett
 
 % simile ad enumerate ma con le lettere. Si chiama come \begin{lettfrom}[opzioni]{primo indice}....\end{lettfrom}
-\newenvironment{lettfrom}[2][]
+\newenvironment*{lettfrom}[2][]
 {\begin{enumerate}[label=$\mathbf{\alph*.}$,#1]\setcounter{enumi}{#2-1}}
 {\end{enumerate}}
 
 % come lettfrom ma parte in automatico dall'indice 1
-\newenvironment{lett}[1][]
+\newenvironment*{lett}[1][]
 {\begin{lettfrom}[#1]{1}}
 {\end{lettfrom}}
 
@@ -130,22 +130,22 @@
 \newtheorem*{Def*}{Definizione}
 
 % questi sono gli ambienti da utilizzare
-\newenvironment{Ex}[1][]{\color{\colText}\begin{ExEmb}[#1]}{\end{ExEmb}}
-\newenvironment{Ex*}[1][]{\color{\colText}\begin{ExEmb*}[#1]}{\end{ExEmb*}}
-\newenvironment{ExSec}[1][]{\color{\colText}\begin{ExSecEmb}[#1]}{\end{ExSecEmb}}
-\newenvironment{Probl}[1][]{\color{\colText}\begin{ProblEmb}[#1]}{\end{ProblEmb}}
-\newenvironment{teo}[1][]{\color{\colText}\begin{teoEmb}[#1]}{\end{teoEmb}}
-\newenvironment{teo*}[1][]{\color{\colText}\begin{teoEmb*}[#1]}{\end{teoEmb*}}
-\newenvironment{lemma}[1][]{\color{\colText}\begin{lemmaEmb}[#1]}{\end{lemmaEmb}}
-\newenvironment{lemma*}[1][]{\color{\colText}\begin{lemmaEmb*}[#1]}{\end{lemmaEmb*}}
-\newenvironment{cor}[1][]{\color{\colText}\begin{corEmb}[#1]}{\end{corEmb}}
-\newenvironment{cor*}[1][]{\color{\colText}\begin{corEmb*}[#1]}{\end{corEmb*}}
-\newenvironment{Sol}[1][]{\color{\colSol}\begin{SolEmb}[#1]}{\end{SolEmb}}
-\newenvironment{Sol*}[1][]{\color{\colSol}\begin{SolEmb*}[#1]}{\end{SolEmb*}}
-\newenvironment{Dim}[1][]{\color{\colSol}\begin{DimEmb}[#1]}{\hfill\qedsymbol\end{DimEmb}}
-\newenvironment{Dim*}[1][]{\color{\colSol}\begin{DimEmb*}[#1]}{\hfill\qedsymbol\end{DimEmb*}}
+\newenvironment*{Ex}[1][]{\color{\colText}\begin{ExEmb}[#1]}{\end{ExEmb}}
+\newenvironment*{Ex*}[1][]{\color{\colText}\begin{ExEmb*}[#1]}{\end{ExEmb*}}
+\newenvironment*{ExSec}[1][]{\color{\colText}\begin{ExSecEmb}[#1]}{\end{ExSecEmb}}
+\newenvironment*{Probl}[1][]{\color{\colText}\begin{ProblEmb}[#1]}{\end{ProblEmb}}
+\newenvironment*{teo}[1][]{\color{\colText}\begin{teoEmb}[#1]}{\end{teoEmb}}
+\newenvironment*{teo*}[1][]{\color{\colText}\begin{teoEmb*}[#1]}{\end{teoEmb*}}
+\newenvironment*{lemma}[1][]{\color{\colText}\begin{lemmaEmb}[#1]}{\end{lemmaEmb}}
+\newenvironment*{lemma*}[1][]{\color{\colText}\begin{lemmaEmb*}[#1]}{\end{lemmaEmb*}}
+\newenvironment*{cor}[1][]{\color{\colText}\begin{corEmb}[#1]}{\end{corEmb}}
+\newenvironment*{cor*}[1][]{\color{\colText}\begin{corEmb*}[#1]}{\end{corEmb*}}
+\newenvironment*{Sol}[1][]{\color{\colSol}\begin{SolEmb}[#1]}{\end{SolEmb}}
+\newenvironment*{Sol*}[1][]{\color{\colSol}\begin{SolEmb*}[#1]}{\end{SolEmb*}}
+\newenvironment*{Dim}[1][]{\color{\colSol}\begin{DimEmb}[#1]}{\hfill\qedsymbol\end{DimEmb}}
+\newenvironment*{Dim*}[1][]{\color{\colSol}\begin{DimEmb*}[#1]}{\hfill\qedsymbol\end{DimEmb*}}
 
-\newcommand{\setCounter}[2]{
+\newcommand*{\setCounter}[2]{
 	\ifthenelse{\equal{#1}{Ex}}{\setcounter{ExEmb}{#2-1}}{}
 	\ifthenelse{\equal{#1}{ExSec}}{\setcounter{ExSecEmb}{#2-1}}{}
 	\ifthenelse{\equal{#1}{Probl}}{\setcounter{ExEmb}{#2-1}}{}
@@ -157,171 +157,171 @@
 }
 
 
-\newenvironment{ArrowsEq}{\[\begin{WithArrows}}{\end{WithArrows}\]}
+\newenvironment*{ArrowsEq}{\[\begin{WithArrows}}{\end{WithArrows}\]}
 % da usare nell'ambiente WithArrows (dentro a \[...\]) (analogo ad align*). Serve compilare due volte.
-\newcommand{\Arrowline}[2][cyan]{\Arrow[tikz={font={\mdseries},#1}]{$#2$}\\}
+\newcommand*{\Arrowline}[2][cyan]{\Arrow[tikz={font={\mdseries},#1}]{$#2$}\\}
 
 
 %%%%%%%%%%%%%%%% MATHCAL E SIMILI
 
 \providecommand{\colInc}{red} % colore per le incognite (\u sta per unknown, ovvero incognita in inglese. Infatti il i comandi come \ux verranno utilizzati prevalentemente per evidenziare le incognite nelle equazioni e nei relativi sistemi)
-\newcommand{\ua}[1][\colInc]{\textcolor{#1}{\ra}}
-\newcommand{\ub}[1][\colInc]{\textcolor{#1}{\rb}}
-\newcommand{\uc}[1][\colInc]{\textcolor{#1}{\rc}}
-\newcommand{\ud}[1][\colInc]{\textcolor{#1}{\rd}}
-\newcommand{\ue}[1][\colInc]{\textcolor{#1}{\re}}
-\newcommand{\uf}[1][\colInc]{\textcolor{#1}{\rf}}
-\newcommand{\ug}[1][\colInc]{\textcolor{#1}{\rg}}
-\newcommand{\uh}[1][\colInc]{\textcolor{#1}{\rh}}
-\newcommand{\ui}[1][\colInc]{\textcolor{#1}{\ri}}
-\newcommand{\uj}[1][\colInc]{\textcolor{#1}{\rj}}
-\newcommand{\uk}[1][\colInc]{\textcolor{#1}{\rk}}
-\newcommand{\ul}[1][\colInc]{\textcolor{#1}{\rl}}
-\newcommand{\um}[1][\colInc]{\textcolor{#1}{\rm}}
-\newcommand{\un}[1][\colInc]{\textcolor{#1}{\rn}}
-\newcommand{\uo}[1][\colInc]{\textcolor{#1}{\ro}}
-\newcommand{\up}[1][\colInc]{\textcolor{#1}{\rp}}
-\newcommand{\uq}[1][\colInc]{\textcolor{#1}{\rq}}
-\newcommand{\ur}[1][\colInc]{\textcolor{#1}{\rr}}
-\newcommand{\us}[1][\colInc]{\textcolor{#1}{\rs}}
-\newcommand{\ut}[1][\colInc]{\textcolor{#1}{\rt}}
-\newcommand{\uu}[1][\colInc]{\textcolor{#1}{\ru}}
-\newcommand{\uv}[1][\colInc]{\textcolor{#1}{\rv}}
-\newcommand{\uw}[1][\colInc]{\textcolor{#1}{\rw}}
-\newcommand{\ux}[1][\colInc]{\textcolor{#1}{\rx}}
-\newcommand{\uy}[1][\colInc]{\textcolor{#1}{\ry}}
-\newcommand{\uz}[1][\colInc]{\textcolor{#1}{\rz}}
-\newcommand{\uA}[1][\colInc]{\textcolor{#1}{\rA}}
-\newcommand{\uB}[1][\colInc]{\textcolor{#1}{\rB}}
-\newcommand{\uC}[1][\colInc]{\textcolor{#1}{\rC}}
-\newcommand{\uD}[1][\colInc]{\textcolor{#1}{\rD}}
-\newcommand{\uE}[1][\colInc]{\textcolor{#1}{\rE}}
-\newcommand{\uF}[1][\colInc]{\textcolor{#1}{\rF}}
-\newcommand{\uG}[1][\colInc]{\textcolor{#1}{\rG}}
-\newcommand{\uH}[1][\colInc]{\textcolor{#1}{\rH}}
-\newcommand{\uI}[1][\colInc]{\textcolor{#1}{\rI}}
-\newcommand{\uJ}[1][\colInc]{\textcolor{#1}{\rJ}}
-\newcommand{\uK}[1][\colInc]{\textcolor{#1}{\rK}}
-\newcommand{\uL}[1][\colInc]{\textcolor{#1}{\rL}}
-\newcommand{\uM}[1][\colInc]{\textcolor{#1}{\rM}}
-\newcommand{\uN}[1][\colInc]{\textcolor{#1}{\rN}}
-\newcommand{\uO}[1][\colInc]{\textcolor{#1}{\rO}}
-\newcommand{\uP}[1][\colInc]{\textcolor{#1}{\rP}}
-\newcommand{\uQ}[1][\colInc]{\textcolor{#1}{\rQ}}
-\newcommand{\uR}[1][\colInc]{\textcolor{#1}{\rR}}
-\newcommand{\uS}[1][\colInc]{\textcolor{#1}{\rS}}
-\newcommand{\uT}[1][\colInc]{\textcolor{#1}{\rT}}
-\newcommand{\uU}[1][\colInc]{\textcolor{#1}{\rU}}
-\newcommand{\uV}[1][\colInc]{\textcolor{#1}{\rV}}
-\newcommand{\uW}[1][\colInc]{\textcolor{#1}{\rW}}
-\newcommand{\uX}[1][\colInc]{\textcolor{#1}{\rX}}
-\newcommand{\uY}[1][\colInc]{\textcolor{#1}{\rY}}
-\newcommand{\uZ}[1][\colInc]{\textcolor{#1}{\rZ}}
-\newcommand{\ra}{\mathrm{a}}
-\newcommand{\rb}{\mathrm{b}}
-\newcommand{\rc}{\mathrm{c}}
-\newcommand{\rd}{\mathrm{d}}
-\newcommand{\re}{\mathrm{e}}
-\newcommand{\rf}{\mathrm{f}}
-\newcommand{\rg}{\mathrm{g}}
-\newcommand{\rh}{\mathrm{h}}
-\newcommand{\ri}{\mathrm{i}}
-\newcommand{\rj}{\mathrm{j}}
-\newcommand{\rk}{\mathrm{k}}
-\newcommand{\rl}{\mathrm{l}}
+\newcommand*{\ua}[1][\colInc]{\textcolor{#1}{\ra}}
+\newcommand*{\ub}[1][\colInc]{\textcolor{#1}{\rb}}
+\newcommand*{\uc}[1][\colInc]{\textcolor{#1}{\rc}}
+\newcommand*{\ud}[1][\colInc]{\textcolor{#1}{\rd}}
+\newcommand*{\ue}[1][\colInc]{\textcolor{#1}{\re}}
+\newcommand*{\uf}[1][\colInc]{\textcolor{#1}{\rf}}
+\newcommand*{\ug}[1][\colInc]{\textcolor{#1}{\rg}}
+\newcommand*{\uh}[1][\colInc]{\textcolor{#1}{\rh}}
+\newcommand*{\ui}[1][\colInc]{\textcolor{#1}{\ri}}
+\newcommand*{\uj}[1][\colInc]{\textcolor{#1}{\rj}}
+\newcommand*{\uk}[1][\colInc]{\textcolor{#1}{\rk}}
+\newcommand*{\ul}[1][\colInc]{\textcolor{#1}{\rl}}
+\newcommand*{\um}[1][\colInc]{\textcolor{#1}{\rm}}
+\newcommand*{\un}[1][\colInc]{\textcolor{#1}{\rn}}
+\newcommand*{\uo}[1][\colInc]{\textcolor{#1}{\ro}}
+\newcommand*{\up}[1][\colInc]{\textcolor{#1}{\rp}}
+\newcommand*{\uq}[1][\colInc]{\textcolor{#1}{\rq}}
+\newcommand*{\ur}[1][\colInc]{\textcolor{#1}{\rr}}
+\newcommand*{\us}[1][\colInc]{\textcolor{#1}{\rs}}
+\newcommand*{\ut}[1][\colInc]{\textcolor{#1}{\rt}}
+\newcommand*{\uu}[1][\colInc]{\textcolor{#1}{\ru}}
+\newcommand*{\uv}[1][\colInc]{\textcolor{#1}{\rv}}
+\newcommand*{\uw}[1][\colInc]{\textcolor{#1}{\rw}}
+\newcommand*{\ux}[1][\colInc]{\textcolor{#1}{\rx}}
+\newcommand*{\uy}[1][\colInc]{\textcolor{#1}{\ry}}
+\newcommand*{\uz}[1][\colInc]{\textcolor{#1}{\rz}}
+\newcommand*{\uA}[1][\colInc]{\textcolor{#1}{\rA}}
+\newcommand*{\uB}[1][\colInc]{\textcolor{#1}{\rB}}
+\newcommand*{\uC}[1][\colInc]{\textcolor{#1}{\rC}}
+\newcommand*{\uD}[1][\colInc]{\textcolor{#1}{\rD}}
+\newcommand*{\uE}[1][\colInc]{\textcolor{#1}{\rE}}
+\newcommand*{\uF}[1][\colInc]{\textcolor{#1}{\rF}}
+\newcommand*{\uG}[1][\colInc]{\textcolor{#1}{\rG}}
+\newcommand*{\uH}[1][\colInc]{\textcolor{#1}{\rH}}
+\newcommand*{\uI}[1][\colInc]{\textcolor{#1}{\rI}}
+\newcommand*{\uJ}[1][\colInc]{\textcolor{#1}{\rJ}}
+\newcommand*{\uK}[1][\colInc]{\textcolor{#1}{\rK}}
+\newcommand*{\uL}[1][\colInc]{\textcolor{#1}{\rL}}
+\newcommand*{\uM}[1][\colInc]{\textcolor{#1}{\rM}}
+\newcommand*{\uN}[1][\colInc]{\textcolor{#1}{\rN}}
+\newcommand*{\uO}[1][\colInc]{\textcolor{#1}{\rO}}
+\newcommand*{\uP}[1][\colInc]{\textcolor{#1}{\rP}}
+\newcommand*{\uQ}[1][\colInc]{\textcolor{#1}{\rQ}}
+\newcommand*{\uR}[1][\colInc]{\textcolor{#1}{\rR}}
+\newcommand*{\uS}[1][\colInc]{\textcolor{#1}{\rS}}
+\newcommand*{\uT}[1][\colInc]{\textcolor{#1}{\rT}}
+\newcommand*{\uU}[1][\colInc]{\textcolor{#1}{\rU}}
+\newcommand*{\uV}[1][\colInc]{\textcolor{#1}{\rV}}
+\newcommand*{\uW}[1][\colInc]{\textcolor{#1}{\rW}}
+\newcommand*{\uX}[1][\colInc]{\textcolor{#1}{\rX}}
+\newcommand*{\uY}[1][\colInc]{\textcolor{#1}{\rY}}
+\newcommand*{\uZ}[1][\colInc]{\textcolor{#1}{\rZ}}
+\newcommand*{\ra}{\mathrm{a}}
+\newcommand*{\rb}{\mathrm{b}}
+\newcommand*{\rc}{\mathrm{c}}
+\newcommand*{\rd}{\mathrm{d}}
+\newcommand*{\re}{\mathrm{e}}
+\newcommand*{\rf}{\mathrm{f}}
+\newcommand*{\rg}{\mathrm{g}}
+\newcommand*{\rh}{\mathrm{h}}
+\newcommand*{\ri}{\mathrm{i}}
+\newcommand*{\rj}{\mathrm{j}}
+\newcommand*{\rk}{\mathrm{k}}
+\newcommand*{\rl}{\mathrm{l}}
 \renewcommand{\rm}{\mathrm{m}}
-\newcommand{\rn}{\mathrm{n}}
-\newcommand{\ro}{\mathrm{o}}
-\newcommand{\rp}{\mathrm{p}}
+\newcommand*{\rn}{\mathrm{n}}
+\newcommand*{\ro}{\mathrm{o}}
+\newcommand*{\rp}{\mathrm{p}}
 \renewcommand{\rq}{\mathrm{q}}
-\newcommand{\rr}{\mathrm{r}}
-\newcommand{\rs}{\mathrm{s}}
-\newcommand{\rt}{\mathrm{t}}
-\newcommand{\ru}{\mathrm{u}}
-\newcommand{\rv}{\mathrm{v}}
-\newcommand{\rw}{\mathrm{w}}
-\newcommand{\rx}{\mathrm{x}}
-\newcommand{\ry}{\mathrm{y}}
-\newcommand{\rz}{\mathrm{z}}
-\newcommand{\rA}{\mathrm{A}}
-\newcommand{\rB}{\mathrm{B}}
-\newcommand{\rC}{\mathrm{C}}
-\newcommand{\rD}{\mathrm{D}}
-\newcommand{\rE}{\mathrm{E}}
-\newcommand{\rF}{\mathrm{F}}
-\newcommand{\rG}{\mathrm{G}}
-\newcommand{\rH}{\mathrm{H}}
-\newcommand{\rI}{\mathrm{I}}
-\newcommand{\rJ}{\mathrm{J}}
-\newcommand{\rK}{\mathrm{K}}
-\newcommand{\rL}{\mathrm{L}}
-\newcommand{\rM}{\mathrm{M}}
-\newcommand{\rN}{\mathrm{N}}
-\newcommand{\rO}{\mathrm{O}}
-\newcommand{\rP}{\mathrm{P}}
-\newcommand{\rQ}{\mathrm{Q}}
-\newcommand{\rR}{\mathrm{R}}
-\newcommand{\rS}{\mathrm{S}}
-\newcommand{\rT}{\mathrm{T}}
-\newcommand{\rU}{\mathrm{U}}
-\newcommand{\rV}{\mathrm{V}}
-\newcommand{\rW}{\mathrm{W}}
-\newcommand{\rX}{\mathrm{X}}
-\newcommand{\rY}{\mathrm{Y}}
-\newcommand{\rZ}{\mathrm{Z}}
-\newcommand{\cA}{\mathcal{A}}
-\newcommand{\cB}{\mathcal{B}}
-\newcommand{\cC}{\mathcal{C}}
-\newcommand{\cD}{\mathcal{D}}
-\newcommand{\cE}{\mathcal{E}}
-\newcommand{\cF}{\mathcal{F}}
-\newcommand{\cG}{\mathcal{G}}
-\newcommand{\cH}{\mathcal{H}}
-\newcommand{\cI}{\mathcal{I}}
-\newcommand{\cJ}{\mathcal{J}}
-\newcommand{\cK}{\mathcal{K}}
-\newcommand{\cL}{\mathcal{L}}
-\newcommand{\cM}{\mathcal{M}}
-\newcommand{\cN}{\mathcal{N}}
-\newcommand{\cO}{\mathcal{O}}
-\newcommand{\cP}{\mathcal{P}}
-\newcommand{\cQ}{\mathcal{Q}}
-\newcommand{\cR}{\mathcal{R}}
-\newcommand{\cS}{\mathcal{S}}
-\newcommand{\cT}{\mathcal{T}}
-\newcommand{\cU}{\mathcal{U}}
-\newcommand{\cV}{\mathcal{V}}
-\newcommand{\cW}{\mathcal{W}}
-\newcommand{\cX}{\mathcal{X}}
-\newcommand{\cY}{\mathcal{Y}}
-\newcommand{\cZ}{\mathcal{Z}}
-\newcommand{\bA}{\mathbb{A}}
-\newcommand{\bB}{\mathbb{B}}
-\newcommand{\bC}{\mathbb{C}}
-\newcommand{\bD}{\mathbb{D}}
-\newcommand{\bE}{\mathbb{E}}
-\newcommand{\bF}{\mathbb{F}}
-\newcommand{\bG}{\mathbb{G}}
-\newcommand{\bH}{\mathbb{H}}
-\newcommand{\bI}{\mathbb{I}}
-\newcommand{\bJ}{\mathbb{J}}
-\newcommand{\bK}{\mathbb{K}}
-\newcommand{\bL}{\mathbb{L}}
-\newcommand{\bM}{\mathbb{M}}
-\newcommand{\bN}{\mathbb{N}}
-\newcommand{\bO}{\mathbb{O}}
-\newcommand{\bP}{\mathbb{P}}
-\newcommand{\bQ}{\mathbb{Q}}
-\newcommand{\bR}{\mathbb{R}}
-\newcommand{\bS}{\mathbb{S}}
-\newcommand{\bT}{\mathbb{T}}
-\newcommand{\bU}{\mathbb{U}}
-\newcommand{\bV}{\mathbb{V}}
-\newcommand{\bW}{\mathbb{W}}
-\newcommand{\bX}{\mathbb{X}}
-\newcommand{\bY}{\mathbb{Y}}
-\newcommand{\bZ}{\mathbb{Z}}
-\newcommand{\bUNO}{\mathds{1}}
+\newcommand*{\rr}{\mathrm{r}}
+\newcommand*{\rs}{\mathrm{s}}
+\newcommand*{\rt}{\mathrm{t}}
+\newcommand*{\ru}{\mathrm{u}}
+\newcommand*{\rv}{\mathrm{v}}
+\newcommand*{\rw}{\mathrm{w}}
+\newcommand*{\rx}{\mathrm{x}}
+\newcommand*{\ry}{\mathrm{y}}
+\newcommand*{\rz}{\mathrm{z}}
+\newcommand*{\rA}{\mathrm{A}}
+\newcommand*{\rB}{\mathrm{B}}
+\newcommand*{\rC}{\mathrm{C}}
+\newcommand*{\rD}{\mathrm{D}}
+\newcommand*{\rE}{\mathrm{E}}
+\newcommand*{\rF}{\mathrm{F}}
+\newcommand*{\rG}{\mathrm{G}}
+\newcommand*{\rH}{\mathrm{H}}
+\newcommand*{\rI}{\mathrm{I}}
+\newcommand*{\rJ}{\mathrm{J}}
+\newcommand*{\rK}{\mathrm{K}}
+\newcommand*{\rL}{\mathrm{L}}
+\newcommand*{\rM}{\mathrm{M}}
+\newcommand*{\rN}{\mathrm{N}}
+\newcommand*{\rO}{\mathrm{O}}
+\newcommand*{\rP}{\mathrm{P}}
+\newcommand*{\rQ}{\mathrm{Q}}
+\newcommand*{\rR}{\mathrm{R}}
+\newcommand*{\rS}{\mathrm{S}}
+\newcommand*{\rT}{\mathrm{T}}
+\newcommand*{\rU}{\mathrm{U}}
+\newcommand*{\rV}{\mathrm{V}}
+\newcommand*{\rW}{\mathrm{W}}
+\newcommand*{\rX}{\mathrm{X}}
+\newcommand*{\rY}{\mathrm{Y}}
+\newcommand*{\rZ}{\mathrm{Z}}
+\newcommand*{\cA}{\mathcal{A}}
+\newcommand*{\cB}{\mathcal{B}}
+\newcommand*{\cC}{\mathcal{C}}
+\newcommand*{\cD}{\mathcal{D}}
+\newcommand*{\cE}{\mathcal{E}}
+\newcommand*{\cF}{\mathcal{F}}
+\newcommand*{\cG}{\mathcal{G}}
+\newcommand*{\cH}{\mathcal{H}}
+\newcommand*{\cI}{\mathcal{I}}
+\newcommand*{\cJ}{\mathcal{J}}
+\newcommand*{\cK}{\mathcal{K}}
+\newcommand*{\cL}{\mathcal{L}}
+\newcommand*{\cM}{\mathcal{M}}
+\newcommand*{\cN}{\mathcal{N}}
+\newcommand*{\cO}{\mathcal{O}}
+\newcommand*{\cP}{\mathcal{P}}
+\newcommand*{\cQ}{\mathcal{Q}}
+\newcommand*{\cR}{\mathcal{R}}
+\newcommand*{\cS}{\mathcal{S}}
+\newcommand*{\cT}{\mathcal{T}}
+\newcommand*{\cU}{\mathcal{U}}
+\newcommand*{\cV}{\mathcal{V}}
+\newcommand*{\cW}{\mathcal{W}}
+\newcommand*{\cX}{\mathcal{X}}
+\newcommand*{\cY}{\mathcal{Y}}
+\newcommand*{\cZ}{\mathcal{Z}}
+\newcommand*{\bA}{\mathbb{A}}
+\newcommand*{\bB}{\mathbb{B}}
+\newcommand*{\bC}{\mathbb{C}}
+\newcommand*{\bD}{\mathbb{D}}
+\newcommand*{\bE}{\mathbb{E}}
+\newcommand*{\bF}{\mathbb{F}}
+\newcommand*{\bG}{\mathbb{G}}
+\newcommand*{\bH}{\mathbb{H}}
+\newcommand*{\bI}{\mathbb{I}}
+\newcommand*{\bJ}{\mathbb{J}}
+\newcommand*{\bK}{\mathbb{K}}
+\newcommand*{\bL}{\mathbb{L}}
+\newcommand*{\bM}{\mathbb{M}}
+\newcommand*{\bN}{\mathbb{N}}
+\newcommand*{\bO}{\mathbb{O}}
+\newcommand*{\bP}{\mathbb{P}}
+\newcommand*{\bQ}{\mathbb{Q}}
+\newcommand*{\bR}{\mathbb{R}}
+\newcommand*{\bS}{\mathbb{S}}
+\newcommand*{\bT}{\mathbb{T}}
+\newcommand*{\bU}{\mathbb{U}}
+\newcommand*{\bV}{\mathbb{V}}
+\newcommand*{\bW}{\mathbb{W}}
+\newcommand*{\bX}{\mathbb{X}}
+\newcommand*{\bY}{\mathbb{Y}}
+\newcommand*{\bZ}{\mathbb{Z}}
+\newcommand*{\bUNO}{\mathds{1}}
 \renewcommand{\i}{\imath}
 \renewcommand{\j}{\jmath}
 
@@ -338,22 +338,22 @@
 	\OverwriteFlagIfEmpty{\colSI}{coppercolor}
 \fi
 
-\newcommand{\SI}[1]{\textcolor{\colSI}{\mathrm{#1}}} % scrivi le unità di misura. Per scrive metri scrivi \SI{m} per scrivere joule puoi scrivere \SI{J} oppure \SI{Nm}
-\newcommand{\SIf}[2]{\SI{\frac{#1}{#2}}} % unità di misura in frazione. Per scrivere metri al secondo quadrato scrivi \SIf{m}{s^2} oppure \SI{m/s^2}
-\newcommand{\ns}[1]{\cdot10^{#1}} % il comando per la notazione scientifica
-\newcommand{\oC}{\textcolor{\colSI}{\tccentigrade}} % gradi Celsius
+\newcommand*{\SI}[1]{\textcolor{\colSI}{\mathrm{#1}}} % scrivi le unità di misura. Per scrive metri scrivi \SI{m} per scrivere joule puoi scrivere \SI{J} oppure \SI{Nm}
+\newcommand*{\SIf}[2]{\SI{\frac{#1}{#2}}} % unità di misura in frazione. Per scrivere metri al secondo quadrato scrivi \SIf{m}{s^2} oppure \SI{m/s^2}
+\newcommand*{\ns}[1]{\cdot10^{#1}} % il comando per la notazione scientifica
+\newcommand*{\oC}{\textcolor{\colSI}{\tccentigrade}} % gradi Celsius
 
 
 %%%%%%%%%%%%%%%% ALTRE DEFINIZIONI UTILI
 
 % un link. Chiama come \link[colore]{indirizzo}
-\newcommand{\link}[2][blue]{\href{#2}{\textcolor{#1}{#2}}}
+\newcommand*{\link}[2][blue]{\href{#2}{\textcolor{#1}{#2}}}
 
 % tira una riga orizzontale
-\newcommand{\riga}{\rule{\linewidth}{0.35mm}}
+\newcommand*{\riga}{\rule{\linewidth}{0.35mm}}
 
 % parentesi. Chiama come \pare{testo} o come \pare[L]{testo} dove L indica il tipo di parentesi da usare. Le opzioni sono t,q,g,v,f,c
-\newcommand{\pare}[2][t]{
+\newcommand*{\pare}[2][t]{
 	\ifthenelse{\equal{#1}{q}}{\left[ #2 \right]}{
 	\ifthenelse{\equal{#1}{g}}{\left\{ #2 \right\}}{
 	\ifthenelse{\equal{#1}{v}}{\left\lvert #2 \right\rvert}{
@@ -362,40 +362,40 @@
 	\left( #2 \right) }}}}}
 }
 
-\newcommand{\ang}[3]{#1\widehat{#2}#3} % l'angolo
-\newcommand{\bin}[2]{{#1 \choose #2}} % il binomiale di #1 su #2
-\newcommand{\vc}[1]{\overrightarrow{#1}} % il vettore (in senso fisico)
-\newcommand{\vcp}[3][-5]{\overrightarrow{#2}_{\hspace*{#1pt}#3}} % il vettore (fisico) con pedice
+\newcommand*{\ang}[3]{#1\widehat{#2}#3} % l'angolo
+\newcommand*{\bin}[2]{{#1 \choose #2}} % il binomiale di #1 su #2
+\newcommand*{\vc}[1]{\overrightarrow{#1}} % il vettore (in senso fisico)
+\newcommand*{\vcp}[3][-5]{\overrightarrow{#2}_{\hspace*{#1pt}#3}} % il vettore (fisico) con pedice
 
 % vettore in senso matematico, con numero arbitrario di input. Chiama come \vett{x}{y}{z}...
 % questo è un semplice esempio su come implementare una funzione con un numero arbitrario di input
 \makeatletter
-\newcommand{\vett}{\begin{pmatrix}\vettIter}
-\newcommand{\vettIter}[1]{#1\@ifnextchar\bgroup{\\\vettIter}{\end{pmatrix}}}
+\newcommand*{\vett}{\begin{pmatrix}\vettIter}
+\newcommand*{\vettIter}[1]{#1\@ifnextchar\bgroup{\\\vettIter}{\end{pmatrix}}}
 \makeatother
 
 % aggiunge un arco sopra a #1
-\newcommand{\arco}[1]{%
+\newcommand*{\arco}[1]{%
 	\tikzmarknode{a}{#1}
 	\begin{tikzpicture}[overlay,remember picture]
 		\draw ([yshift=1pt]a.north west) to[bend left=20] ([yshift=1pt]a.north east);
 	\end{tikzpicture}%
 }% end of \arco
 
-\newcommand{\seq}[1][]{\stackrel{#1}{=}} % uguaglianza con commento. Chiama come \seq[commento] (il commento è in ambiente math)
-\newcommand{\scong}[1][]{\stackrel{#1}{\cong}} % congruenza con commento. Chiama come \scong[commento] (il commento è in ambiente math)
-\newcommand{\lr}[1][]{\stackrel{#1}{\Longrightarrow}} % implicazioni con commento. Chiama come \lr[commento] (il commento è in ambiente math)
-\newcommand{\lrt}[1][]{\lr[\text{#1}]} % analogo a \lr, ma il commento è un testo (anziché un ambiente math)
+\newcommand*{\seq}[1][]{\stackrel{#1}{=}} % uguaglianza con commento. Chiama come \seq[commento] (il commento è in ambiente math)
+\newcommand*{\scong}[1][]{\stackrel{#1}{\cong}} % congruenza con commento. Chiama come \scong[commento] (il commento è in ambiente math)
+\newcommand*{\lr}[1][]{\stackrel{#1}{\Longrightarrow}} % implicazioni con commento. Chiama come \lr[commento] (il commento è in ambiente math)
+\newcommand*{\lrt}[1][]{\lr[\text{#1}]} % analogo a \lr, ma il commento è un testo (anziché un ambiente math)
 
-\newcommand{\qsep}[1]{\quad #1 \quad} % separatore fra dei \quad
-\newcommand{\qsr}[2]{\qsep{\stackrel{#2}{#1}}} % separatore fra dei \stackrel
-\newcommand{\qqe}{\qqsep{\text{e}}} % separa scrivendo un "e" fra le parti separate
-\newcommand{\qlr}[1][]{\qsep{\lrt[#1]}} % separa con un'implicazione
+\newcommand*{\qsep}[1]{\quad #1 \quad} % separatore fra dei \quad
+\newcommand*{\qsr}[2]{\qsep{\stackrel{#2}{#1}}} % separatore fra dei \stackrel
+\newcommand*{\qqe}{\qqsep{\text{e}}} % separa scrivendo un "e" fra le parti separate
+\newcommand*{\qlr}[1][]{\qsep{\lrt[#1]}} % separa con un'implicazione
 % analoghi ai precenti usando \qquad anziché \quad
-\newcommand{\qqsep}[1]{\qquad #1 \qquad}
-\newcommand{\qqsr}[2]{\qqsep{\stackrel{#2}{#1}}}
-\newcommand{\qe}{\qsep{\text{e}}}
-\newcommand{\qqlr}[1][]{\qqsep{\lrt[#1]}}
+\newcommand*{\qqsep}[1]{\qquad #1 \qquad}
+\newcommand*{\qqsr}[2]{\qqsep{\stackrel{#2}{#1}}}
+\newcommand*{\qe}{\qsep{\text{e}}}
+\newcommand*{\qqlr}[1][]{\qqsep{\lrt[#1]}}
 
 
 %%%%%%%%%%%%%%%% STRUMENTI PER GEOMETRIA
@@ -403,25 +403,25 @@
 % ridefiniamo il modo di fare le rette parallele
 \makeatletter
 \renewcommand{\parallel}{\mathrel{\mathpalette\new@parallel\relax}}
-\newcommand{\new@parallel}[2]{%
+\newcommand*{\new@parallel}[2]{%
   \begingroup
   \sbox\z@{$#1T$}% get the height of an uppercase letter
   \resizebox{!}{\ht\z@}{\raisebox{\depth}{$\m@th#1/\mkern-5mu/$}}%
   \endgroup
 }
 
-\newcommand{\eqreq}[1][red]{\textcolor{#1}{\textbf{Attenzione!} Per risolvere il problema devi impostare e risolvere un'opportuna equazione o un sistema di equazioni. Soluzioni trovate ``a tentativi'' e solo verificate non sono considerate accettabili.}}
+\newcommand*{\eqreq}[1][red]{\textcolor{#1}{\textbf{Attenzione!} Per risolvere il problema devi impostare e risolvere un'opportuna equazione o un sistema di equazioni. Soluzioni trovate ``a tentativi'' e solo verificate non sono considerate accettabili.}}
 
 % implicazioni per la geometria. Usa come \Impl[nome teo]{{Hp1}{Hp2}...}{th}
-\newcommand{\Impl}[3][]{\[\left.\begin{array}{l}\ImplIter#2\end{array}\right\}\,\lrt[#1]\,\text{#3}\]}
+\newcommand*{\Impl}[3][]{\[\left.\begin{array}{l}\ImplIter#2\end{array}\right\}\,\lrt[#1]\,\text{#3}\]}
 \makeatletter
-\newcommand{\ImplIter}[1]{{\text{#1}}\@ifnextchar\bgroup{\\\ImplIter}{}}
+\newcommand*{\ImplIter}[1]{{\text{#1}}\@ifnextchar\bgroup{\\\ImplIter}{}}
 \makeatother
 
 % i tre criteri di congruenza e i due criteri di similitudine. Da usare come \cc[nome crit]{Tr1}{Tr2}{Hp1}{Hp2}{Hp3} e \cs[nome crit]{Tr1}{Tr2}{Hp1}{Hp2}
 % ad esempio usa come \cc[3]{ABC}{A'B'C'}{$AB \cong A'B'$}{$BC \cong B'C'$}{$CA \cong C'A'$}
-\newcommand{\cc}[6][$1^o$c.c.]{Consideriamo i triangoli $#2$ e $#3$:\Impl[#1]{{#4}{#5}{#6}}{$#2 \cong #3$}}
-\newcommand{\cs}[5][$1^o$c.s.]{Consideriamo i triangoli $#2$ e $#3$:\Impl[#1]{{#4}{#5}}{$#2 \sim #3$}}
+\newcommand*{\cc}[6][$1^o$c.c.]{Consideriamo i triangoli $#2$ e $#3$:\Impl[#1]{{#4}{#5}{#6}}{$#2 \cong #3$}}
+\newcommand*{\cs}[5][$1^o$c.s.]{Consideriamo i triangoli $#2$ e $#3$:\Impl[#1]{{#4}{#5}}{$#2 \sim #3$}}
 
 
 %%%%%%%%%%%%%%%% IMPAGINAZIONE
@@ -485,12 +485,12 @@
 \newcounter{TabellaVotiPervBarIter}
 
 % assume valori 0-1 per determinare se al termine della colonna attuale dobbiamo disegnare una riga verticale nella prima riga (ovvero se la colonna si riferisce all'ultimo punto dell'attuale esercizio)
-\newcommand{\TabellaVotiHeaderJump}{1}
+\newcommand*{\TabellaVotiHeaderJump}{1}
 
 % Chiama \TabellaVoti a fine verifica per creare la tabella per mettere i punti.
 % Il seguente esempio mostra come creare la tabella per una verifica con 5 esercizi (di cui l'es. 3 è diviso in 2 punti e l'es. 5 è diviso in 3 punti) in cui ciascun esercizio vale 18 punti (equamente distribuiti fra i vari punti dell'esercizio):
 % \TabellaVoti{{18}{18}{9,9}{18}{6,6,6}}
-\newcommand{\TabellaVoti}[1]{
+\newcommand*{\TabellaVoti}[1]{
 	\vspace*{\fill} % spostati a fondo pagina
 	\pgfmathsetmacro\TabellaVotiTabellaWidth{18}
 	\pgfmathsetmacro\TabellaVotiHeight{1}
@@ -566,26 +566,26 @@
 }
 
 % valori utili durante la lettura dei dati dall'input per \TabellaVoti
-\newcommand{\TabellaVotiDrawLettersRow}{0} % può essere 0 (falso) o 1 (vero)
+\newcommand*{\TabellaVotiDrawLettersRow}{0} % può essere 0 (falso) o 1 (vero)
 \newcounter{TabellaVotiNumLett} % quante lettere ci sono in tutto (se ad es. ci sono es: 1a,1b,2 TabellaVotiNumLett=3)
 \newcounter{TabellaVotiPuntiTot} % quanti sono i punti totali per la verifica (idealmente 100)
 \newcounter{TabellaVotiNumTabelle} % indica quale tabella di \TabellaVoti stiamo scrivendo (se è la prima, o se ne abbiamo già scritte precedentemente). Questo ci permette di creare più tabelle nello stesso documento.
-\newcommand{\TabellaVotiInizializzaContenitoriIterOpenNum}{0} % usata nella lettura dei dati. Indica se stiamo già leggendo un numero
+\newcommand*{\TabellaVotiInizializzaContenitoriIterOpenNum}{0} % usata nella lettura dei dati. Indica se stiamo già leggendo un numero
 
 % funzioni per la gestione dell'array TabellaVotiPuntiPerLettera (quanti punti venono assegnati in ogni colonna della tabella)
-\newcommand{\storedataTabellaVotiPuntiPerLettera}[1][0]{
+\newcommand*{\storedataTabellaVotiPuntiPerLettera}[1][0]{
 	\expandafter\newcommand\csname TabellaVotiPuntiPerLettera:\theTabellaVotiNumTabelle:\theTabellaVotiNumLett\endcsname{#1}
 }
-\newcommand{\getTabellaVotiPuntiPerLettera}[1][0]{\csname TabellaVotiPuntiPerLettera:\theTabellaVotiNumTabelle:#1\endcsname}
+\newcommand*{\getTabellaVotiPuntiPerLettera}[1][0]{\csname TabellaVotiPuntiPerLettera:\theTabellaVotiNumTabelle:#1\endcsname}
 
 % funzioni per la gestione dell'array TabellaVotiBarraPerLettera (valori 0-1 per decidere se si tratta dell'ultima colonna relativa ad un esercizio)
-\newcommand{\storedataTabellaVotiBarraPerLettera}[1][0]{
+\newcommand*{\storedataTabellaVotiBarraPerLettera}[1][0]{
 	\expandafter\newcommand\csname TabellaVotiBarraPerLettera:\theTabellaVotiNumTabelle:\theTabellaVotiNumLett\endcsname{#1}
 }
 
 \makeatletter
 % La funzione più esterna nella lettura dell'input per \TabellaVoti
-\newcommand{\TabellaVotiInizializzaContenitori}[1][0]{
+\newcommand*{\TabellaVotiInizializzaContenitori}[1][0]{
 	\stepcounter{TabellaVotiNumTabelle}
 	\renewcommand\TabellaVotiDrawLettersRow{0}
 	\setcounter{TabellaVotiNumLett}{0}
@@ -594,13 +594,13 @@
 }
 
 % Una funzione di iterazione nella lettura dell'input per \TabellaVoti. Viene chiamata una volta per ciascun esercizio. La suddivisione fra gli esercizi viene fatta a "blocchi" (racchiusi fra {}), ma la lettura dentro a queste {} avviene un carattere alla volta
-\newcommand{\TabellaVotiInizializzaContenitoriIter}[1]{
+\newcommand*{\TabellaVotiInizializzaContenitoriIter}[1]{
 	\TabellaVotiInizializzaContenitoriIterComma,#1
 	\@ifnextchar\bgroup{\TabellaVotiInizializzaContenitoriIter}{}
 }
 
 % Usata all'interno della lettura dell'input per \TabellaVoti quando leggiamo un separatore (una virgola) dall'input
-\newcommand{\TabellaVotiInizializzaContenitoriIterComma}[2][0]{
+\newcommand*{\TabellaVotiInizializzaContenitoriIterComma}[2][0]{
 	\ifnum#1=1 \renewcommand\TabellaVotiDrawLettersRow{1} \fi
 	\renewcommand\TabellaVotiInizializzaContenitoriIterOpenNum{0}
 	\stepcounter{TabellaVotiNumLett}
@@ -608,7 +608,7 @@
 }
 
 % Usata all'interno della lettura dell'input per \TabellaVoti quando leggiamo una cifra dall'input
-\newcommand{\TabellaVotiInizializzaContenitoriIterDigit}[1]{
+\newcommand*{\TabellaVotiInizializzaContenitoriIterDigit}[1]{
 	\ifnum\TabellaVotiInizializzaContenitoriIterOpenNum=0
 		\storedataTabellaVotiPuntiPerLettera[#1]
 		\renewcommand\TabellaVotiInizializzaContenitoriIterOpenNum{1}

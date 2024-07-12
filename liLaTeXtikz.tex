@@ -7,22 +7,22 @@
 %%%%%%%%%%%%%%%%	AMBIENTE immagine
 
 % le immagini vengono generalmente create fra \begin{immagine}[opzioni] e \end{immagine}
-\newenvironment{immagine}[1][]
+\newenvironment*{immagine}[1][]
 	{\ifdefstring{\TipoDoc}{immagine}{}{\begin{figure}[!ht]\centering}\begin{tikzpicture}[#1]}
 	{\end{tikzpicture}\ifdefstring{\TipoDoc}{immagine}{}{\end{figure}}}
 
 % analogo ad immagine, ma permette di aggiungere una caption
 % chiama come \begin{immaginecap}[opzioni]{caption} ... \end{immaginecap}
-\newenvironment{immaginecap}[2][]
+\newenvironment*{immaginecap}[2][]
 	{\def\immaginecapCaption{#2}\begin{figure}[!ht]\centering\begin{tikzpicture}[#1]}
 	{\end{tikzpicture}\caption{\immaginecapCaption}\end{figure}}
-\newenvironment{immaginecap*}[2][]
+\newenvironment*{immaginecap*}[2][]
 	{\def\immaginecapCaption{#2}\begin{figure}[!ht]\centering\begin{tikzpicture}[#1]}
 	{\end{tikzpicture}\caption*{\immaginecapCaption}\end{figure}}
 	
 % \begin{rotazione}[centro rotazione]{ang}picture\end{rotazione} disegna l'immagine ruotata
 % Attenzione! una coordinata fornita come (1,2) verrà ruotata, ma una coordinata data come P non verrà ruotata. È un comportamento un po' anomalo, ma il rotate around di tikz funziona in questo modo
-\newenvironment{rotazione}[2][0,0]
+\newenvironment*{rotazione}[2][0,0]
 	{\begin{scope}[rotate around={#2:(#1)}]}
 	{\end{scope}}
 
@@ -30,7 +30,7 @@
 %%%%%%%%%%%%%%%%	KEY MANAGER
 
 % da chiamare all'inizio di qualunque comando con dei parametri opzionali come \setkeyfld{parametri opzionali}. Dovrebbe essere sempre la seconda riga di qualunque newcommand con parametri opzionali
-\newcommand{\setkeyfld}[1]{
+\newcommand*{\setkeyfld}[1]{
 	% passiamo alla key directory keyfld, e ridefiniamo come #1 tutti le keys specificate in #1
 	\tikzset{keyfld/.cd,#1}%
 	% definiamo un soprannome \kv per il path alle keys. In questo modo, per riferirci al VALORE di una chiave chiamata K dovremo scrivere \kv{K}, anziché la più lunga /tikz/keyfld/K. Quindi K indica la chiave, mentre \kv{K} indica il suo valore
@@ -39,35 +39,35 @@
 }
 
 % \ifkeyequal{keyname}{value to compare}{do if equal}{do if different}
-\newcommand{\ifkeyequal}[4]{
+\newcommand*{\ifkeyequal}[4]{
 	\edef\ifkeyequalkey{\kv{#1}} 
 	\edef\ifkeyequalcomp{#2}
 	\ifdefequal{\ifkeyequalkey}{\ifkeyequalcomp}{#3}{#4}
 }
 
 % \ifkeyempty{keyname}{do if empty}{do if non-empty}. Non funziona se keyname è un label (potrebbe contenere cose come \mathrm, che non sono compatibili
-\newcommand{\ifkeyempty}[3]{\ifkeyequal{#1}{\pgfkeysnovalue}{#2}{#3}}
+\newcommand*{\ifkeyempty}[3]{\ifkeyequal{#1}{\pgfkeysnovalue}{#2}{#3}}
 
 % aggiorna il valore della key #1 al valore #2. Chiama ad esempio come \setkeyvalue{color}{blue} o come \setkeyvalue{h}{\kv{b}}
-\newcommand{\setkeyvalue}[2]{\pgfkeyssetvalue{\kp{#1}}{#2}}
+\newcommand*{\setkeyvalue}[2]{\pgfkeyssetvalue{\kp{#1}}{#2}}
 % copia il valore della key #2 nella key #1
-\newcommand{\copykeyvalue}[2]{\setkeyvalue{#1}{\kv{#2}}}
+\newcommand*{\copykeyvalue}[2]{\setkeyvalue{#1}{\kv{#2}}}
 % aggiorna il valore della key #1 al valore #2 solo se #1 è empty
-\newcommand{\setkeyvalueifempty}[2]{\ifkeyempty{#1}{\setkeyvalue{#1}{#2}}{}}
+\newcommand*{\setkeyvalueifempty}[2]{\ifkeyempty{#1}{\setkeyvalue{#1}{#2}}{}}
 % aggiorna il valore della key #1 al valore \kv{#2} solo se #1 è empty
-\newcommand{\copykeyvalueifempty}[2]{\setkeyvalueifempty{#1}{\kv{#2}}}
+\newcommand*{\copykeyvalueifempty}[2]{\setkeyvalueifempty{#1}{\kv{#2}}}
 
 % aggiorna i valori di diverse keys se sono vuoti. Analoghi a chiamare \setkeyvalueifempty o \copykeyvalueifempty diverse volte di fila
 \makeatletter
-\newcommand{\setkeyvaluesifempty}[2]{\setkeyvalueifempty{#1}{#2}\@ifnextchar\bgroup{\setkeyvaluesifempty}{}}
-\newcommand{\copykeyvaluesifempty}[2]{\copykeyvalueifempty{#1}{#2}\@ifnextchar\bgroup{\copykeyvaluesifempty}{}}
+\newcommand*{\setkeyvaluesifempty}[2]{\setkeyvalueifempty{#1}{#2}\@ifnextchar\bgroup{\setkeyvaluesifempty}{}}
+\newcommand*{\copykeyvaluesifempty}[2]{\copykeyvalueifempty{#1}{#2}\@ifnextchar\bgroup{\copykeyvaluesifempty}{}}
 \makeatother
 
 
 %%%%%%%%%%%%%%%%	FUNZIONI
 
 % definisce un valore numerico #1 uguale all'output dell'operazione #2
-\newcommand\tikzdef[2]{\pgfmathsetmacro{#1}{#2}} % definisce float #1:=#2
+\newcommand*\tikzdef[2]{\pgfmathsetmacro{#1}{#2}} % definisce float #1:=#2
 
 % converte da pt a cm. Chiama come \convertto{cm}{misura pt}
 \makeatletter
@@ -75,16 +75,16 @@
 \makeatother
 
 % restituisce in output il nome del comando in input
-\newcommand{\commandname}[1]{\expandafter{\string#1}}
+\newcommand*{\commandname}[1]{\expandafter{\string#1}}
 
 % restituisce il nome del comando #1 senzo lo slash
-\newcommand{\commandstring}[1]{\removeslash{#1}}
+\newcommand*{\commandstring}[1]{\removeslash{#1}}
 
 % rimuove lo \ dall'input
-\newcommand{\removeslash}[1]{{\catcode92=9 \endlinechar-1 \scantokens{#1}}}
+\newcommand*{\removeslash}[1]{{\catcode92=9 \endlinechar-1 \scantokens{#1}}}
 
 % registra la distanza fra #2 e #3 in #1
-\newcommand{\distanza}[3]{
+\newcommand*{\distanza}[3]{
 	\coordinate(distanzafrom)at(#2);
 	\coordinate(distanzato)at(#3);
 	\tkzCalcLength(distanzafrom,distanzato)
@@ -94,7 +94,7 @@
 }
 
 % angolopolare{<- \a}{P}{O} registra in \a la coordinata angolare di P in un sistema di rif. centrato in O
-\newcommand{\angolopolare}[3]{
+\newcommand*{\angolopolare}[3]{
 	\coordinate(angolopolareterzopunto)at($(#3)+(1,0)$);
 	\coordinate(angolopolareP)at(#2);
 	\coordinate(angolopolareO)at(#3);
@@ -107,7 +107,7 @@
 %%%%%%%%%%%%%%%% LABEL
 
 % \stylelbl[keys]{coord} scrive il label nel formato specificato
-\newcommand{\stylelbl}[2][]{
+\newcommand*{\stylelbl}[2][]{
 	\tikzset{keyfld/.cd,
 		lbl/.initial,
 		lbl size/.initial,
@@ -127,7 +127,7 @@
 }
 
 % \PRIVstylelbl[keys]{coord} analogo a \stylelbl, ma da usare nelle funzioni di questo pacchetto
-\newcommand{\PRIVstylelbl}[2][]{
+\newcommand*{\PRIVstylelbl}[2][]{
 	\tikzset{keyfld/.cd,
 		PRIVlbl lbl/.initial,
 		PRIVlbl lbl size/.initial,
@@ -146,7 +146,7 @@
 % Attenzione! coordinate create come \punto (o suoi derivati) sono incompatibili con l'opzione fill per eventuali poligoni. Questo vuol dire che se vogliamo disegnare un poligono colorato, dobbiamo definire i punti come \coordinate, poi usare fill, e infine ripassare i vertici con \punto
 
 % chiama come \punto[keys]{coordinate}
-\newcommand{\punto}[2][]{
+\newcommand*{\punto}[2][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		size/.initial = 1.5,
@@ -172,44 +172,44 @@
 }
 
 % chiama come \pnt[col]{nome}{coordinate}
-\newcommand{\pnt}[3][]{\punto[name=#2,col=#1]{#3};}
+\newcommand*{\pnt}[3][]{\punto[name=#2,col=#1]{#3};}
 % chiama come \pntlbl[col]{nome}{lbl}{lbl ang}{coordinate}
-\newcommand{\pntlbl}[5][]{\punto[name=#2,lbl=#3,lbl ang=#4,col=#1]{#5};}
+\newcommand*{\pntlbl}[5][]{\punto[name=#2,lbl=#3,lbl ang=#4,col=#1]{#5};}
 % chiama come \pntl[col]{name}{lbl ang}{coordinate}
-\newcommand{\pntl}[4][]{\pntlbl[#1]{#2}{$#2$}{#3}{#4};}
+\newcommand*{\pntl}[4][]{\pntlbl[#1]{#2}{$#2$}{#3}{#4};}
 % chiama come \pntlp[col]{name}{lbl ang}{coordinate}
-\newcommand{\pntlp}[4][]{\pntlbl[#1]{#2p}{$#2'$}{#3}{#4};}
+\newcommand*{\pntlp}[4][]{\pntlbl[#1]{#2p}{$#2'$}{#3}{#4};}
 % chiama come \pntls[col]{name}{lbl ang}{coordinate}
-\newcommand{\pntls}[4][]{\pntlbl[#1]{#2s}{$#2''$}{#3}{#4};}
+\newcommand*{\pntls}[4][]{\pntlbl[#1]{#2s}{$#2''$}{#3}{#4};}
 
 
 %%%%%%%%%%%%%%%%	CALCOLO DI COORDINATE
 
 % \verso[L]{<- P}{A}{B} crea un punto P ottenuto traslando A verso B per una lunghezza complessiva L
-\newcommand{\verso}[4][1]{\coordinate (#2) at ($(#3)!#1cm!(#4)$);}
+\newcommand*{\verso}[4][1]{\coordinate (#2) at ($(#3)!#1cm!(#4)$);}
 % \allont[L]{<- P}{A}{B} analogo di \verso ma allontanandosi da B
-\newcommand{\allont}[4][1]{\verso[-#1]{#2}{#3}{#4};}
+\newcommand*{\allont}[4][1]{\verso[-#1]{#2}{#3}{#4};}
 
 % \parallelo[L]{<- P}{S}{A}{B} crea un punto P, ottenuto traslando S per una lunghezza L nel verso nel vettore AB
-\newcommand{\parallelo}[5][1]{\coordinate (#2) at ($(#3)-(#4)+(#4)!#1cm!(#5)$);}
+\newcommand*{\parallelo}[5][1]{\coordinate (#2) at ($(#3)-(#4)+(#4)!#1cm!(#5)$);}
 
 % \perpendicolare[L]{<- P}{S}{A}{B} crea un punto P, ottenuto traslando S per una lunghezza L nel verso perpendicolare a AB (si suppone SAB in senso antiorario)
-\newcommand{\perpendicolare}[5][1]{\coordinate (#2) at ($(#3)-(#4)+(#4)!#1cm!-90:(#5)$);}
+\newcommand*{\perpendicolare}[5][1]{\coordinate (#2) at ($(#3)-(#4)+(#4)!#1cm!-90:(#5)$);}
 
 % \medio[k]{<- M}{A}{B} definisce M come il punto (1-k)*A+k*B. Nel caso speciale di k=0.5, M è il punto medio del segmento AB. Quindi se k=0 risulta M:=A, mentre se k=1 risulta M:=B
-\newcommand{\medio}[4][0.5]{\coordinate(#2)at($(#3)-#1*(#3)+#1*(#4)$);}
+\newcommand*{\medio}[4][0.5]{\coordinate(#2)at($(#3)-#1*(#3)+#1*(#4)$);}
 
 % \opposto{<- P'}{P}{O} crea l'opposto P' di P rispetto al centro di simmetria O
-\newcommand{\opposto}[3]{\coordinate(#1)at($2*(#3)-(#2)$);}
+\newcommand*{\opposto}[3]{\coordinate(#1)at($2*(#3)-(#2)$);}
 
 % \simmetrico{<- P'}{P}{A}{B} crea il punto P', simmetrico di P rispetto alla retta di simmetria AB
-\newcommand{\simmetrico}[4]{
+\newcommand*{\simmetrico}[4]{
 	\proj{simmetricoPuntoDiProiezione}{#2}{#3}{#4};
 	\opposto{#1}{#2}{simmetricoPuntoDiProiezione};
 }
 
 % \proj{<- H}{P}{A}{B} genera H come la proiezione ortogonale di P sulla retta AB
-\newcommand{\proj}[4]{
+\newcommand*{\proj}[4]{
 	\coordinate(projPcoordinate)at(#2);
 	\coordinate(projAcoordinate)at(#3);
 	\coordinate(projBcoordinate)at(#4);
@@ -218,10 +218,10 @@
 }
 
 % \sumvett{<- C}{A}{B}{D} definisce il punto C in modo che il vettore AC sia uguale alla somma vettoriale AB+AD. Così facendo ABCD forma un parallelogramma
-\newcommand{\sumvett}[4]{\coordinate(#1)at($(#3)-(#2)+(#4)$);}
+\newcommand*{\sumvett}[4]{\coordinate(#1)at($(#3)-(#2)+(#4)$);}
 
 % \ruotapunto{<- R}{P}{O}{a} definisce il punto R ottenuto ruotando P in senso antiorario di un angolo a (con centro di rotazione in O)
-\newcommand{\ruotapunto}[4]{
+\newcommand*{\ruotapunto}[4]{
 	\coordinate(ruotapuntoP)at(#2);
 	\coordinate(ruotapuntoO)at(#3);
 	\tkzDefPointBy[rotation= center ruotapuntoO angle #4](ruotapuntoP)
@@ -229,13 +229,13 @@
 }
 
 % \ruotapuntoN[L]{<- R}{P}{O}{a} dopo aver ruotato il punto, lo normalizza per farlo diventare di luunghezza L
-\newcommand{\ruotapuntoN}[5][1]{
+\newcommand*{\ruotapuntoN}[5][1]{
 	\ruotapunto{ruotapuntoNnonnormalizzato}{#3}{#4}{#5};
 	\verso[#1]{#2}{#4}{ruotapuntoNnonnormalizzato};
 }
 
 % \triangoloequilatero{<- C}{A}{B} prende in input due punti A e B, e definisce un terzo punto C in modo che ABC sia un triangolo equilatero (coi vertici scritti in senso antiorario)
-\newcommand{\triangoloequilatero}[3]{
+\newcommand*{\triangoloequilatero}[3]{
 	\coordinate(triangoloequilateroA)at(#2);
 	\coordinate(triangoloequilateroB)at(#3);
 	\tkzDefTriangle[equilateral](triangoloequilateroA,triangoloequilateroB)
@@ -246,10 +246,10 @@
 %%%%%%%%%%%%%%%%	INTERSEZIONI
 
 % \intpahts{<- I}{path1}{path2} trova il punto di intersezione fra due paths e lo chiama I
-\newcommand{\intpaths}[3]{\path [name intersections={of=#2 and #3, by=#1}];}
+\newcommand*{\intpaths}[3]{\path [name intersections={of=#2 and #3, by=#1}];}
 
 % \intrette{<- I}{A}{B}{C}{D} trova il punto di intersezione I fra le rette AB e CD
-\newcommand{\intrette}[5]{
+\newcommand*{\intrette}[5]{
 	\coordinate(intretteA)at(#2);
 	\coordinate(intretteB)at(#3);
 	\coordinate(intretteC)at(#4);
@@ -262,7 +262,7 @@
 %%%%%%%%%%%%%%%%	GRIGLIE SISTEMI DI RIFERIMENTO
 
 % \griglia[keys]{west}{east}{south}{north}
-\newcommand{\griglia}[5][]{
+\newcommand*{\griglia}[5][]{
 	\tikzset{keyfld/.cd,
 		col/.initial = gray!50,
 		width/.initial = thin, % può essere thin, thick, ...
@@ -285,10 +285,10 @@
 	\draw[\kv{col},\kv{width},\kv{pattern}] (#2,#4) grid [xstep=\kv{s x} cm,ystep=\kv{s y} cm] (#3,#5);
 }
 % \grigliaO[keys]{east}{north}. Ha le stesse keys di \griglia
-\newcommand{\grigliaO}[3][]{\griglia[#1]{0}{#2}{0}{#3}}
+\newcommand*{\grigliaO}[3][]{\griglia[#1]{0}{#2}{0}{#3}}
 
 % \cartamillimetrata[keys]{west}{east}{south}{north} % una porzione di carta millimetrata
-\newcommand{\cartamillimetrata}[5][]{
+\newcommand*{\cartamillimetrata}[5][]{
 	\tikzset{keyfld/.cd,
 		col1/.initial = pink!50,
 		col2/.initial = gray!70,
@@ -309,10 +309,10 @@
 }
 
 % può solo essere usata con \TipoDoc = immagine. Crea una pagina intera di carta millimetrata
-\newcommand{\cartamillimetratapagina}[1][]{\cartamillimetrata[#1]{0}{21}{0.3}{30};}
+\newcommand*{\cartamillimetratapagina}[1][]{\cartamillimetrata[#1]{0}{21}{0.3}{30};}
 
 % \assex[keys]{x-left}{x-right} crea l'asse x
-\newcommand{\assex}[3][]{
+\newcommand*{\assex}[3][]{
 	\tikzset{keyfld/.cd,
 		y/.initial = 0, % la y del centro
 		ang shift/.initial = 0,
@@ -341,7 +341,7 @@
 }
 
 % \assey[keys]{y-bottom}{y-top} crea l'assey
-\newcommand{\assey}[3][]{
+\newcommand*{\assey}[3][]{
 	\tikzset{keyfld/.cd,
 		x/.initial = 0, % la x del centro
 		ang shift/.initial = 0,
@@ -370,7 +370,7 @@
 }
 
 % \assixy[keys]{x-left}{x-right}{y-left}{y-right} disegna gli assi cartesiani
-\newcommand{\assixy}[5][]{
+\newcommand*{\assixy}[5][]{
 	\tikzset{keyfld/.cd,
 		x/.initial = 0, % la x del centro
 		y/.initial = 0, % la y del centro
@@ -407,7 +407,7 @@
 }
 
 % \assixyO[keys]{centro}{x-left}{x-right}{y-left}{y-right} disegna gli assi cartesiani
-\newcommand{\assixyO}[6][]{
+\newcommand*{\assixyO}[6][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		arrow/.initial = ->,
@@ -442,7 +442,7 @@
 }
 
 % \assexbar[keys]{\x}{lbl} disegna una barretta verticale sull'asse x in posizione \x per segnare il label lbl
-\newcommand{\assexbar}[3][]{
+\newcommand*{\assexbar}[3][]{
 	\tikzset{keyfld/.cd,
 		y/.initial = 0, % la y dell'asse cartesiano
 		col/.initial,
@@ -466,7 +466,7 @@
 }
 
 % \asseybar[keys]{\y}{lbl} disegna una barretta orizzontale sull'asse y in posizione \y per segnare il label lbl
-\newcommand{\asseybar}[3][]{
+\newcommand*{\asseybar}[3][]{
 	\tikzset{keyfld/.cd,
 		x/.initial = 0, % la x dell'asse cartesiano
 		col/.initial,
@@ -490,7 +490,7 @@
 }
 
 % \sistrif[keys]{centro}{angolo} crea il sistema di riferimento, ruotato dell'angolo specificato. Si usa in cinematica/dinamica per indicare le direzioni e i versi degli assi cartesiani utilizzati
-\newcommand{\sistrif}[3][]{
+\newcommand*{\sistrif}[3][]{
 	\tikzset{keyfld/.cd,
 		col/.initial = magenta,
 		arrow/.initial = ->,
@@ -530,13 +530,13 @@
 %%%%%%%%%%%%%%%%	TRIANGOLI
 
 % \piedemed[k]{<- P}{A}{B}{C} trova il piede P della mediana BP (k è un parametro fra 0 e 1 che "sposta" P lungo il lato AC)
-\newcommand{\piedemed}[5][0.5]{\medio[#1]{#2}{#3}{#5};}
+\newcommand*{\piedemed}[5][0.5]{\medio[#1]{#2}{#3}{#5};}
 
 % \piedealt{<- P}{A}{B}{C} trova P (il piede dell'altezza BP)
-\newcommand{\piedealt}[4]{\proj{#1}{#3}{#2}{#4};}
+\newcommand*{\piedealt}[4]{\proj{#1}{#3}{#2}{#4};}
 
 % \piedebis{<- P}{A}{B}{C} trova P (il piede della bisettrice dell'angolo ABC)
-\newcommand{\piedebis}[4]{
+\newcommand*{\piedebis}[4]{
 	\coordinate(piedebisA)at(#2);
 	\coordinate(piedebisB)at(#3);
 	\coordinate(piedebisC)at(#4);
@@ -546,7 +546,7 @@
 }
 
 % \centrotriangolo[type]{<- P}{A}{B}{C} trova il centro del triangolo (funzione usata per definire i successivi 5 comandi)
-\newcommand{\centrotriangolo}[5][centroid]{
+\newcommand*{\centrotriangolo}[5][centroid]{
 	\coordinate(centrotriangoloA)at(#3);
 	\coordinate(centrotriangoloB)at(#4);
 	\coordinate(centrotriangoloC)at(#5);
@@ -554,18 +554,18 @@
 		\tkzGetPoint{#2};
 }
 % \baricentro{<- P}{A}{B}{C} trova il baricentro P di un triangolo ABC
-\newcommand{\baricentro}[4]{\centrotriangolo[centroid]{#1}{#2}{#3}{#4}}
+\newcommand*{\baricentro}[4]{\centrotriangolo[centroid]{#1}{#2}{#3}{#4}}
 % \ortocentro{<- P}{A}{B}{C} trova il baricentro P di un triangolo ABC
-\newcommand{\ortocentro}[4]{\centrotriangolo[ortho]{#1}{#2}{#3}{#4}}
+\newcommand*{\ortocentro}[4]{\centrotriangolo[ortho]{#1}{#2}{#3}{#4}}
 % \circocentro{<- P}{A}{B}{C} trova il baricentro P di un triangolo ABC
-\newcommand{\circocentro}[4]{\centrotriangolo[circum]{#1}{#2}{#3}{#4}}
+\newcommand*{\circocentro}[4]{\centrotriangolo[circum]{#1}{#2}{#3}{#4}}
 % \incentro{<- P}{A}{B}{C} trova il baricentro P di un triangolo ABC
-\newcommand{\incentro}[4]{\centrotriangolo[in]{#1}{#2}{#3}{#4}}
+\newcommand*{\incentro}[4]{\centrotriangolo[in]{#1}{#2}{#3}{#4}}
 % \exocentro{<- P}{A}{B}{C} trova il baricentro P di un triangolo ABC (opposto a B)
-\newcommand{\excentro}[4]{\centrotriangolo[ex]{#1}{#2}{#3}{#4}}
+\newcommand*{\excentro}[4]{\centrotriangolo[ex]{#1}{#2}{#3}{#4}}
 
 % \triangolobase[keys]{A}{B}{C} disegna un triangolo ABC, con label per vertici, angoli e lati
-\newcommand{\triangolobase}[4][]{
+\newcommand*{\triangolobase}[4][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		col vertici/.initial,
@@ -624,7 +624,7 @@
 %%%%%%%%%%%%%%%%	MARKS accettano le opzioni s,z,x,o,oo,|,||,|||
 
 % chiama come \segmento[keys]{A}{B} per disegnare il segmento
-\newcommand{\segmento}[3][]{
+\newcommand*{\segmento}[3][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		col draw/.initial, % il colore con cui si disegna il lato
@@ -662,7 +662,7 @@
 }
 
 % chiama come \PRIVsegmento[keys]{A}{B} per disegnare il segmento (versione privata, per il solo programmatore)
-\newcommand{\PRIVsegmento}[3][]{
+\newcommand*{\PRIVsegmento}[3][]{
 	\tikzset{keyfld/.cd,
 		PRIV col/.initial,
 		PRIV col draw/.initial, % il colore con cui si disegna il lato
@@ -700,7 +700,7 @@
 }
 
 % chiama come \markarco[keys]{mark}{O}{A}{B} per creare un mark nel punto medio dell'arco di circonferenza AB di centro O. m indica il marchio richiesto (fra s,z,x,o,oo,|,||,|||)
-\newcommand{\markarco}[5][]{
+\newcommand*{\markarco}[5][]{
 	\tikzset{keyfld/.cd,
 		col/.initial = black,
 		size/.initial = 0.2, % la dimensione del segno
@@ -714,7 +714,7 @@
 }
 
 % chiama come \angolo[keys]{A}{B}{C} per disegnare l'angolo in senso antiorario
-\newcommand{\angolo}[4][]{
+\newcommand*{\angolo}[4][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		col draw/.initial, % il colore con cui si disegna l'angolo
@@ -752,7 +752,7 @@
 }
 
 % chiama come \PRIVangolo[keys]{A}{B}{C} per disegnare l'angolo in senso antiorario
-\newcommand{\PRIVangolo}[4][]{
+\newcommand*{\PRIVangolo}[4][]{
 	\tikzset{keyfld/.cd,
 		PRIV col/.initial,
 		PRIV col draw/.initial, % il colore con cui si disegna l'angolo
@@ -785,7 +785,7 @@
 }
 
 % chiama come \angoloretto[keys]{A}{B}{C} per disegnare l'angolo retto in senso antiorario
-\newcommand{\angoloretto}[4][]{
+\newcommand*{\angoloretto}[4][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		col draw/.initial, % il colore con cui si disegna l'angolo
@@ -812,7 +812,7 @@
 %%%%%%%%%%%%%%%%	RETTE E SEMIRETTE
 
 % \retta[keys]{A}{B} crea una retta da A a B
-\newcommand{\retta}[3][]{
+\newcommand*{\retta}[3][]{
 	\tikzset{keyfld/.cd,
 		draw length/.initial,
 		prol length/.initial = 0.8,
@@ -860,7 +860,7 @@
 }
 
 % \semiretta[keys]{A}{B} crea una semiretta da A a B
-\newcommand{\semiretta}[3][]{
+\newcommand*{\semiretta}[3][]{
 	\tikzset{keyfld/.cd,
 		draw length/.initial,
 		prol length/.initial = 0.8,
@@ -908,7 +908,7 @@
 %%%%%%%%%%%%%%%%	CIRCONFERENZE
 
 % chiama come \circCR[keys]{C}{R} per disegnare la circonferenza di centro C e raggio R
-\newcommand{\circCR}[3][]{
+\newcommand*{\circCR}[3][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		width/.initial, % può essere thin, thick, ...
@@ -958,23 +958,23 @@
 }
 
 % \circCP[keys]{C}{P} disegna la circonferenza di centro C e passante per P
-\newcommand{\circCP}[3][]{\circCPr[#1]{#2}{#3}{\circCPmisuraraggio};}
+\newcommand*{\circCP}[3][]{\circCPr[#1]{#2}{#3}{\circCPmisuraraggio};}
 
 % \circCPr[keys]{C}{P}{<- r} disegna la circonferenza di centro C e passante per P. Registra in r la misura del raggio della circonferenza (in cm)
-\newcommand{\circCPr}[4][]{
+\newcommand*{\circCPr}[4][]{
 	\distanza{#4}{#2}{#3};
 	\circCR[#1]{#2}{#4 cm};
 }
 
 % \circPPP[keys]{A}{B}{C} disegna la circonferenza passante per i tre punti A, B e C
-\newcommand{\circPPP}[4][]{\circPPPcr[#1]{#2}{#3}{#4}{circPPPcentro}{\circPPPmisuraraggio};}
+\newcommand*{\circPPP}[4][]{\circPPPcr[#1]{#2}{#3}{#4}{circPPPcentro}{\circPPPmisuraraggio};}
 % \circPPPc[keys]{A}{B}{C}{<- centro} disegna la circonferenza passante per i tre punti A, B e C
-\newcommand{\circPPPc}[5][]{\circPPPcr[#1]{#2}{#3}{#4}{#5}{\circPPPmisuraraggio};}
+\newcommand*{\circPPPc}[5][]{\circPPPcr[#1]{#2}{#3}{#4}{#5}{\circPPPmisuraraggio};}
 % \circPPPr[keys]{A}{B}{C}{<- raggio} disegna la circonferenza passante per i tre punti A, B e C
-\newcommand{\circPPPr}[5][]{\circPPPcr[#1]{#2}{#3}{#4}{circPPPcentro}{#5};}
+\newcommand*{\circPPPr}[5][]{\circPPPcr[#1]{#2}{#3}{#4}{circPPPcentro}{#5};}
 
 % \circPPPcr[keys]{A}{B}{C}{<- centro}{<- raggio} disegna la circonferenza passante per i tre punti A, B e C e registra il centro e il raggio della circonferenza
-\newcommand{\circPPPcr}[6][]{
+\newcommand*{\circPPPcr}[6][]{
 	\circocentro{#5}{#2}{#3}{#4};
 	\circCPr[#1]{#5}{#2}{#6};
 }
@@ -983,7 +983,7 @@
 %%%%%%%%%%%%%%%%	PUNTI DA CIRCONFERENZE
 
 % \interLC{<- P1}{<- P2}{A}{B}{O}{\R} trova i due punti di intersezione P1 e P2 fra la retta AB e la circonferenza di centro O e raggio \R
-\newcommand{\interLC}[6]{
+\newcommand*{\interLC}[6]{
 	\path[name path=interLCcirconferenza](#5)circle(#6);
 	\distanza{\interLCdistAO}{#3}{#5};
 	\tikzdef\interLCdiffraggisign{sign(\interLCdistAO cm-#6 cm});
@@ -1011,7 +1011,7 @@
 }
 
 % \interCC{<- P1}{<- P2}{O1}{\R1}{O2}{\R2} trova i due punti di intersezione P1 e P2 fra le due circonferenze di centri O1 e O2 e raggi \R1 e \R2
-\newcommand{\interCC}[6]{
+\newcommand*{\interCC}[6]{
 	\coordinate(interCCcentroA)at(#3);
 	\coordinate(interCCcentroB)at(#5);
 	\coordinate(interCCpuntosucirconferenzaA)at($(#3)+(#4,0)$);
@@ -1021,14 +1021,14 @@
 }
 
 %\tangentiPC{<- Ta}{<- Tb}{P}{O}{\R} trova i punti Ta e Tb sulla circonferenza di centro O e raggio \R tali per cui PTa e PTb sono tangenti alla circonferenza
-\newcommand{\tangentiPC}[5]{
+\newcommand*{\tangentiPC}[5]{
 	\medio{tangentiPCmedio}{#3}{#4};
 	\distanza{\tangentiPCraggioPO}{tangentiPCmedio}{#3};
 	\interCC{#1}{#2}{tangentiPCmedio}{\tangentiPCraggioPO}{#4}{#5};
 }
 
 % \PtangenzaCC{<- P}{O1}{\R1}{O2}{\R2} trova il punto P da cui escono le tangenti comuni alle due circonferenze di centri O1 e O2 e raggi \R1 e \R2
-\newcommand{\PtangenzaCC}[5]{
+\newcommand*{\PtangenzaCC}[5]{
 	\tikzdef\PtangenzaCCsorterR{sign(#3-#5});
 	\ifnum\PtangenzaCCsorterR=0
 		\errmessage{Le due circonferenze date in input a PtangenzaCC hanno uguale raggio #3}
@@ -1054,21 +1054,21 @@
 % questi comandi disegnano archi in senso antiorario (rilevante per eventuali frecce)
 
 % \arcocirc[opzioni]{O}{A}{B} disegna un arco di circonferenza di centro O che va da A alla semiretta OB
-\newcommand{\arcocirc}[4][]{
+\newcommand*{\arcocirc}[4][]{
 	\coordinate(arcocircO)at(#2);
 	\coordinate(arcocircA)at(#3);
 	\coordinate(arcocircB)at(#4);
 	\tkzDrawArc[#1](arcocircO,arcocircA)(arcocircB);
 }
 % \arcocircang[opzioni]{O}{A}{ang} disegna un arco di circonferenza di centro O che parte da A e ruota di un angolo ang
-\newcommand{\arcocircang}[4][]{
+\newcommand*{\arcocircang}[4][]{
 	\coordinate(arcocircangO)at(#2);
 	\coordinate(arcocircangA)at(#3);
 	\tkzDrawArc[#1,rotate](arcocircangO,arcocircangA)(#4);
 }
 
 % \semicirc[opzioni]{A}{B} disegna una semicirconferenza di diametro AB
-\newcommand{\semicirc}[3][]{
+\newcommand*{\semicirc}[3][]{
 	\medio{semicircCentro}{#2}{#3};
 	\arcocircang[#1]{semicircCentro}{#2}{180};
 }
@@ -1077,20 +1077,20 @@
 %%%%%%%%%%%%%%%%	ALTRE CONICHE
 
 % \ellisse[opzioni]{centro}{semiasse a}{semiasse b}
-\newcommand{\ellisse}[4][]{\draw[#1](#2)ellipse(#3cm and #4cm);}
+\newcommand*{\ellisse}[4][]{\draw[#1](#2)ellipse(#3cm and #4cm);}
 
 % \ellisserot[opzioni]{centro}{semiasse a}{semiasse b}{ang}
-\newcommand{\ellisserot}[5][]{\draw[#1,rotate around={#5:(#2)}](#2)ellipse(#3cm and #4cm);}
+\newcommand*{\ellisserot}[5][]{\draw[#1,rotate around={#5:(#2)}](#2)ellipse(#3cm and #4cm);}
 
 % \parabolaVPP[opzioni]{V}{P1}{P2} disegna un tratto di parabola con vertice V con estremi in P1 e P2. Serve che V sia fra P1 e P2. In realtà vengono disegnati due archi di parabola. \parabolaVPPy è identico a \parabolaVPP
-\newcommand{\parabolaVPP}[4][]{\parabolaVPPy[#1]{#2}{#3}{#4};}
-\newcommand{\parabolaVPPy}[4][]{
+\newcommand*{\parabolaVPP}[4][]{\parabolaVPPy[#1]{#2}{#3}{#4};}
+\newcommand*{\parabolaVPPy}[4][]{
 	\draw[#1](#2)parabola(#3);
 	\draw[#1](#2)parabola(#4);
 }
 
 % \parabolaVPPx[opzioni]{V}{P1}{P2} è analogo a \parabolaVPPy per parabole con l'asse di simmetria parallelo all'asse x
-\newcommand{\parabolaVPPx}[4][]{
+\newcommand*{\parabolaVPPx}[4][]{
 	\coordinate(parabolaVPPxPuno)at(#3);
 	\coordinate(parabolaVPPxPdue)at(#4);
 	\begin{rotazione}[#2]{-90}
@@ -1099,10 +1099,10 @@
 }
 
 % \conicaeq[keys]{fromx:tox}{a}{b}{c}{d}{e} disegna la conica ax^2+by^2+cx+dy+e=0 nel range specificato per x
-\newcommand{\conicaeq}[7][]{\conicageneq[#1]{#2}{#3}{#4}{0}{#5}{#6}{#7};}
+\newcommand*{\conicaeq}[7][]{\conicageneq[#1]{#2}{#3}{#4}{0}{#5}{#6}{#7};}
 
 % \conicageneq[keys]{fromx:tox}{a}{b}{c}{d}{e}{f} disegna la conica ax^2+by^2+cxy+dx+ey+f=0 nel range specificato per x
-\newcommand{\conicageneq}[8][]{
+\newcommand*{\conicageneq}[8][]{
 	\ifnum#4=0
 		\plot[#1]{#2}{\x}{-((#3)*(\x)^2+(#6)*(\x)+(#8))/((#5)*(\x)+(#7))};
 	\else
@@ -1112,12 +1112,12 @@
 }
 
 % \parabolaeq[opzioni]{from:to}{a}{b}{c} (e \parabolaeqy, che è identico) disegna un ramo di parabola di equazione y=ax^2+bx+c. La funzione \parabolaeqx[opzioni]{from:to}{a}{b}{c} è analoga per disegnare il ramo di parabola x=ay^2+by+c (questa volta il range è inteso su y)
-\newcommand{\parabolaeq}[5][]{\parabolaeqy[#1]{#2}{#3}{#4}{#5};}
-\newcommand{\parabolaeqy}[5][]{\plot[#1]{#2}{\x}{(#3)*(\x)^2+(#4)*(\x)+(#5)};}
-\newcommand{\parabolaeqx}[5][]{\plot[#1]{#2}{(#3)*(\x)^2+(#4)*(\x)+(#5)}{\x};}
+\newcommand*{\parabolaeq}[5][]{\parabolaeqy[#1]{#2}{#3}{#4}{#5};}
+\newcommand*{\parabolaeqy}[5][]{\plot[#1]{#2}{\x}{(#3)*(\x)^2+(#4)*(\x)+(#5)};}
+\newcommand*{\parabolaeqx}[5][]{\plot[#1]{#2}{(#3)*(\x)^2+(#4)*(\x)+(#5)}{\x};}
 
 % \ellisseeq[opzioni]{a}{b}{c}{d}{e} disegna un'ellisse di equazione ax^2+by^2+cx+dy+e=0
-\newcommand{\ellisseeq}[6][]{
+\newcommand*{\ellisseeq}[6][]{
 	\tikzdef\ellisseeqzerodeg{0.25*(#4)*(#4)/(#2)+0.25*(#5)*(#5)/(#3)-(#6)};
 	\tikzdef\ellisseeqsemiassea{sqrt(\ellisseeqzerodeg/(#2))};
 	\tikzdef\ellisseeqsemiasseb{sqrt(\ellisseeqzerodeg/(#3))};
@@ -1125,7 +1125,7 @@
 }
 
 % \propinv[opzioni]{fromx:tox}{fromy:toy}{k} disegna una funzione del tipo x*y=k tenendo solo i punti (x,y) per cui x e y rientrano (entrambi) nei range specificati
-\newcommand{\propinv}[4][]{
+\newcommand*{\propinv}[4][]{
 	\extractcoordpair[:]{\propinvfromx}{\propinvtox}{#2};
 	\extractcoordpair[:]{\propinvfromy}{\propinvtoy}{#3};
 	\tikzdef\propinvfromyx{abs(#4)/\propinvfromy};
@@ -1135,32 +1135,32 @@
 }
 
 % \propinvshift[opzioni]{fromx:tox}{fromy:toy}{k}{shift} è analogo a \propinv ma shiftato di shift
-\newcommand{\propinvshift}[5][]{\propinv[#1,shift={(#5)}]{#2}{#3}{#4};}
+\newcommand*{\propinvshift}[5][]{\propinv[#1,shift={(#5)}]{#2}{#3}{#4};}
 
 
 %%%%%%%%%%%%%%%%	PLOT GENERICI
 
 % chiama come \plot[opzioni]{from:to}{x}{y}. È parametrizzato come \x
-\newcommand{\plot}[4][]{\draw[smooth,samples=100,domain=#2,#1] plot ({#3},{#4});}
+\newcommand*{\plot}[4][]{\draw[smooth,samples=100,domain=#2,#1] plot ({#3},{#4});}
 
 % chiama come \plotcos[opzioni]{from:to}{ampiezza} o come \plotsin[opzioni]{from:to}{ampiezza}
-\newcommand{\plotcos}[3][]{\plot[#1]{#2}{\x}{(#3)*cos(\x*180/pi)};}
-\newcommand{\plotsin}[3][]{\plot[#1]{#2}{\x}{(#3)*sin(\x*180/pi)};}
+\newcommand*{\plotcos}[3][]{\plot[#1]{#2}{\x}{(#3)*cos(\x*180/pi)};}
+\newcommand*{\plotsin}[3][]{\plot[#1]{#2}{\x}{(#3)*sin(\x*180/pi)};}
 
 % chiama come \plotcosshift[opzioni]{from:to}{ampiezza}{shift} o come \plotsinshift[opzioni]{from:to}{ampiezza}{shift}
-\newcommand{\plotcosshift}[4][]{\plotcos[#1,shift={(#4)}]{#2}{#3};}
-\newcommand{\plotsinshift}[4][]{\plotsin[#1,shift={(#4)}]{#2}{#3};}
+\newcommand*{\plotcosshift}[4][]{\plotcos[#1,shift={(#4)}]{#2}{#3};}
+\newcommand*{\plotsinshift}[4][]{\plotsin[#1,shift={(#4)}]{#2}{#3};}
 
 % chiama come \plotcosfr[opzioni]{from:to}{ampiezza}{N} o come \plotsinfr[opzioni]{from:to}{ampiezza}{N} dove N indica il numero di oscillazioni per ogni unità di x
-\newcommand{\plotcosfr}[4][]{\plot[#1]{#2}{\x}{(#3)*cos(\x*360*#4)};}
-\newcommand{\plotsinfr}[4][]{\plot[#1]{#2}{\x}{(#3)*sin(\x*360*#4)};}
+\newcommand*{\plotcosfr}[4][]{\plot[#1]{#2}{\x}{(#3)*cos(\x*360*#4)};}
+\newcommand*{\plotsinfr}[4][]{\plot[#1]{#2}{\x}{(#3)*sin(\x*360*#4)};}
 
 
 %%%%%%%%%%%%%%%%	UTILS
 
 % \extractcoordpair[separatore]{<- \x}{<-  \y}{P} estrae le due coordinate di P e le scrive in \x e in \y. Se P è dato in coordinate polari o rappresenta un range allora il separatore da usare è : (anziché ,)
 % #4 deve essere escritto esplicitamente. Quindi possiamo scrivere #4 come (3,5), ma non come P
-\newcommand{\extractcoordpair}[4][,]{
+\newcommand*{\extractcoordpair}[4][,]{
 	\def\extractcoordpairseparator{#1}
 	\def\extractcoordpairx{}
 	\def\extractcoordpairy{}
@@ -1168,7 +1168,7 @@
 	\tikzdef#2{\extractcoordpairx}
 	\tikzdef#3{\extractcoordpairy}
 }
-\newcommand{\extractcoordpairIterFist}[1]{
+\newcommand*{\extractcoordpairIterFist}[1]{
 	\if\extractcoordpairseparator#1 
 		\expandafter\extractcoordpairIterSecond
 	\else 
@@ -1176,7 +1176,7 @@
 		\expandafter\extractcoordpairIterFist
 	\fi
 }
-\newcommand{\extractcoordpairIterSecond}[1]{
+\newcommand*{\extractcoordpairIterSecond}[1]{
 	\if\extractcoordpairseparator#1 \else
 		\estendistr\extractcoordpairy{#1}
 		\expandafter\extractcoordpairIterSecond
@@ -1189,7 +1189,7 @@
 \newcounter{poligonoNumPointsBuilder}
 
 % \poligono[opzioni]{A,B,C,...} disegna un poligono
-\newcommand{\poligono}[2][]{
+\newcommand*{\poligono}[2][]{
 	\def\poligonoInputBuilder{(} % la stringa (A)--(B)--(C)--(A) Viene costruita progressivamente
 	\def\poligonoFirstPointBuilder{} % la stringa A
 	\setcounter{poligonoNumPointsBuilder}{1}
@@ -1197,7 +1197,7 @@
 	\draw[#1]\poligonoInputBuilder;
 }
 % necessario per la funzione \poligono
-\newcommand{\poligonoIter}[1]{
+\newcommand*{\poligonoIter}[1]{
 	\ifx;#1\estendistr\poligonoInputBuilder{)--(\poligonoFirstPointBuilder)}\else
 		\ifx,#1\estendistr\poligonoInputBuilder{)--(}\stepcounter{poligonoNumPointsBuilder}\else
 			\estendistr\poligonoInputBuilder{#1}
@@ -1210,13 +1210,13 @@
 }
 
 % \poligonale[opzioni]{A,B,C,...} disegna una poligonale (una linea spezzata)
-\newcommand{\poligonale}[2][]{
+\newcommand*{\poligonale}[2][]{
 	\def\poligonaleInputBuilder{(} % la stringa (A)--(B)--(C) Viene costruita progressivamente
 	\poligonaleIter#2;
 	\draw[#1]\poligonaleInputBuilder;
 }
 % necessario per la funzione \poligonale
-\newcommand{\poligonaleIter}[1]{
+\newcommand*{\poligonaleIter}[1]{
 	\ifx;#1\estendistr\poligonaleInputBuilder{)}\else
 		\ifx,#1\estendistr\poligonaleInputBuilder{)--(}\else
 			\estendistr\poligonaleInputBuilder{#1}
@@ -1226,7 +1226,7 @@
 }
 
 % \carrucola[keys]{centro}{raggio esterno} disegna una carrucola
-\newcommand{\carrucola}[3][]{
+\newcommand*{\carrucola}[3][]{
 	\tikzset{keyfld/.cd,
 		col1/.initial = gray!70, % il colore della parte più esterna
 		col2/.initial = gray, % il colore della parte intermedia
@@ -1240,7 +1240,7 @@
 }
 
 % \cassa[keys]{punto iniziale}{lunghezza x}{lunghezza y}{angolo}
-\newcommand{\cassa}[5][]{
+\newcommand*{\cassa}[5][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		col draw/.initial,
@@ -1271,7 +1271,7 @@
 
 % \raggioluce[keys]{P1}{P2}{P3}... disegna un raggio di luce (con le varie frecce)
 \makeatletter
-\newcommand{\raggioluce}[3][]{
+\newcommand*{\raggioluce}[3][]{
 	\tikzset{keyfld/.cd,
 		col/.initial = orange,
 		width/.initial, % può essere thin, thick, ...
@@ -1286,7 +1286,7 @@
 \makeatother
 
 % chiama come \graffa[keys]{A}{B} (se mirror resta false, gira in senso antiorario).
-\newcommand\graffa[3][]{
+\newcommand*{\graffa}[3][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		width/.initial, % può essere thin, thick, ...
@@ -1326,7 +1326,7 @@
 }
 
 % \molla[keys]{A}{B} disegna una molla da A a B
-\newcommand\molla[3][]{
+\newcommand*{\molla}[3][]{
 	\tikzset{keyfld/.cd,
 		col/.initial = gray,
 		width/.initial, % può essere thin, thick, ...
@@ -1341,13 +1341,13 @@
 }
 
 % \sfera[colore]{centro}{raggio} crea una sfera tridimensionale
-\newcommand\sfera[3][teal]{\shade[ball color=#1] (#2) circle (#3);}
+\newcommand*{\sfera}[3][teal]{\shade[ball color=#1] (#2) circle (#3);}
 
 
 %%%%%%%%%%%%%%%% 	DISEGNI ARTICOLATI
 
 % \casetta[keys]{pos} disegna una casetta. pos è il centro della base della casetta
-\newcommand{\casetta}[2][]{
+\newcommand*{\casetta}[2][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		width/.initial, % può essere thin, thick, ...
@@ -1375,7 +1375,7 @@
 }
 
 % \uomo[keys]{pos} disegna un omino stilizzato. pos è il centro della sua base
-\newcommand{\uomo}[2][]{
+\newcommand*{\uomo}[2][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		width/.initial = thick, % può essere thin, thick, ...
@@ -1411,7 +1411,7 @@
 }
 
 % \donna[keys]{pos} disegna una donnina stilizzata. pos è il centro della sua base
-\newcommand{\donna}[2][]{
+\newcommand*{\donna}[2][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		width/.initial = thick, % può essere thin, thick, ...
@@ -1450,7 +1450,7 @@
 }
 
 % \auto[keys]{pos} disegna un'automobile. pos è il centro della sua base
-\newcommand{\auto}[2][]{
+\newcommand*{\auto}[2][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		width/.initial = thick, % può essere thin, thick, ...
@@ -1497,7 +1497,7 @@
 }
 
 % \camion[keys]{pos} disegna un camion. pos è il centro della sua base
-\newcommand{\camion}[2][]{
+\newcommand*{\camion}[2][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		width/.initial = thick, % può essere thin, thick, ...
@@ -1545,7 +1545,7 @@
 }
 
 % \moto[keys]{pos} disegna un motociclista. pos è il centro della base della moto
-\newcommand{\moto}[2][]{
+\newcommand*{\moto}[2][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		width/.initial = thick, % può essere thin, thick, ...
@@ -1588,7 +1588,7 @@
 }
 
 % \bici[keys]{pos} disegna un ciclista. pos è il centro della base della bicicletta
-\newcommand{\bici}[2][]{
+\newcommand*{\bici}[2][]{
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		width/.initial = thick, % può essere thin, thick, ...
