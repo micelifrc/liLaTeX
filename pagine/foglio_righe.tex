@@ -1,0 +1,13 @@
+\documentclass[crop]{standalone}
+\newcommand{\TipoDoc}{immagine}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\begin{document}
+
+\begin{immagine}
+\draw[ultra thin,white](0,0)rectangle(21,29.7);
+\tikzdef\size{0.5};
+\foreach \y in {1,2,...,58} \draw[very thin,gray!50] (0,\size*\y)--++(21,0); % la prima riga è un po' più grande
+\end{immagine}
+
+\end{document}

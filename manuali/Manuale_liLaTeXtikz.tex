@@ -271,7 +271,6 @@ Questo è un elenco delle \keys\ più comuni e dei valori di default che conteng
 \item \key{pattern} è il pattern della linea. Il valore di default è la linea continua (ovvero \keyval{solid}) ma può assumere anche valori come \keyval{dashed} o \keyval{dotted}.
 \item \key{arrow} permette di specificare se vogliamo che la linea si concluda con una freccia. In genere il default è vuoto, ma si possono specificare frecce come \keyval{<-}, \keyval{->}, \keyval{<->}, \keyval{|<->|} o \keyval{|->}.
 \item \key{lbl} il nome da dare al label. Se non specificato in genere non viene creato un label.
-\item \key{lbl style} può cambiare lo stile con cui viene scritto il label. In genere è vuoto, ma può assumere i valori \keyval{rm}, \keyval{bf} o \keyval{cal}. In questi casi il label sarà scritto, rispettivamente, come \ttt{\bs mathrm}, \ttt{\bs mathbf}, \ttt{\bs mathcal}). Se si specifica \key{lbl style} non si deve scrivere il \key{lbl} in math mode (non si devono scrivere i \$).
 \item \key{lbl size} vuoto di default. Se specificato (con valori come \keyval{large}, \keyval{small} o \keyval{tiny}) cambia la dimensione del label.
 \item \ttt{\key{lbl dist} := \keyval{0.3}} la distanza del label dal nodo.
 \item \key{lbl name} il nome da dare alla posizione del label. Il valore di default cambia di funzione in funzione.
@@ -381,7 +380,7 @@ Gli assi cartesiani possono essere disegnati uno per volta usando i comandi
 
 con le \keys:
 \begin{itemize}[nolistsep]
-\item \key{col}, \key{width}, \key{pattern}, \ttt{\key{arrow} := \keyval{->}}, \key{lbl}, \key{lbl style}, \key{lbl name}, \key{lbl size}, \key{lbl dist}, \ttt{\key{lbl col} = \key{col lbl}} coi significati della sezione \ref{keysec}.
+\item \key{col}, \key{width}, \key{pattern}, \ttt{\key{arrow} := \keyval{->}}, \key{lbl}, \key{lbl name}, \key{lbl size}, \key{lbl dist}, \ttt{\key{lbl col} = \key{col lbl}} coi significati della sezione \ref{keysec}.
 \item \ttt{\key{y} := \keyval{0}} (solo per \ttt{\bs assex}) specifica la coordinata $y$ dell'asse delle ascisse. Analogamente \ttt{\key{x} := \keyval{0}} (solo per \ttt{\bs assey}) specifica la coordinata $x$ dell'asse delle ordinate.
 \item \ttt{\key{flip lbl} := \keyval{false}} se reso \keyval{true} il label viene ruotato di $180^\circ$.
 \item \ttt{\key{ang shift} := \keyval{0}} una rotazione extra per il label (oltre a quella prevista dalla posizione iniziale).
@@ -400,7 +399,6 @@ Entrambi i comandi hanno le seguenti \keys:
 \item \key{col}, \key{width}, \key{pattern}, \ttt{\key{arrow} := \keyval{->}}, \ttt{\key{lbl dist} := \keyval{0.3}}, \ttt{\key{lbl col} = \key{col lbl}} coi significati della sezione \ref{keysec}.
 \item \ttt{\key{lbl x} := \keyval{\$x\$}} e \ttt{\key{lbl y} := \keyval{\$y\$}} sono i due label.
 \item \key{lbl x name} e \key{lbl y name} sovrascrivono sono i nomi dei due label.
-\item \key{lbl x style} e \key{lbl y style} sovrascrivono \key{lbl style} per i due diversi label.
 \item \ttt{\key{x} := \keyval{0}} e \ttt{\key{y} := \keyval{0}} (solo per \ttt{\bs assexy}) specifica le coordinate del centro del sistema di riferimento.
 \end{itemize}
 
@@ -440,11 +438,10 @@ Il comando \ttt{\bs sistrif} consente di inserire un sistema di riferimento (eve
 \codice{\bs sistrif[\keys]\{\blue{centro}\}\{\blue{angolo}\};}
 dove \ttt{centro} indica il centro del sistema di riferimento (dove vogliamo disegnare l'origine), mentre \ttt{angolo} indica l'angolo di inclinazione dell'asse $x$. Le \keys\ sono:
 \begin{itemize}[nolistsep]
-\item \ttt{\key{col} := \keyval{magenta}}, \ttt{\key{lbl col} = \key{col lbl}}, \key{width}, \key{pattern}, \ttt{\key{arrow} := \keyval{->}}, \ttt{\key{lbl dist} := \keyval{0.3}}, \key{lbl style} come spiegate nella sezione \ref{keysec}. Si riferiscono a entrambi gli assi cartesiani.
+\item \ttt{\key{col} := \keyval{magenta}}, \ttt{\key{lbl col} = \key{col lbl}}, \key{width}, \key{pattern}, \ttt{\key{arrow} := \keyval{->}}, \ttt{\key{lbl dist} := \keyval{0.3}} come spiegate nella sezione \ref{keysec}. Si riferiscono a entrambi gli assi cartesiani.
 \item \ttt{\key{front} := \keyval{2}} e \ttt{\key{back} := \keyval{0.3}} indicano le lunghezze dei due assi cartesiani in avanti (per valori positivi) e indietro (per valori negativi). Possono essere sovrascritti separatamente per i due assi con le \keys\ \key{front x}, \key{front y}, \key{back x} e \key{back y}.
 \item \ttt{\key{lbl x} := \keyval{\$x\$}} e \ttt{\key{lbl y} := \keyval{\$y\$}} sono i label per i due assi cartesiani. Se si vuole togliere un label scrivere, ad esempio, \ttt{\key{lbl x}=}.
 \item \ttt{\key{label} := \keyval{true}}. Se reso \keyval{false} vengono rimossi entrambi i label.
-\item \key{lbl style} può essere sovrascritto con \key{lbl x style} e \key{lbl y style} per specificarlo separatamente per le due keys.
 \item \ttt{\key{filp} := \keyval{false}} è da rendere uguale a \keyval{true} se vogliamo che l'asse $y$ si trovi ruotato di $90^\circ$ in senso \textit{orario} (anziché \textit{antiorario}) rispetto all'asse $y$.
 \end{itemize}
 
@@ -452,13 +449,13 @@ Vediamo un semplice esempio:
 
 \codice{\bs sistrif\{0,0\}\{0\};\\
 \bs sistrif[col=teal,lbl x=\$t\$]\{4,0\}\{30\};\\
-\bs sistrif[col=gray!70,lbl x=a,lbl style=rm,flip=true]\{8,1\}\{60\};}
+\bs sistrif[col=gray!70,lbl x=\$\bs ra\$,flip=true]\{8,1\}\{60\};}
 
 \ifnum\showimmagini=1
 \begin{immagine}
 \sistrif{0,0}{0};
 \sistrif[col=teal,lbl x=$t$]{4,0}{30};
-\sistrif[col=gray!70,lbl x=a,lbl style=rm,flip=true]{8,1}{60};
+\sistrif[col=gray!70,lbl x=$\ra$,flip=true]{8,1}{60};
 \end{immagine}
 \fi
 
@@ -470,7 +467,7 @@ La funzione principale di \liLaTeXtikz\ è la funzione che crea dei punti usando
 
 con le \keys:
 \begin{itemize}[nolistsep]
-\item \key{col}, \ttt{\key{lbl col} = \key{col lbl}}, \key{lbl}, \key{lbl style}, \key{lbl name}, \key{lbl size}, \ttt{\key{lbl dist} := \keyval{0.3}} come spiegate nella sezione \ref{keysec}.
+\item \key{col}, \ttt{\key{lbl col} = \key{col lbl}}, \key{lbl}, \key{lbl name}, \key{lbl size}, \ttt{\key{lbl dist} := \keyval{0.3}} come spiegate nella sezione \ref{keysec}.
 \item \ttt{\key{lbl ang} := \keyval{-90}} l'angolo a cui si trova il label (se specificato).
 \item \ttt{\key{name} := \keyval{puntoNome}} il nome da dare al punto (non al label).
 \item \ttt{\key{size} := \keyval{1.5}} la dimensione del punto (in \ttt{pt}).
@@ -532,24 +529,7 @@ Aggiungere label può essere molto scomodo. Soprattutto se vogliamo scrivere il 
 dove \ttt{coord} è la posizione del punto dove creare il label. Le \keys\ sono:
 \begin{itemize}[nolistsep]
 \item \key{lbl}, \key{lbl size}, \ttt{\key{lbl name} := \keyval{scriptlblName}}, \ttt{\key{col lbl} = \key{lbl col} = \key{col}} come spiegate nella sezione \ref{keysec}.
-\item \key{lbl style} è il label style da usare. Può essere lasciato vuoto se non vogliamo nessuno stile, o può essere posto ai seguenti valori:
-\begin{itemize}[nolistsep]
-\item se \ttt{\key{lbl style} := \keyval{rm}} il label viene scritto come \ttt{\bs mathrm};
-\item se \ttt{\key{lbl style} := \keyval{bf}} il label viene scritto come \ttt{\bs mathbf};
-\item se \ttt{\key{lbl style} := \keyval{cal}} il label viene scritto come \ttt{\bs mathcal}.
 \end{itemize}
-\end{itemize}
-\textbf{Attenzione!} se il \key{lbl style} viene specificato (non viene lasciato vuoto), allora il \key{lbl} non può essere scritto in ambiente matematico (che verrà aggiunto automaticamente dall'ambiente \ttt{\bs stylelbl}). Le uniche eccezioni sono se \ttt{\key{lbl} := \keyval{\$x\$}} e \ttt{\key{lbl} := \keyval{\$y\$}} (per cui \ttt{\bs stylelbl} rimuove i simboli di \$).
-
-Quindi un comando come
-
-\ttt{\bs stylelbl[lbl=\$a\$,lbl style=rm]\{0,0\};}
-
-genera un errore. Possiamo invece usare impunemente un comando come
-
-\ttt{\bs stylelbl[lbl=a,lbl style=rm]\{0,0\};}
-
-\textbf{Attenzione!} Per chi vuole modificare/estendere il pacchetto \liLaTeXtikz\ non bisogna usare la funzione \ttt{\bs stylelbl}, ma la sua versione privata \ttt{\bs PRIVstylelbl} (vedi la sezione \ref{PRIVsec} per una spiegazione più dettagliata sulle funzioni private).
 
 \section{Intersezioni con \ttt{\bs intrette} e \ttt{\bs intpaths}}\label{intersezionisec}
 Il comando \ttt{\bs interette} ci permette di creare un punto $P$ come l'intersezione fra due rette $AB$ e $CD$. La sintassi è
@@ -771,7 +751,7 @@ Possiamo disegnare una retta $AB$ o una semiretta $AB$ con i comandi
 \codice{\bs semiretta[\keys]\{\blue{A}\}\{\blue{B}\};}
 con le seguenti \keys:
 \begin{itemize}[nolistsep]
-\item \key{col}, \key{width}, \key{lbl}, \key{lbl style}, \key{lbl name}, \ttt{\key{lbl dist} := \keyval{0.2}}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl}} come illustrati nella sezione \ref{keysec}.
+\item \key{col}, \key{width}, \key{lbl}, \ttt{\key{lbl name} := \keyval{rettaLblName}} (o \keyval{semirettaLblName}), \ttt{\key{lbl dist} := \keyval{0.2}}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl}} come illustrati nella sezione \ref{keysec}.
 \item \key{pattern draw} e \ttt{\key{pattern prol} := \keyval{dashed}} specificano il \ttt{pattern} per il tratto continuo e per quello tratteggiato.
 \item \key{name path} dà un nome al tratto continuo.
 \item \key{draw length}, se specificato aggiunge un tratto continuo lungo \key{draw length} oltre i vertici $A$ e $B$ (solo $B$ per \ttt{\bs semiretta}).
@@ -818,7 +798,7 @@ La funzione
 \codice{\bs circCR[\keys]\{\blue{C}\}\{\blue{R}\};}
 disegna una circonferenza di centro $C$ e raggio $R$. Le \keys\ sono:
 \begin{itemize}[nolistsep]
-\item \key{col}, \key{width}, \key{pattern}, \key{name path}, \ttt{\key{fill} := \keyval{false}}, \key{col fill}, \ttt{\key{opacity} := \keyval{30}}, \key{lbl}, \key{lbl style}, \key{lbl name}, \key{lbl size}e \ttt{\key{lbl col} = \key{col lbl}} come descritte nella sezione \ref{keysec}.
+\item \key{col}, \key{width}, \key{pattern}, \key{name path}, \ttt{\key{fill} := \keyval{false}}, \key{col fill}, \ttt{\key{opacity} := \keyval{30}}, \key{lbl}, \ttt{\key{lbl name} := \keyval{circCPlblName}}, \key{lbl size}e \ttt{\key{lbl col} = \key{col lbl}} come descritte nella sezione \ref{keysec}.
 \item \ttt{\key{lbl ang} := \keyval{-150}} è l'angolo a cui viene posizionato il label (rispetto al centro della circonferenza).
 \item \ttt{\key{lbl dist} := \keyval{0.3}} è la distanza del label dalla circonferenza.
 \end{itemize}
@@ -1035,7 +1015,7 @@ Per disegnare un segmento $AB$ segnato utilizziamo il comando
 
 In questo caso le \keys\ disponibili sono:
 \begin{itemize}[nolistsep]
-\item \key{col}, \key{width}, \key{pattern}, \key{arrow}, \key{name path}, \key{lbl}, \key{lbl style}, \key{lbl name}, \ttt{\key{lbl dist} := \keyval{0.2}}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl}}, \ttt{\key{mark} := \keyval{none}}, \ttt{\key{mark size} := \keyval{0.2}} e \ttt{\key{col mark} := \keyval{black}} come descritte nella sezione \ref{keysec}.
+\item \key{col}, \key{width}, \key{pattern}, \key{arrow}, \key{name path}, \key{lbl}, \key{lbl name}, \ttt{\key{lbl dist} := \keyval{0.2}}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl}}, \ttt{\key{mark} := \keyval{none}}, \ttt{\key{mark size} := \keyval{0.2}} e \ttt{\key{col mark} := \keyval{black}} come descritte nella sezione \ref{keysec}.
 \end{itemize}
 
 Può aver senso usare il comando \ttt{\bs segmento} anche se non siamo interessati a mettere un \key{mark}, dal momento che aggiunge comunque un label ben posizionato (in prossimità del punto medio del segmento).
@@ -1072,7 +1052,7 @@ Vediamo un semplice esempio di utilizzo di questi comandi:
 \bs pntl\{B\}\{-90\}\{1,0\};\\
 \bs coordinate (C) at (-1,2);\\
 \bs angolo[lbl=\$\bs beta\$,col=Green,fill=true,mark=||]\{A\}\{B\}\{C\};\\
-\bs segmento[col=red,lbl=a,lbl style=rm]\{B\}\{A\};\\
+\bs segmento[col=red,lbl=\$\bs ra\$]\{B\}\{A\};\\
 \bs segmento[col=blue,mark=oo]\{B\}\{C\};}
 
 \ifnum\showimmagini=1
@@ -1081,7 +1061,7 @@ Vediamo un semplice esempio di utilizzo di questi comandi:
 \pntl{B}{-90}{1,0};
 \coordinate (C) at (-1,2);
 \angolo[lbl=$\beta$,col=Green,fill=true,mark=||]{A}{B}{C};
-\segmento[col=red,lbl=a,lbl style=rm]{B}{A};
+\segmento[col=red,lbl=$\ra$]{B}{A};
 \segmento[col=blue,mark=oo]{B}{C};
 \end{immagine}
 \fi
@@ -1136,7 +1116,7 @@ Siamo spesso interessati a disegnare delle casse, soprattutto sui piani inclinat
 \codice{\bs cassa[\keys]\{\blue{punto iniziale}\}\{\blue{$x$}\}\{\blue{$y$}\}\{\blue{ang}\};}
 dove $x$ e $y$ indicano le lunghezze della cassa lungo le due direzioni (possono eventualmente essere negativi). Le \keys\ in questo caso sono:
 \begin{itemize}[nolistsep]
-\item \key{col}, \key{width}, \key{pattern}, \key{col draw}, \key{col fill}, \ttt{\key{opacity} := \keyval{20}}, \ttt{\key{fill} := \keyval{true}}, \key{lbl}, \ttt{\key{lbl style} := \keyval{bf}}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl} := \keyval{black}} come descritti nella sezione \ref{keysec}.
+\item \key{col}, \key{width}, \key{pattern}, \key{col draw}, \key{col fill}, \ttt{\key{opacity} := \keyval{20}}, \ttt{\key{fill} := \keyval{true}}, \key{lbl}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl} := \keyval{black}} come descritti nella sezione \ref{keysec}.
 \item \ttt{\key{centro} := \keyval{cassacentro}} è il nome che verrà dato al centro della cassa (dove viene scritto l'eventuale label).
 \end{itemize}
 
@@ -1146,7 +1126,7 @@ La graffa viene spesso usata per specificare delle lunghezze nell'immagine. Per 
 \codice{\bs graffa[\keys]\{\blue{$A$}\}\{\blue{$B$}\};}
 dove la parentesi graffa ha gli estremi in $A$ e $B$. Il comando usa queste \keys:
 \begin{itemize}[nolistsep]
-\item \key{col}, \key{width}, \key{pattern}, \key{lbl}, \key{lbl style}, \key{lbl name}, \ttt{\key{lbl dist} := \keyval{0.5}} e \ttt{\key{lbl col} = \key{col lbl}} come spiegati nella sezione \ref{keysec}.
+\item \key{col}, \key{width}, \key{pattern}, \key{lbl}, \ttt{\key{lbl name} := \keyval{graffanamelbl}}, \ttt{\key{lbl dist} := \keyval{0.5}} e \ttt{\key{lbl col} = \key{col lbl}} come spiegati nella sezione \ref{keysec}.
 \item \ttt{\key{mirror} := \keyval{false}}, se posto uguale a \keyval{true} ribalta la graffa. Questo in realtà è equivalente a scambiare $A$ e $B$ nell'input.
 \item \ttt{\key{amplitude} := \keyval{5}} è l'ampiezza della graffa. Tendenzialmente è un parametro da non toccare.
 \item \ttt{\key{shape} := \keyval{brace}} dice che dobbiamo disegnare una graffa (e non un altro tipo di parentesi). Anche questo è un parametro da non toccare.
@@ -1164,9 +1144,9 @@ dove la parentesi graffa ha gli estremi in $A$ e $B$. Il comando usa queste \key
 \bs coordinate (C) at (\$(NE)+(45:0.3)\$);\\
 \bs draw (\$(C)+(0.9,0)\$)\dash++(0,-1.5);\\
 \bs draw (\$(C)+(\bs ang+90:0.9)\$)\dash++(\bs ang:-2.5)node(top)\{\};\\
-\bs cassa[col=red,lbl=m\_2]\{\$(C)+(0.9-0.4,-1.5)\$\}\{0.8\}\{-1\}\{0\};\\
+\bs cassa[col=red,lbl=\$\bs mathbf\{m\_2\}\$]\{\$(C)+(0.9-0.4,-1.5)\$\}\{0.8\}\{-1\}\{0\};\\
 \bs proj\{H\}\{top\}\{O\}\{NE\};\\
-\bs cassa[col=blue,lbl=m\_1]\{H\}\{-1.8\}\{1.2\}\{\bs ang\};\\
+\bs cassa[col=blue,lbl=\$\bs mathbf\{m\_1\}\$]\{H\}\{-1.8\}\{1.2\}\{\bs ang\};\\
 \bs carrucola\{C\}\{1\};\\
 \bs graffa[lbl name=base]\{O\}\{E\};\\
 \bs node (baselbl) at (base) \{\$2\{,\}4\bs,\bs SI\{m\}\$\};\\
@@ -1186,9 +1166,9 @@ dove la parentesi graffa ha gli estremi in $A$ e $B$. Il comando usa queste \key
 \coordinate (C) at ($(NE)+(45:0.3)$);
 \draw ($(C)+(0.9,0)$)--++(0,-1.5);
 \draw ($(C)+(\ang+90:0.9)$)--++(\ang:-2.5)node(top){};
-\cassa[col=red,lbl=m_2]{$(C)+(0.9-0.4,-1.5)$}{0.8}{-1}{0};
+\cassa[col=red,lbl=$\mathbf{m_2}$]{$(C)+(0.9-0.4,-1.5)$}{0.8}{-1}{0};
 \proj{H}{top}{O}{NE};
-\cassa[col=blue,lbl=m_1]{H}{-1.8}{1.2}{\ang};
+\cassa[col=blue,lbl=$\mathbf{m_1}$]{H}{-1.8}{1.2}{\ang};
 \carrucola{C}{1};
 \graffa[lbl name=base]{O}{E};
 \node (baselbl) at (base) {$2{,}4\,\SI{m}$};

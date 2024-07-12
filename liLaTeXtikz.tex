@@ -38,13 +38,14 @@
 	\def\kv##1{\pgfkeysvalueof{/tikz/keyfld/##1}}
 }
 
-% ifkeyequal{keyname}{value to compare}{do if equal}{do if different}
+% \ifkeyequal{keyname}{value to compare}{do if equal}{do if different}
 \newcommand{\ifkeyequal}[4]{
 	\edef\ifkeyequalkey{\kv{#1}} 
 	\edef\ifkeyequalcomp{#2}
 	\ifdefequal{\ifkeyequalkey}{\ifkeyequalcomp}{#3}{#4}
 }
-% \ifkeyempty{keyname}{do if empty}{do if non-empty}
+
+% \ifkeyempty{keyname}{do if empty}{do if non-empty}. Non funziona se keyname è un label (potrebbe contenere cose come \mathrm, che non sono compatibili
 \newcommand{\ifkeyempty}[3]{\ifkeyequal{#1}{\pgfkeysnovalue}{#2}{#3}}
 
 % aggiorna il valore della key #1 al valore #2. Chiama ad esempio come \setkeyvalue{color}{blue} o come \setkeyvalue{h}{\kv{b}}
@@ -79,10 +80,6 @@
 % restituisce il nome del comando #1 senzo lo slash
 \newcommand{\commandstring}[1]{\removeslash{#1}}
 
-% crea un \inputwithoutdollar uguale all'input #1 ma senza i $
-% Attenzione! Se abbiamo qualcosa come \def\nome{$a$} la funzione \removedollar{$a$} funziona correttamente, ma la funzione \removedollar{\nome} non funziona (lavora sulla stringa \nome anziché sulla stringa $a$)
-\newcommand*{\removedollar}[1]{{\catcode`\$=9\scantokens{\xdef\inputwihoutdollar{#1}}}}
-
 % rimuove lo \ dall'input
 \newcommand{\removeslash}[1]{{\catcode92=9 \endlinechar-1 \scantokens{#1}}}
 
@@ -112,7 +109,6 @@
 % \stylelbl[keys]{coord} scrive il label nel formato specificato
 \newcommand{\stylelbl}[2][]{
 	\tikzset{keyfld/.cd,
-		lbl style/.initial, % se specificato usiamo questo stile. Le opzioni sono rm, bf, cal
 		lbl/.initial,
 		lbl size/.initial,
 		lbl name/.initial = scriptlblName,
@@ -121,7 +117,6 @@
 		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
 	} \setkeyfld{#1};
 	\PRIVstylelbl[
-		PRIVlbl lbl style=\kv{lbl style},
 		PRIVlbl lbl=\kv{lbl},
 		PRIVlbl lbl size=\kv{lbl size},
 		PRIVlbl lbl name=\kv{lbl name},
@@ -134,7 +129,6 @@
 % \PRIVstylelbl[keys]{coord} analogo a \stylelbl, ma da usare nelle funzioni di questo pacchetto
 \newcommand{\PRIVstylelbl}[2][]{
 	\tikzset{keyfld/.cd,
-		PRIVlbl lbl style/.initial, % se specificato usiamo questo stile. Le opzioni sono rm, bf, cal
 		PRIVlbl lbl/.initial,
 		PRIVlbl lbl size/.initial,
 		PRIVlbl lbl name/.initial = scriptlblName,
@@ -145,21 +139,8 @@
 	\copykeyvaluesifempty
 		{PRIVlbl lbl col}{PRIVlbl col}
 		{PRIVlbl col lbl}{PRIVlbl lbl col}
-	\ifkeyempty{PRIVlbl lbl}{\coordinate (\kv{PRIVlbl lbl name}) at (#2);}{
-		\ifkeyempty{PRIVlbl lbl style}{ \node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}\kv{PRIVlbl lbl}}; }{
-			\removedollarfromkey[PRIVlbl lbl]{x};
-			\removedollarfromkey[PRIVlbl lbl]{y};
-			\ifkeyequal{PRIVlbl lbl style}{rm}{ \node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}$\mathrm{\kv{PRIVlbl lbl}}$}; }{}
-			\ifkeyequal{PRIVlbl lbl style}{bf}{ \node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}$\mathbf{\kv{PRIVlbl lbl}}$}; }{}
-			\ifkeyequal{PRIVlbl lbl style}{cal}{ \node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}$\mathcal{\kv{PRIVlbl lbl}}$}; }{}
-		}
-	}
+	\node[\kv{PRIVlbl col lbl}] (\kv{PRIVlbl lbl name}) at (#2) {\kv{PRIVlbl lbl size}\kv{PRIVlbl lbl}};
 }
-
-% \removedollarfromkey[key name]{value} se la key #1 ha valore $#2$, viene ridefinita come #2
-\newcommand{\removedollarfromkey}[2][lbl]{\ifkeyequal{#1}{$#2$}{\setkeyvalue{#1}{#2}}{}}
-
-%TODO idealmente vorremmo creare una funzione come removedollarfromkey che funzioni con tutte le keys (senza bisogno di specificare il valore di #2)
 
 %%%%%%%%%%%%%%%%	PUNTO
 % Attenzione! coordinate create come \punto (o suoi derivati) sono incompatibili con l'opzione fill per eventuali poligoni. Questo vuol dire che se vogliamo disegnare un poligono colorato, dobbiamo definire i punti come \coordinate, poi usare fill, e infine ripassare i vertici con \punto
@@ -172,7 +153,6 @@
 		shape/.initial = circle, % circle, rettangle o lo si può lasciare vuoto
 		name/.initial = puntoNome,
 		lbl/.initial,
-		lbl style/.initial, % può essere lasciato vuoto o può essere rm, bf, cal
 		lbl name/.initial,
 		lbl ang/.initial = -90,
 		lbl dist/.initial = 0.3,
@@ -182,7 +162,6 @@
 	} \setkeyfld{#1};
 	\coordinate[\kv{shape},inner sep=\kv{size},fill=\kv{col}] (\kv{name}) at (#2);
 	\PRIVstylelbl[
-		PRIVlbl lbl style=\kv{lbl style},
 		PRIVlbl lbl=\kv{lbl},
 		PRIVlbl lbl size=\kv{lbl size},
 		PRIVlbl lbl name=\kv{lbl name},
@@ -342,7 +321,6 @@
 		width/.initial, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		lbl/.initial = $x$,
-		lbl style/.initial, % può essere lasciato vuoto o può essere rm, bf, cal
 		lbl name/.initial = assexlbl, % il nome da dare al label
 		lbl size/.initial,
 		lbl dist/.initial = 0.3,
@@ -353,7 +331,6 @@
 	\ifkeyequal{flip lbl}{true}{\def\assexflipper{180}}{\def\assexflipper{0}};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(0,\kv{y})+(\kv{ang shift}:#2)$) -- ($(0,\kv{y})+(\kv{ang shift}:#3)$)node(assexpunta){};
 	\PRIVstylelbl[
-		PRIVlbl lbl style=\kv{lbl style},
 		PRIVlbl lbl=\kv{lbl},
 		PRIVlbl lbl size=\kv{lbl size},
 		PRIVlbl lbl name=\kv{lbl name},
@@ -373,7 +350,6 @@
 		width/.initial, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		lbl/.initial = $y$,
-		lbl style/.initial, % può essere lasciato vuoto o può essere rm, bf, cal
 		lbl size/.initial,
 		lbl name/.initial = asseylbl, % il nome da dare al label
 		lbl dist/.initial = 0.3,
@@ -384,7 +360,6 @@
 	\ifkeyequal{flip lbl}{true}{\def\asseyflipper{180}}{\def\asseyflipper{0}};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(\kv{x},0)+(\kv{ang shift}+90:#2)$) -- ($(\kv{x},0)+(\kv{ang shift}+90:#3)$)node(asseypunta){};
 	\PRIVstylelbl[
-		PRIVlbl lbl style=\kv{lbl style},
 		PRIVlbl lbl=\kv{lbl},
 		PRIVlbl lbl size=\kv{lbl size},
 		PRIVlbl lbl name=\kv{lbl name},
@@ -405,22 +380,15 @@
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		lbl x/.initial = $x$,
 		lbl y/.initial = $y$,
-		lbl style/.initial,
-		lbl x style/.initial,
-		lbl y style/.initial,
 		lbl x name/.initial = assixylblx, % il nome da dare al label per y
 		lbl y name/.initial = assixylbly, % il nome da dare al label per y
 		lbl dist/.initial = 0.3,
 		lbl col/.initial,
 		col lbl/.initial, % uguale a lbl col
 	} \setkeyfld{#1};
-	\copykeyvaluesifempty
-		{lbl x style}{lbl style}
-		{lbl y style}{lbl style}
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (#2,\kv{y})--(#3,\kv{y})node(assixypuntax){};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (\kv{x},#4)--(\kv{x},#5)node(assixypuntay){};
 	\PRIVstylelbl[
-		PRIVlbl lbl style=\kv{lbl x style},
 		PRIVlbl lbl=\kv{lbl x},
 		PRIVlbl lbl size=\kv{lbl size},
 		PRIVlbl lbl name=\kv{lbl x name},
@@ -429,7 +397,6 @@
 		PRIVlbl col lbl=\kv{col lbl},
 	]{$(assixypuntax)+(-90:\kv{lbl dist})$};
 	\PRIVstylelbl[
-		PRIVlbl lbl style=\kv{lbl y style},
 		PRIVlbl lbl=\kv{lbl y},
 		PRIVlbl lbl size=\kv{lbl size},
 		PRIVlbl lbl name=\kv{lbl y name},
@@ -448,22 +415,15 @@
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		lbl x/.initial = $x$,
 		lbl y/.initial = $y$,
-		lbl style/.initial,
-		lbl x style/.initial,
-		lbl y style/.initial,
 		lbl x name/.initial = assixylblx, % il nome da dare al label per y
 		lbl y name/.initial = assixylbly, % il nome da dare al label per y
 		lbl dist/.initial = 0.3,
 		lbl col/.initial,
 		col lbl/.initial, % uguale a lbl col
 	} \setkeyfld{#1};
-	\copykeyvaluesifempty
-		{lbl x style}{lbl style}
-		{lbl y style}{lbl style}
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (#3,0|-#2)--(#4,0|-#2)node(assixypuntax){};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (0,#5-|#2)--(0,#6-|#2)node(assixypuntay){};
 	\PRIVstylelbl[
-		PRIVlbl lbl style=\kv{lbl x style},
 		PRIVlbl lbl=\kv{lbl x},
 		PRIVlbl lbl size=\kv{lbl size},
 		PRIVlbl lbl name=\kv{lbl x name},
@@ -472,7 +432,6 @@
 		PRIVlbl col lbl=\kv{col lbl},
 	]{$(assixypuntax)+(-90:\kv{lbl dist})$};
 	\PRIVstylelbl[
-		PRIVlbl lbl style=\kv{lbl y style},
 		PRIVlbl lbl=\kv{lbl y},
 		PRIVlbl lbl size=\kv{lbl size},
 		PRIVlbl lbl name=\kv{lbl y name},
@@ -550,9 +509,6 @@
 		lbl y/.initial = $y$,
 		lbl col/.initial,
 		col lbl/.initial, % sinonimo di col lbl
-		lbl style/.initial,
-		lbl x style/.initial,
-		lbl y style/.initial,
 	} \setkeyfld{#1};
 	\copykeyvaluesifempty
 		{front x}{front}
@@ -561,14 +517,12 @@
 		{back y}{back}
 		{lbl col}{col}
 		{col lbl}{lbl col}
-		{lbl x style}{lbl style}
-		{lbl y style}{lbl style}
 	\ifkeyequal{flip}{false}{\def\sistrifflipper{+1}}{\def\sistrifflipper{-1}}
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(#3:-\kv{back x})$) -- ($(#2)+(#3:\kv{front x})$)node(sistrifLblXpunta){};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(\sistrifflipper*90+#3:-\kv{back y})$) -- ($(#2)+(\sistrifflipper*90+#3:\kv{front y})$)node(sistrifLblYpunta){};
 	\ifkeyequal{label}{true}{
-		\PRIVstylelbl[PRIVlbl lbl style=\kv{lbl x style},PRIVlbl lbl=\kv{lbl x},PRIVlbl col lbl=\kv{col lbl}]{$(sistrifLblXpunta)+(#3-90*\sistrifflipper:\kv{lbl dist})$};
-		\PRIVstylelbl[PRIVlbl lbl style=\kv{lbl y style},PRIVlbl lbl=\kv{lbl y},PRIVlbl col lbl=\kv{col lbl}]{$(sistrifLblYpunta)+(#3+180:\kv{lbl dist})$};
+		\PRIVstylelbl[PRIVlbl lbl=\kv{lbl x},PRIVlbl col lbl=\kv{col lbl}]{$(sistrifLblXpunta)+(#3-90*\sistrifflipper:\kv{lbl dist})$};
+		\PRIVstylelbl[,PRIVlbl lbl=\kv{lbl y},PRIVlbl col lbl=\kv{col lbl}]{$(sistrifLblYpunta)+(#3+180:\kv{lbl dist})$};
 	}{}
 }
 
@@ -647,9 +601,9 @@
 		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV col fill=\kv{col fill angoli}]{#2}{#4}{#3};
 	}
 	\ifkeyequal{lbl lati}{true}{
-		\PRIVsegmento[PRIV col=\kv{col lati},PRIV lbl=a,PRIV lbl style=rm]{#3}{#4};
-		\PRIVsegmento[PRIV col=\kv{col lati},PRIV lbl=b,PRIV lbl style=rm]{#4}{#2};
-		\PRIVsegmento[PRIV col=\kv{col lati},PRIV lbl=c,PRIV lbl style=rm]{#2}{#3};
+		\PRIVsegmento[PRIV col=\kv{col lati},PRIV lbl=$\ra$]{#3}{#4};
+		\PRIVsegmento[PRIV col=\kv{col lati},PRIV lbl=$\rb$]{#4}{#2};
+		\PRIVsegmento[PRIV col=\kv{col lati},PRIV lbl=$\rc$]{#2}{#3};
 	}{
 		\PRIVsegmento[PRIV col=\kv{col lati}]{#3}{#4};
 		\PRIVsegmento[PRIV col=\kv{col lati}]{#4}{#2};
@@ -682,8 +636,7 @@
 		arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
 		name path/.initial, % può essere usato per dare un nome al path
 		lbl/.initial,
-		lbl style/.initial,
-		lbl name/.initial, % il nome da dare alla posizione del label
+		lbl name/.initial = segmentoLabelPos, % il nome da dare alla posizione del label
 		lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
 		lbl size/.initial,
 		lbl col/.initial,
@@ -700,7 +653,6 @@
 		PRIV arrow=\kv{arrow},
 		PRIV name path=\kv{name path},
 		PRIV lbl=\kv{lbl},
-		PRIV lbl style=\kv{lbl style},
 		PRIV lbl name=\kv{lbl name},
 		PRIV lbl dist=\kv{lbl dist},
 		PRIV lbl size=\kv{lbl size},
@@ -722,8 +674,7 @@
 		PRIV arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
 		PRIV name path/.initial, % può essere usato per dare un nome al path
 		PRIV lbl/.initial,
-		PRIV lbl style/.initial, % può essere vuoto, oppure può essere rm,bf,cal
-		PRIV lbl name/.initial, % il nome da dare alla posizione del label
+		PRIV lbl name/.initial = segmentoLabelPos, % il nome da dare alla posizione del label
 		PRIV lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
 		PRIV lbl size/.initial,
 		PRIV lbl col/.initial,
@@ -732,24 +683,20 @@
 	\copykeyvalueifempty{PRIV col draw}{PRIV col};
 	\coordinate(segmentoA)at(#2);
 	\coordinate(segmentoB)at(#3);
-	\ifkeyempty{PRIV lbl}{}{\setkeyvalueifempty{PRIV lbl name}{segmentoLabelPos};}
 	\ifkeyempty{PRIV name path}
 		{\draw[\kv{PRIV col draw},\kv{PRIV width},\kv{PRIV pattern},\kv{PRIV arrow}](segmentoA)--(segmentoB);}
 		{\draw[\kv{PRIV col draw},\kv{PRIV width},\kv{PRIV pattern},\kv{PRIV arrow},name path=\kv{PRIV name path}](segmentoA)--(segmentoB);}
 	\tkzMarkSegment[mark=\kv{PRIV mark},\kv{PRIV col mark},size=\kv{PRIV mark size}cm](segmentoA,segmentoB)
-	\ifkeyempty{PRIV lbl name}{}{
-		\medio{segmentoPuntoMedio}{segmentoA}{segmentoB};
-		\ruotapuntoN[\kv{PRIV lbl dist}]{\kv{PRIV lbl name}}{segmentoA}{segmentoPuntoMedio}{90};
-		\PRIVstylelbl[
-			PRIVlbl lbl style=\kv{PRIV lbl style},
-			PRIVlbl lbl=\kv{PRIV lbl},
-			PRIVlbl lbl size=\kv{PRIV lbl size},
-			PRIVlbl lbl name=\kv{PRIV lbl name},
-			PRIVlbl col=\kv{PRIV col},
-			PRIVlbl lbl col=\kv{PRIV lbl col},
-			PRIVlbl col lbl=\kv{PRIV col lbl},
-		]{\kv{PRIV lbl name}};
-	}
+	\medio{segmentoPuntoMedio}{segmentoA}{segmentoB};
+	\ruotapuntoN[\kv{PRIV lbl dist}]{\kv{PRIV lbl name}}{segmentoA}{segmentoPuntoMedio}{90};
+	\PRIVstylelbl[
+		PRIVlbl lbl=\kv{PRIV lbl},
+		PRIVlbl lbl size=\kv{PRIV lbl size},
+		PRIVlbl lbl name=\kv{PRIV lbl name},
+		PRIVlbl col=\kv{PRIV col},
+		PRIVlbl lbl col=\kv{PRIV lbl col},
+		PRIVlbl col lbl=\kv{PRIV col lbl},
+	]{\kv{PRIV lbl name}};
 }
 
 % chiama come \markarco[keys]{mark}{O}{A}{B} per creare un mark nel punto medio dell'arco di circonferenza AB di centro O. m indica il marchio richiesto (fra s,z,x,o,oo,|,||,|||)
@@ -834,7 +781,7 @@
 	\coordinate(angoloPuntoC)at(#4);
 	\ifkeyequal{PRIV fill}{true}{\tkzFillAngle[size=\kv{PRIV r},opacity=\kv{PRIV opacity}*0.01,fill=\kv{PRIV col fill}](angoloPuntoA,angoloPuntoB,angoloPuntoC)}{}
 	\tkzMarkAngle[mark=\kv{PRIV mark},size=\kv{PRIV r},draw=\kv{PRIV col draw},\kv{PRIV width},\kv{PRIV pattern},\kv{PRIV arrow}](angoloPuntoA,angoloPuntoB,angoloPuntoC)
-	\ifkeyempty{PRIV lbl}{}{\tkzLabelAngle[pos=(\kv{PRIV r}+\kv{PRIV lbl dist}),\kv{PRIV lbl col}](angoloPuntoA,angoloPuntoB,angoloPuntoC){\kv{PRIV lbl size}\kv{PRIV lbl}}}
+	\tkzLabelAngle[pos=(\kv{PRIV r}+\kv{PRIV lbl dist}),\kv{PRIV lbl col}](angoloPuntoA,angoloPuntoB,angoloPuntoC){\kv{PRIV lbl size}\kv{PRIV lbl}}
 }
 
 % chiama come \angoloretto[keys]{A}{B}{C} per disegnare l'angolo retto in senso antiorario
@@ -875,8 +822,7 @@
 		pattern prol/.initial = dashed, % può essere solid, dashed, dotted, ...
 		name path/.initial, % può essere usato per dare un nome al path (per il tratto continuo)
 		lbl/.initial,
-		lbl style/.initial, % può essere lasciato vuoto oppure può essere rm, bf, cal
-		lbl name/.initial, % il nome da dare alla posizione del label
+		lbl name/.initial = rettaLblName, % il nome da dare alla posizione del label
 		lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
 		flip lbl/.initial = false, % dice se vogliamo ribaltare la posizione del label
 		lbl size/.initial,
@@ -900,21 +846,17 @@
 		\allont[\kv{prol length}]{rettaProlB}{rettaDrawB}{#2};
 		\draw[\kv{col},\kv{width},\kv{pattern prol}] (rettaDrawA)--(rettaProlA) (rettaDrawB)--(rettaProlB);
 	}
-	\ifkeyempty{lbl}{}{\setkeyvalueifempty{lbl name}{rettaLblName};}
-	\ifkeyempty{lbl name}{}{
-		\verso[0.2]{rettaFulcro}{rettaProlB}{#2};
-		\ifkeyequal{flip lbl}{false}{\def\semirettaLblAng{-90}}{\def\semirettaLblAng{+90}}
-		\ruotapuntoN[\kv{lbl dist}]{\kv{lbl name}}{rettaProlB}{rettaFulcro}{\semirettaLblAng};
-		\PRIVstylelbl[
-			PRIVlbl lbl style=\kv{lbl style},
-			PRIVlbl lbl=\kv{lbl},
-			PRIVlbl lbl size=\kv{lbl size},
-			PRIVlbl lbl name=\kv{lbl name},
-			PRIVlbl col=\kv{col},
-			PRIVlbl lbl col=\kv{lbl col},
-			PRIVlbl col lbl=\kv{col lbl},
-		]{\kv{lbl name}};
-	}
+	\verso[0.2]{rettaFulcro}{rettaProlB}{#2};
+	\ifkeyequal{flip lbl}{false}{\def\semirettaLblAng{-90}}{\def\semirettaLblAng{+90}}
+	\ruotapuntoN[\kv{lbl dist}]{\kv{lbl name}}{rettaProlB}{rettaFulcro}{\semirettaLblAng};
+	\PRIVstylelbl[
+		PRIVlbl lbl=\kv{lbl},
+		PRIVlbl lbl size=\kv{lbl size},
+		PRIVlbl lbl name=\kv{lbl name},
+		PRIVlbl col=\kv{col},
+		PRIVlbl lbl col=\kv{lbl col},
+		PRIVlbl col lbl=\kv{col lbl},
+	]{\kv{lbl name}};
 }
 
 % \semiretta[keys]{A}{B} crea una semiretta da A a B
@@ -928,8 +870,7 @@
 		pattern prol/.initial = dashed, % può essere solid, dashed, dotted, ...
 		name path/.initial, % può essere usato per dare un nome al path (per il tratto continuo)
 		lbl/.initial,
-		lbl style/.initial, % può essere lasciato vuoto oppure può essere rm, bf, cal
-		lbl name/.initial, % il nome da dare alla posizione del label
+		lbl name/.initial = semirettaLblName, % il nome da dare alla posizione del label
 		lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
 		flip lbl/.initial = false, % dice se vogliamo ribaltare la posizione del label
 		lbl size/.initial,
@@ -950,21 +891,17 @@
 		\allont[\kv{prol length}]{semirettaProlTo}{semirettaDrawTo}{#2};
 		\draw[\kv{col},\kv{width},\kv{pattern prol}](semirettaDrawTo)--(semirettaProlTo);
 	}
-	\ifkeyempty{lbl}{}{\setkeyvalueifempty{lbl name}{semirettaLblName};}
-	\ifkeyempty{lbl name}{}{
-		\verso[0.2]{semirettaFulcro}{semirettaProlTo}{#2};
-		\ifkeyequal{flip lbl}{false}{\def\semirettaLblAng{-90}}{\def\semirettaLblAng{+90}}
-		\ruotapuntoN[\kv{lbl dist}]{\kv{lbl name}}{semirettaProlTo}{semirettaFulcro}{\semirettaLblAng};
-		\PRIVstylelbl[
-			PRIVlbl lbl style=\kv{lbl style},
-			PRIVlbl lbl=\kv{lbl},
-			PRIVlbl lbl size=\kv{lbl size},
-			PRIVlbl lbl name=\kv{lbl name},
-			PRIVlbl col=\kv{col},
-			PRIVlbl lbl col=\kv{lbl col},
-			PRIVlbl col lbl=\kv{col lbl},
-		]{\kv{lbl name}};
-	}
+	\verso[0.2]{semirettaFulcro}{semirettaProlTo}{#2};
+	\ifkeyequal{flip lbl}{false}{\def\semirettaLblAng{-90}}{\def\semirettaLblAng{+90}}
+	\ruotapuntoN[\kv{lbl dist}]{\kv{lbl name}}{semirettaProlTo}{semirettaFulcro}{\semirettaLblAng};
+	\PRIVstylelbl[
+		PRIVlbl lbl=\kv{lbl},
+		PRIVlbl lbl size=\kv{lbl size},
+		PRIVlbl lbl name=\kv{lbl name},
+		PRIVlbl col=\kv{col},
+		PRIVlbl lbl col=\kv{lbl col},
+		PRIVlbl col lbl=\kv{col lbl},
+	]{\kv{lbl name}};
 }
 
 
@@ -980,9 +917,8 @@
 		fill/.initial = false,
 		col fill/.initial,
 		opacity/.initial = 30, % l'opacity del fill, se non è stato specificato col fill
-		lbl name/.initial, % il nome da dare all'eventuale label (se presente)
+		lbl name/.initial = circCPlblName, % il nome da dare all'eventuale label (se presente)
 		lbl/.initial,
-		lbl style/.initial, % può essere lasciato vuoto oppure può essere rm, bf, cal
 		lbl size/.initial,
 		lbl dist/.initial = 0.3, % la distanza del label dalla circonferenza
 		lbl ang/.initial = -150, % l'angolo a cui mettere il label
@@ -1011,18 +947,14 @@
 			{\draw[\kv{col},\kv{width},\kv{pattern},name path=\kv{name path},fill=\kv{col fill}] (#2) circle (#3);}
 		}
 	}
-	\ifkeyempty{lbl}{}{\setkeyvalueifempty{lbl name}{circCPlblName};}
-	\ifkeyempty{lbl name}{}{
-		\PRIVstylelbl[
-			PRIVlbl lbl style=\kv{lbl style},
-			PRIVlbl lbl=\kv{lbl},
-			PRIVlbl lbl size=\kv{lbl size},
-			PRIVlbl lbl name=\kv{lbl name},
-			PRIVlbl col=\kv{col},
-			PRIVlbl lbl col=\kv{lbl col},
-			PRIVlbl col lbl=\kv{col lbl},
-		]{$(#2)+(\kv{lbl ang}:#3+\kv{lbl dist} cm)$};
-	}
+	\PRIVstylelbl[
+		PRIVlbl lbl=\kv{lbl},
+		PRIVlbl lbl size=\kv{lbl size},
+		PRIVlbl lbl name=\kv{lbl name},
+		PRIVlbl col=\kv{col},
+		PRIVlbl lbl col=\kv{lbl col},
+		PRIVlbl col lbl=\kv{col lbl},
+	]{$(#2)+(\kv{lbl ang}:#3+\kv{lbl dist} cm)$};
 }
 
 % \circCP[keys]{C}{P} disegna la circonferenza di centro C e passante per P
@@ -1317,9 +1249,8 @@
 		fill/.initial = true,
 		width/.initial, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
-		centro/.initial, % dove registrare il nome del centro della cassa
+		centro/.initial = cassacentro, % dove registrare il nome del centro della cassa
 		lbl/.initial,
-		lbl style/.initial = bf, % se specificato usiamo questo stile. Le opzioni sono rm, bf, cal
 		lbl size/.initial,
 		lbl col/.initial = black,
 		col lbl/.initial,
@@ -1329,17 +1260,13 @@
 		{col fill}{\kv{col}!\kv{opacity}}
 	\ifkeyequal{fill}{true}{\fill[\kv{col fill}] (#2)--++(#5:#3)--++(#5+90:#4)--++(#5+180:#3)--++(#5+270:#4);}{}
 	\draw[\kv{col draw},\kv{width},\kv{pattern}] (#2)--++(#5:#3)--++(#5+90:#4)--++(#5+180:#3)--++(#5+270:#4);
-	\ifkeyempty{lbl}{}{\setkeyvalueifempty{centro}{cassacentro}}
-	\ifkeyempty{centro}{}{
-		\PRIVstylelbl[
-			PRIVlbl lbl style=\kv{lbl style},
-			PRIVlbl lbl=\kv{lbl},
-			PRIVlbl lbl size=\kv{lbl size},
-			PRIVlbl lbl name=\kv{centro},
-			PRIVlbl lbl col=\kv{lbl col},
-			PRIVlbl col lbl=\kv{col lbl},
-		]{$(#2)+(#5:0.5*#3)+(#5+90:0.5*#4)$};
-	}
+	\PRIVstylelbl[
+		PRIVlbl lbl=\kv{lbl},
+		PRIVlbl lbl size=\kv{lbl size},
+		PRIVlbl lbl name=\kv{centro},
+		PRIVlbl lbl col=\kv{lbl col},
+		PRIVlbl col lbl=\kv{col lbl},
+	]{$(#2)+(#5:0.5*#3)+(#5+90:0.5*#4)$};
 }
 
 % \raggioluce[keys]{P1}{P2}{P3}... disegna un raggio di luce (con le varie frecce)
@@ -1368,12 +1295,11 @@
 		amplitude/.initial = 5, % in pt
 		dist/.initial = 0.05, % la distanza della molla dai punti A e B
 		mirror/.initial = false,
+		lbl name/.initial = graffanamelbl,
 		lbl/.initial,
-		lbl style/.initial, % se specificato usiamo questo stile. Le opzioni sono rm, bf, cal
 		lbl col/.initial,
 		col lbl/.initial,
 		lbl dist/.initial = 0.5,
-		lbl name/.initial,
 	} \setkeyfld{#1};
 	\ifkeyequal{mirror}{false}{
 		\ruotapuntoN[\kv{dist}]{graffapuntoA}{#2}{#3}{+90};
@@ -1383,24 +1309,20 @@
 		\ruotapuntoN[\kv{dist}]{graffapuntoB}{#2}{#3}{-90};
 	}
 	\draw[\kv{col},\kv{width},\kv{pattern},decorate,decoration={\kv{shape},amplitude=\kv{amplitude}pt}](graffapuntoA) --(graffapuntoB);
-	\ifkeyempty{lbl}{}{\setkeyvalueifempty{lbl name}{graffanamelbl}}
-	\ifkeyempty{lbl name}{}{
-		\medio{graffaPM}{graffapuntoA}{graffapuntoB};
-		\ifkeyequal{mirror}{false}{\def\graffaanglbl{90};}{\def\graffaanglbl{270};}	
-		\ifkeyequal{mirror}{false}
-		{\ruotapunto{graffapuntoruotato}{graffapuntoB}{graffaPM}{\graffaanglbl};}
-		{\ruotapunto{graffapuntoruotato}{graffapuntoA}{graffaPM}{\graffaanglbl};}
-		\verso[\kv{lbl dist}]{graffalblpos}{graffaPM}{graffapuntoruotato};
-		\PRIVstylelbl[
-			PRIVlbl lbl style=\kv{lbl style},
-			PRIVlbl lbl=\kv{lbl},
-			PRIVlbl lbl size=\kv{lbl size},
-			PRIVlbl lbl name=\kv{lbl name},
-			PRIVlbl col=\kv{col},
-			PRIVlbl lbl col=\kv{lbl col},
-			PRIVlbl col lbl=\kv{col lbl},
-		]{graffalblpos};
-	}
+	\medio{graffaPM}{graffapuntoA}{graffapuntoB};
+	\ifkeyequal{mirror}{false}{\def\graffaanglbl{90};}{\def\graffaanglbl{270};}	
+	\ifkeyequal{mirror}{false}
+	{\ruotapunto{graffapuntoruotato}{graffapuntoB}{graffaPM}{\graffaanglbl};}
+	{\ruotapunto{graffapuntoruotato}{graffapuntoA}{graffaPM}{\graffaanglbl};}
+	\verso[\kv{lbl dist}]{graffalblpos}{graffaPM}{graffapuntoruotato};
+	\PRIVstylelbl[
+		PRIVlbl lbl=\kv{lbl},
+		PRIVlbl lbl size=\kv{lbl size},
+		PRIVlbl lbl name=\kv{lbl name},
+		PRIVlbl col=\kv{col},
+		PRIVlbl lbl col=\kv{lbl col},
+		PRIVlbl col lbl=\kv{col lbl},
+	]{graffalblpos};
 }
 
 % \molla[keys]{A}{B} disegna una molla da A a B
