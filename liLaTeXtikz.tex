@@ -33,7 +33,7 @@
 \newcommand*{\setkeyfld}[1]{
 	% passiamo alla key directory keyfld, e ridefiniamo come #1 tutti le keys specificate in #1
 	\tikzset{keyfld/.cd,#1}%
-	% definiamo un soprannome \kv per il path alle keys. In questo modo, per riferirci al VALORE di una chiave chiamata K dovremo scrivere \kv{K}, anziché la più lunga /tikz/keyfld/K. Quindi K indica la chiave, mentre \kv{K} indica il suo valore
+	% definiamo un soprannome \kv per il path alle keys. In questo modo, per riferirci al VALORE di una chiave chiamata K dovremo scrivere \kv{K}, anziché la più lunga /tikz/keyfld/K. Quindi K indica la chiave, mentre \kv{K} indica il suo valore. \kp{K} indica invece l'indirizzo (il path) delle key K
 	\def\kp##1{/tikz/keyfld/##1}
 	\def\kv##1{\pgfkeysvalueof{/tikz/keyfld/##1}}
 }
@@ -50,10 +50,13 @@
 
 % aggiorna il valore della key #1 al valore #2. Chiama ad esempio come \setkeyvalue{color}{blue} o come \setkeyvalue{h}{\kv{b}}
 \newcommand*{\setkeyvalue}[2]{\pgfkeyssetvalue{\kp{#1}}{#2}}
+
 % copia il valore della key #2 nella key #1
 \newcommand*{\copykeyvalue}[2]{\setkeyvalue{#1}{\kv{#2}}}
+
 % aggiorna il valore della key #1 al valore #2 solo se #1 è empty
 \newcommand*{\setkeyvalueifempty}[2]{\ifkeyempty{#1}{\setkeyvalue{#1}{#2}}{}}
+
 % aggiorna il valore della key #1 al valore \kv{#2} solo se #1 è empty
 \newcommand*{\copykeyvalueifempty}[2]{\setkeyvalueifempty{#1}{\kv{#2}}}
 
@@ -85,8 +88,8 @@
 
 % registra la distanza fra #2 e #3 in #1
 \newcommand*{\distanza}[3]{
-	\coordinate(distanzafrom)at(#2);
-	\coordinate(distanzato)at(#3);
+	\coordinate (distanzafrom) at (#2);
+	\coordinate (distanzato) at (#3);
 	\tkzCalcLength(distanzafrom,distanzato)
 		\tkzGetLength{distanzaTemp}
 	\def\distanzaTempincm{\convertto{cm}{\distanzaTemp pt}};
@@ -95,9 +98,9 @@
 
 % angolopolare{<- \a}{P}{O} registra in \a la coordinata angolare di P in un sistema di rif. centrato in O
 \newcommand*{\angolopolare}[3]{
-	\coordinate(angolopolareterzopunto)at($(#3)+(1,0)$);
-	\coordinate(angolopolareP)at(#2);
-	\coordinate(angolopolareO)at(#3);
+	\coordinate (angolopolareterzopunto) at ($(#3)+(1,0)$);
+	\coordinate (angolopolareP) at (#2);
+	\coordinate (angolopolareO) at (#3);
 	\tkzFindAngle(angolopolareterzopunto,angolopolareO,angolopolareP)
 		\tkzGetAngle{angolopolareoutput}
 		\def#1{\angolopolareoutput};
@@ -173,12 +176,16 @@
 
 % chiama come \pnt[col]{nome}{coordinate}
 \newcommand*{\pnt}[3][]{\punto[name=#2,col=#1]{#3};}
+
 % chiama come \pntlbl[col]{nome}{lbl}{lbl ang}{coordinate}
 \newcommand*{\pntlbl}[5][]{\punto[name=#2,lbl=#3,lbl ang=#4,col=#1]{#5};}
+
 % chiama come \pntl[col]{name}{lbl ang}{coordinate}
 \newcommand*{\pntl}[4][]{\pntlbl[#1]{#2}{$#2$}{#3}{#4};}
+
 % chiama come \pntlp[col]{name}{lbl ang}{coordinate}
 \newcommand*{\pntlp}[4][]{\pntlbl[#1]{#2p}{$#2'$}{#3}{#4};}
+
 % chiama come \pntls[col]{name}{lbl ang}{coordinate}
 \newcommand*{\pntls}[4][]{\pntlbl[#1]{#2s}{$#2''$}{#3}{#4};}
 
@@ -187,6 +194,7 @@
 
 % \verso[L]{<- P}{A}{B} crea un punto P ottenuto traslando A verso B per una lunghezza complessiva L
 \newcommand*{\verso}[4][1]{\coordinate (#2) at ($(#3)!#1cm!(#4)$);}
+
 % \allont[L]{<- P}{A}{B} analogo di \verso ma allontanandosi da B
 \newcommand*{\allont}[4][1]{\verso[-#1]{#2}{#3}{#4};}
 
@@ -197,10 +205,10 @@
 \newcommand*{\perpendicolare}[5][1]{\coordinate (#2) at ($(#3)-(#4)+(#4)!#1cm!-90:(#5)$);}
 
 % \medio[k]{<- M}{A}{B} definisce M come il punto (1-k)*A+k*B. Nel caso speciale di k=0.5, M è il punto medio del segmento AB. Quindi se k=0 risulta M:=A, mentre se k=1 risulta M:=B
-\newcommand*{\medio}[4][0.5]{\coordinate(#2)at($(#3)-#1*(#3)+#1*(#4)$);}
+\newcommand*{\medio}[4][0.5]{\coordinate (#2) at ($(#3)-#1*(#3)+#1*(#4)$);}
 
 % \opposto{<- P'}{P}{O} crea l'opposto P' di P rispetto al centro di simmetria O
-\newcommand*{\opposto}[3]{\coordinate(#1)at($2*(#3)-(#2)$);}
+\newcommand*{\opposto}[3]{\coordinate (#1) at ($2*(#3)-(#2)$);}
 
 % \simmetrico{<- P'}{P}{A}{B} crea il punto P', simmetrico di P rispetto alla retta di simmetria AB
 \newcommand*{\simmetrico}[4]{
@@ -210,21 +218,21 @@
 
 % \proj{<- H}{P}{A}{B} genera H come la proiezione ortogonale di P sulla retta AB
 \newcommand*{\proj}[4]{
-	\coordinate(projPcoordinate)at(#2);
-	\coordinate(projAcoordinate)at(#3);
-	\coordinate(projBcoordinate)at(#4);
+	\coordinate (projPcoordinate) at (#2);
+	\coordinate (projAcoordinate) at (#3);
+	\coordinate (projBcoordinate) at (#4);
 	\tkzDefPointBy[projection=onto projAcoordinate--projBcoordinate](projPcoordinate)
 		\tkzGetPoint{#1};
 }
 
 % \sumvett{<- C}{A}{B}{D} definisce il punto C in modo che il vettore AC sia uguale alla somma vettoriale AB+AD. Così facendo ABCD forma un parallelogramma
-\newcommand*{\sumvett}[4]{\coordinate(#1)at($(#3)-(#2)+(#4)$);}
+\newcommand*{\sumvett}[4]{\coordinate (#1) at ($(#3)-(#2)+(#4)$);}
 
 % \ruotapunto{<- R}{P}{O}{a} definisce il punto R ottenuto ruotando P in senso antiorario di un angolo a (con centro di rotazione in O)
 \newcommand*{\ruotapunto}[4]{
-	\coordinate(ruotapuntoP)at(#2);
-	\coordinate(ruotapuntoO)at(#3);
-	\tkzDefPointBy[rotation= center ruotapuntoO angle #4](ruotapuntoP)
+	\coordinate (ruotapuntoP) at (#2);
+	\coordinate (ruotapuntoO) at (#3);
+	\tkzDefPointBy[rotation=center ruotapuntoO angle #4](ruotapuntoP)
 		\tkzGetPoint{#1};
 }
 
@@ -236,8 +244,8 @@
 
 % \triangoloequilatero{<- C}{A}{B} prende in input due punti A e B, e definisce un terzo punto C in modo che ABC sia un triangolo equilatero (coi vertici scritti in senso antiorario)
 \newcommand*{\triangoloequilatero}[3]{
-	\coordinate(triangoloequilateroA)at(#2);
-	\coordinate(triangoloequilateroB)at(#3);
+	\coordinate (triangoloequilateroA) at (#2);
+	\coordinate (triangoloequilateroB) at (#3);
 	\tkzDefTriangle[equilateral](triangoloequilateroA,triangoloequilateroB)
 		\tkzGetPoint{#1}
 }
@@ -246,14 +254,14 @@
 %%%%%%%%%%%%%%%%	INTERSEZIONI
 
 % \intpahts{<- I}{path1}{path2} trova il punto di intersezione fra due paths e lo chiama I
-\newcommand*{\intpaths}[3]{\path [name intersections={of=#2 and #3, by=#1}];}
+\newcommand*{\intpaths}[3]{\path[name intersections={of=#2 and #3, by=#1}];}
 
 % \intrette{<- I}{A}{B}{C}{D} trova il punto di intersezione I fra le rette AB e CD
 \newcommand*{\intrette}[5]{
-	\coordinate(intretteA)at(#2);
-	\coordinate(intretteB)at(#3);
-	\coordinate(intretteC)at(#4);
-	\coordinate(intretteD)at(#5);
+	\coordinate (intretteA) at (#2);
+	\coordinate (intretteB) at (#3);
+	\coordinate (intretteC) at (#4);
+	\coordinate (intretteD) at (#5);
 	\tkzInterLL(intretteA,intretteB)(intretteC,intretteD)
 		\tkzGetPoint{#1};
 }
@@ -281,7 +289,7 @@
 		{step y}{s}
 		{s x}{step x}
 		{s y}{step y}
-	\ifkeyempty{col fill}{}{\fill[\kv{col fill}] (#2,#4)rectangle(#3,#5);}
+	\ifkeyempty{col fill}{}{\fill[\kv{col fill}] (#2,#4) rectangle (#3,#5);}
 	\draw[\kv{col},\kv{width},\kv{pattern}] (#2,#4) grid [xstep=\kv{s x} cm,ystep=\kv{s y} cm] (#3,#5);
 }
 % \grigliaO[keys]{east}{north}. Ha le stesse keys di \griglia
@@ -329,7 +337,7 @@
 		mirror lbl/.initial = false, mirror lbl/.default = true, % rendi true se vuoi ribaltare il label
 	} \setkeyfld{#1};
 	\ifkeyequal{mirror lbl}{true}{\def\assexmirrorper{180}}{\def\assexmirrorper{0}};
-	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(0,\kv{y})+(\kv{ang shift}:#2)$) -- ($(0,\kv{y})+(\kv{ang shift}:#3)$)node(assexpunta){};
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(0,\kv{y})+(\kv{ang shift}:#2)$) -- ($(0,\kv{y})+(\kv{ang shift}:#3)$) node (assexpunta){};
 	\PRIVstylelbl[
 		PRIVlbl lbl=\kv{lbl},
 		PRIVlbl lbl size=\kv{lbl size},
@@ -358,7 +366,7 @@
 		mirror lbl/.initial = false, mirror lbl/.default = true, % rendi true se vuoi ribaltare il label
 	} \setkeyfld{#1};
 	\ifkeyequal{mirror lbl}{true}{\def\asseymirrorper{180}}{\def\asseymirrorper{0}};
-	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(\kv{x},0)+(\kv{ang shift}+90:#2)$) -- ($(\kv{x},0)+(\kv{ang shift}+90:#3)$)node(asseypunta){};
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(\kv{x},0)+(\kv{ang shift}+90:#2)$) -- ($(\kv{x},0)+(\kv{ang shift}+90:#3)$) node (asseypunta){};
 	\PRIVstylelbl[
 		PRIVlbl lbl=\kv{lbl},
 		PRIVlbl lbl size=\kv{lbl size},
@@ -386,8 +394,8 @@
 		lbl col/.initial,
 		col lbl/.initial, % uguale a lbl col
 	} \setkeyfld{#1};
-	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (#2,\kv{y})--(#3,\kv{y})node(assixypuntax){};
-	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (\kv{x},#4)--(\kv{x},#5)node(assixypuntay){};
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (#2,\kv{y}) -- (#3,\kv{y}) node (assixypuntax){};
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (\kv{x},#4) -- (\kv{x},#5) node (assixypuntay){};
 	\PRIVstylelbl[
 		PRIVlbl lbl=\kv{lbl x},
 		PRIVlbl lbl size=\kv{lbl size},
@@ -421,8 +429,8 @@
 		lbl col/.initial,
 		col lbl/.initial, % uguale a lbl col
 	} \setkeyfld{#1};
-	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (#3,0|-#2)--(#4,0|-#2)node(assixypuntax){};
-	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (0,#5-|#2)--(0,#6-|#2)node(assixypuntay){};
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (#3,0|-#2) -- (#4,0|-#2) node (assixypuntax){};
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (0,#5-|#2) -- (0,#6-|#2) node (assixypuntay){};
 	\PRIVstylelbl[
 		PRIVlbl lbl=\kv{lbl x},
 		PRIVlbl lbl size=\kv{lbl size},
@@ -455,14 +463,14 @@
 		col lbl/.initial, % uguagle a lbl col
 		mirror/.initial = false, mirror/.default = true, % se posto a true il label viene messo verso l'alto anziché verso il basso
 	} \setkeyfld{#1};
-	%\ifnum\value{TipoDocVerificaCounter}=0 \setkeyvalueifempty{col}{gray} \fi % se non è una verifica la barra viene colorata di grigio
+	\ifnum\value{TipoDocVerificaCounter}=0 \setkeyvalueifempty{col}{gray} \fi % se non è una verifica la barra viene colorata di grigio
 	\copykeyvaluesifempty
 		{l}{length}
 		{lbl col}{col}
 		{col lbl}{lbl col}
 	\ifkeyequal{mirror}{false}
-		{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](#2,\kv{y}+0.5*\kv{l})--++(0,-\kv{l})node[anchor=north,\kv{col lbl}]{#3};}
-		{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](#2,\kv{y}-0.5*\kv{l})--++(0,+\kv{l})node[anchor=south,\kv{col lbl}]{#3};}
+		{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (#2,\kv{y}+0.5*\kv{l}) --++ (0,-\kv{l}) node[anchor=north,\kv{col lbl}] {#3};}
+		{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (#2,\kv{y}-0.5*\kv{l}) --++ (0,+\kv{l}) node[anchor=south,\kv{col lbl}] {#3};}
 }
 
 % \asseybar[keys]{\y}{lbl} disegna una barretta orizzontale sull'asse y in posizione \y per segnare il label lbl
@@ -479,14 +487,14 @@
 		col lbl/.initial, % uguagle a lbl col
 		mirror/.initial = false, mirror/.default = true, % se posto a true il label viene messo verso l'alto anziché verso il basso
 	} \setkeyfld{#1};
-	%\ifnum\value{TipoDocVerificaCounter}=0 \setkeyvalueifempty{col}{gray} \fi % se non è una verifica la barra viene colorata di grigio
+	\ifnum\value{TipoDocVerificaCounter}=0 \setkeyvalueifempty{col}{gray} \fi % se non è una verifica la barra viene colorata di grigio
 	\copykeyvaluesifempty
 		{l}{length}
 		{lbl col}{col}
 		{col lbl}{lbl col}
 	\ifkeyequal{mirror}{false}
-		{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](\kv{x}+0.5*\kv{l},#2)--++(-\kv{l},0)node[anchor=east,\kv{col lbl}]{#3};}
-		{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](\kv{x}-0.5*\kv{l},#2)--++(+\kv{l},0)node[anchor=west,\kv{col lbl}]{#3};}
+		{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (\kv{x}+0.5*\kv{l},#2) --++ (-\kv{l},0) node[anchor=east,\kv{col lbl}] {#3};}
+		{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] (\kv{x}-0.5*\kv{l},#2) --++ (+\kv{l},0) node[anchor=west,\kv{col lbl}] {#3};}
 }
 
 % \sistrif[keys]{centro}{angolo} crea il sistema di riferimento, ruotato dell'angolo specificato. Si usa in cinematica/dinamica per indicare le direzioni e i versi degli assi cartesiani utilizzati
@@ -518,8 +526,8 @@
 		{lbl col}{col}
 		{col lbl}{lbl col}
 	\ifkeyequal{mirror}{false}{\def\sistrifmirrorper{+1}}{\def\sistrifmirrorper{-1}}
-	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(#3:-\kv{back x})$) -- ($(#2)+(#3:\kv{front x})$)node(sistrifLblXpunta){};
-	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(\sistrifmirrorper*90+#3:-\kv{back y})$) -- ($(#2)+(\sistrifmirrorper*90+#3:\kv{front y})$)node(sistrifLblYpunta){};
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(#3:-\kv{back x})$) -- ($(#2)+(#3:\kv{front x})$) node (sistrifLblXpunta){};
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(\sistrifmirrorper*90+#3:-\kv{back y})$) -- ($(#2)+(\sistrifmirrorper*90+#3:\kv{front y})$) node (sistrifLblYpunta){};
 	\ifkeyequal{no label}{true}{}{
 		\PRIVstylelbl[PRIVlbl lbl=\kv{lbl x},PRIVlbl col lbl=\kv{col lbl}]{$(sistrifLblXpunta)+(#3-90*\sistrifmirrorper:\kv{lbl dist})$};
 		\PRIVstylelbl[PRIVlbl lbl=\kv{lbl y},PRIVlbl col lbl=\kv{col lbl}]{$(sistrifLblYpunta)+(#3+180:\kv{lbl dist})$};
@@ -537,9 +545,9 @@
 
 % \piedebis{<- P}{A}{B}{C} trova P (il piede della bisettrice dell'angolo ABC)
 \newcommand*{\piedebis}[4]{
-	\coordinate(piedebisA)at(#2);
-	\coordinate(piedebisB)at(#3);
-	\coordinate(piedebisC)at(#4);
+	\coordinate (piedebisA) at (#2);
+	\coordinate (piedebisB) at (#3);
+	\coordinate (piedebisC) at (#4);
 	\tkzDefLine[bisector](piedebisA,piedebisB,piedebisC)
 		\tkzGetPoint{piedebisTemp}
 	\intrette{#1}{piedebisTemp}{#3}{#2}{#4};
@@ -547,9 +555,9 @@
 
 % \centrotriangolo[type]{<- P}{A}{B}{C} trova il centro del triangolo (funzione usata per definire i successivi 5 comandi)
 \newcommand*{\centrotriangolo}[5][centroid]{
-	\coordinate(centrotriangoloA)at(#3);
-	\coordinate(centrotriangoloB)at(#4);
-	\coordinate(centrotriangoloC)at(#5);
+	\coordinate (centrotriangoloA) at (#3);
+	\coordinate (centrotriangoloB) at (#4);
+	\coordinate (centrotriangoloC) at (#5);
 	\tkzDefTriangleCenter[#1](centrotriangoloA,centrotriangoloB,centrotriangoloC)
 		\tkzGetPoint{#2};
 }
@@ -587,8 +595,8 @@
 		{col angoli}{col}
 	\ifkeyequal{fill angoli}{true}{
 		\ifkeyempty{col angoli}
-		{\setkeyvalueifempty{col fill angoli}{black!\kv{opacity angoli}}}
-		{\setkeyvalueifempty{col fill angoli}{\kv{col angoli}!\kv{opacity angoli}}}
+			{\setkeyvalueifempty{col fill angoli}{black!\kv{opacity angoli}}}
+			{\setkeyvalueifempty{col fill angoli}{\kv{col angoli}!\kv{opacity angoli}}}
 	}{}
 	\ifkeyempty{col fill angoli}{}{\setkeyvalue{fill angoli}{true}}
 	\ifkeyequal{no label angoli}{true}{
@@ -612,11 +620,11 @@
 	\ifkeyequal{no label vertici}{false}{
 		\baricentro{triangolobasebaricentro}{#2}{#3}{#4};
 		\allont[\kv{lbl vertici dist}]{triangolobaselbllato}{#2}{triangolobasebaricentro};
-		\node[\kv{col vertici}](triangolobaselbllato)at(triangolobaselbllato){$A$};
+		\node[\kv{col vertici}] (triangolobaselbllato) at (triangolobaselbllato) {$A$};
 		\allont[\kv{lbl vertici dist}]{triangolobaselbllato}{#3}{triangolobasebaricentro};
-		\node[\kv{col vertici}](triangolobaselbllato)at(triangolobaselbllato){$B$};
+		\node[\kv{col vertici}] (triangolobaselbllato) at (triangolobaselbllato) {$B$};
 		\allont[\kv{lbl vertici dist}]{triangolobaselbllato}{#4}{triangolobasebaricentro};
-		\node[\kv{col vertici}](triangolobaselbllato)at(triangolobaselbllato){$C$};
+		\node[\kv{col vertici}] (triangolobaselbllato) at (triangolobaselbllato) {$C$};
 	}{}
 }
 
@@ -682,11 +690,11 @@
 	} \setkeyfld{#1};
 	\setkeyvalueifempty{PRIV lbl name}{segmentoLabelPos}
 	\copykeyvalueifempty{PRIV col draw}{PRIV col};
-	\coordinate(segmentoA)at(#2);
-	\coordinate(segmentoB)at(#3);
+	\coordinate (segmentoA) at (#2);
+	\coordinate (segmentoB) at (#3);
 	\ifkeyempty{PRIV name path}
-		{\draw[\kv{PRIV col draw},\kv{PRIV width},\kv{PRIV pattern},\kv{PRIV arrow}](segmentoA)--(segmentoB);}
-		{\draw[\kv{PRIV col draw},\kv{PRIV width},\kv{PRIV pattern},\kv{PRIV arrow},name path=\kv{PRIV name path}](segmentoA)--(segmentoB);}
+		{\draw[\kv{PRIV col draw},\kv{PRIV width},\kv{PRIV pattern},\kv{PRIV arrow}] (segmentoA) -- (segmentoB);}
+		{\draw[\kv{PRIV col draw},\kv{PRIV width},\kv{PRIV pattern},\kv{PRIV arrow},name path=\kv{PRIV name path}] (segmentoA) -- (segmentoB);}
 	\tkzMarkSegment[mark=\kv{PRIV mark},\kv{PRIV col mark},size=\kv{PRIV mark size}cm](segmentoA,segmentoB)
 	\medio{segmentoPuntoMedio}{segmentoA}{segmentoB};
 	\ruotapuntoN[\kv{PRIV lbl dist}]{\kv{PRIV lbl name}}{segmentoA}{segmentoPuntoMedio}{90};
@@ -777,9 +785,9 @@
 		{PRIV lbl col}{PRIV col lbl}
 	\ifkeyempty{PRIV col fill}{}{\setkeyvalue{PRIV fill}{true}};
 	\ifkeyequal{PRIV fill}{true}{\copykeyvalueifempty{PRIV col fill}{PRIV col}}{};
-	\coordinate(angoloPuntoA)at(#2);
-	\coordinate(angoloPuntoB)at(#3);
-	\coordinate(angoloPuntoC)at(#4);
+	\coordinate (angoloPuntoA) at (#2);
+	\coordinate (angoloPuntoB) at (#3);
+	\coordinate (angoloPuntoC) at (#4);
 	\ifkeyequal{PRIV fill}{true}{\tkzFillAngle[size=\kv{PRIV r},opacity=\kv{PRIV opacity}*0.01,fill=\kv{PRIV col fill}](angoloPuntoA,angoloPuntoB,angoloPuntoC)}{}
 	\tkzMarkAngle[mark=\kv{PRIV mark},size=\kv{PRIV r},draw=\kv{PRIV col draw},\kv{PRIV width},\kv{PRIV pattern},\kv{PRIV arrow}](angoloPuntoA,angoloPuntoB,angoloPuntoC)
 	\tkzLabelAngle[pos=(\kv{PRIV r}+\kv{PRIV lbl dist}),\kv{PRIV lbl col}](angoloPuntoA,angoloPuntoB,angoloPuntoC){\kv{PRIV lbl size}\kv{PRIV lbl}}
@@ -801,11 +809,11 @@
 	\setkeyvalueifempty{col draw}{\kv{col}};
 	\ifkeyempty{col fill}{}{\setkeyvalue{fill}{true}};
 	\ifkeyequal{fill}{true}{\setkeyvalueifempty{col fill}{\kv{col}}}{};
-	\coordinate(angolorettoPuntoA)at(#2);
-	\coordinate(angolorettoPuntoB)at(#3);
-	\coordinate(angolorettoPuntoC)at(#4);
+	\coordinate (angolorettoPuntoA) at (#2);
+	\coordinate (angolorettoPuntoB) at (#3);
+	\coordinate (angolorettoPuntoC) at (#4);
 	\ifkeyequal{fill}{true}
-	{\tkzMarkRightAngle[size=\kv{r},\kv{width},\kv{pattern},fill=\kv{col fill},opacity=\kv{opacity}*0.01](angolorettoPuntoA,angolorettoPuntoB,angolorettoPuntoC)}{}
+		{\tkzMarkRightAngle[size=\kv{r},\kv{width},\kv{pattern},fill=\kv{col fill},opacity=\kv{opacity}*0.01](angolorettoPuntoA,angolorettoPuntoB,angolorettoPuntoC)}{}
 	\tkzMarkRightAngle[size=\kv{r},draw=\kv{col draw},\kv{width},\kv{pattern},\kv{arrow}](angolorettoPuntoA,angolorettoPuntoB,angolorettoPuntoC)
 }
 
@@ -832,20 +840,20 @@
 	} \setkeyfld{#1};
 	\ifkeyempty{draw length}{
 		\ifkeyempty{name path}
-			{\draw[\kv{col},\kv{width},\kv{pattern draw}](#2)--(#3);}
-			{\draw[\kv{col},\kv{width},\kv{pattern draw},name path=\kv{name path}](#2)--(#3);}
+			{\draw[\kv{col},\kv{width},\kv{pattern draw}] (#2) -- (#3);}
+			{\draw[\kv{col},\kv{width},\kv{pattern draw},name path=\kv{name path}] (#2) -- (#3);}
 		\allont[\kv{prol length}]{rettaProlA}{#2}{#3};
 		\allont[\kv{prol length}]{rettaProlB}{#3}{#2};
-		\draw[\kv{col},\kv{width},\kv{pattern prol}] (#2)--(rettaProlA) (#3)--(rettaProlB);
+		\draw[\kv{col},\kv{width},\kv{pattern prol}] (#2) -- (rettaProlA)  (#3) -- (rettaProlB);
 	}{
 		\allont[\kv{draw length}]{rettaDrawA}{#2}{#3};
 		\allont[\kv{draw length}]{rettaDrawB}{#3}{#2};
 		\ifkeyempty{name path}
-			{\draw[\kv{col},\kv{width},\kv{pattern draw}](rettaDrawA)--(#2)--(#3)--(rettaDrawB);}
-			{\draw[\kv{col},\kv{width},\kv{pattern draw},name path=\kv{name path}](rettaDrawA)--(#2)--(#3)--(rettaDrawB);}
+			{\draw[\kv{col},\kv{width},\kv{pattern draw}] (rettaDrawA) -- (#2) -- (#3) -- (rettaDrawB);}
+			{\draw[\kv{col},\kv{width},\kv{pattern draw},name path=\kv{name path}] (rettaDrawA) -- (#2) -- (#3) -- (rettaDrawB);}
 		\allont[\kv{prol length}]{rettaProlA}{rettaDrawA}{#3};
 		\allont[\kv{prol length}]{rettaProlB}{rettaDrawB}{#2};
-		\draw[\kv{col},\kv{width},\kv{pattern prol}] (rettaDrawA)--(rettaProlA) (rettaDrawB)--(rettaProlB);
+		\draw[\kv{col},\kv{width},\kv{pattern prol}] (rettaDrawA) -- (rettaProlA)  (rettaDrawB) -- (rettaProlB);
 	}
 	\verso[0.2]{rettaFulcro}{rettaProlB}{#2};
 	\ifkeyequal{mirror lbl}{false}{\def\semirettaLblAng{-90}}{\def\semirettaLblAng{+90}}
@@ -880,17 +888,17 @@
 	} \setkeyfld{#1};
 	\ifkeyempty{draw length}{
 		\ifkeyempty{name path}
-			{\draw[\kv{col},\kv{width},\kv{pattern draw}](#2)--(#3);}
-			{\draw[\kv{col},\kv{width},\kv{pattern draw},name path=\kv{name path}](#2)--(#3);}
+			{\draw[\kv{col},\kv{width},\kv{pattern draw}] (#2) -- (#3);}
+			{\draw[\kv{col},\kv{width},\kv{pattern draw},name path=\kv{name path}] (#2) -- (#3);}
 		\allont[\kv{prol length}]{semirettaProlTo}{#3}{#2};
-		\draw[\kv{col},\kv{width},\kv{pattern prol}](#3)--(semirettaProlTo);
+		\draw[\kv{col},\kv{width},\kv{pattern prol}] (#3) -- (semirettaProlTo);
 	}{
 		\allont[\kv{draw length}]{semirettaDrawTo}{#3}{#2};
 		\ifkeyempty{name path}
-			{\draw[\kv{col},\kv{width},\kv{pattern draw}](#2)--(#3)--(semirettaDrawTo);}
-			{\draw[\kv{col},\kv{width},\kv{pattern draw},name path=\kv{name path}](#2)--(#3)--(semirettaDrawTo);}
+			{\draw[\kv{col},\kv{width},\kv{pattern draw}] (#2) -- (#3) -- (semirettaDrawTo);}
+			{\draw[\kv{col},\kv{width},\kv{pattern draw},name path=\kv{name path}] (#2) -- (#3) -- (semirettaDrawTo);}
 		\allont[\kv{prol length}]{semirettaProlTo}{semirettaDrawTo}{#2};
-		\draw[\kv{col},\kv{width},\kv{pattern prol}](semirettaDrawTo)--(semirettaProlTo);
+		\draw[\kv{col},\kv{width},\kv{pattern prol}] (semirettaDrawTo) -- (semirettaProlTo);
 	}
 	\verso[0.2]{semirettaFulcro}{semirettaProlTo}{#2};
 	\ifkeyequal{mirror lbl}{false}{\def\semirettaLblAng{-90}}{\def\semirettaLblAng{+90}}
@@ -930,22 +938,22 @@
 	\ifkeyequal{pattern}{path}{
 		\ifkeyempty{name path}{
 			\ifkeyempty{col fill}
-			{\path (#2) circle (#3);}
-			{\path[fill=\kv{col fill}] (#2) circle (#3);}
+				{\path (#2) circle (#3);}
+				{\path[fill=\kv{col fill}] (#2) circle (#3);}
 		}{
 			\ifkeyempty{col fill}
-			{\path[name path=\kv{name path}] (#2) circle (#3);}
-			{\path[name path=\kv{name path},fill=\kv{col fill}] (#2) circle (#3);}
+				{\path[name path=\kv{name path}] (#2) circle (#3);}
+				{\path[name path=\kv{name path},fill=\kv{col fill}] (#2) circle (#3);}
 		}
 	}{
 		\ifkeyempty{name path}{
 			\ifkeyempty{col fill}
-			{\draw[\kv{col},\kv{width},\kv{pattern}] (#2) circle (#3);}
-			{\draw[\kv{col},\kv{width},\kv{pattern},fill=\kv{col fill}] (#2) circle (#3);}
+				{\draw[\kv{col},\kv{width},\kv{pattern}] (#2) circle (#3);}
+				{\draw[\kv{col},\kv{width},\kv{pattern},fill=\kv{col fill}] (#2) circle (#3);}
 		}{
 			\ifkeyempty{col fill}
-			{\draw[\kv{col},\kv{width},\kv{pattern},name path=\kv{name path}] (#2) circle (#3);}
-			{\draw[\kv{col},\kv{width},\kv{pattern},name path=\kv{name path},fill=\kv{col fill}] (#2) circle (#3);}
+				{\draw[\kv{col},\kv{width},\kv{pattern},name path=\kv{name path}] (#2) circle (#3);}
+				{\draw[\kv{col},\kv{width},\kv{pattern},name path=\kv{name path},fill=\kv{col fill}] (#2) circle (#3);}
 		}
 	}
 	\PRIVstylelbl[
@@ -969,8 +977,10 @@
 
 % \circPPP[keys]{A}{B}{C} disegna la circonferenza passante per i tre punti A, B e C
 \newcommand*{\circPPP}[4][]{\circPPPcr[#1]{#2}{#3}{#4}{circPPPcentro}{\circPPPmisuraraggio};}
+
 % \circPPPc[keys]{A}{B}{C}{<- centro} disegna la circonferenza passante per i tre punti A, B e C
 \newcommand*{\circPPPc}[5][]{\circPPPcr[#1]{#2}{#3}{#4}{#5}{\circPPPmisuraraggio};}
+
 % \circPPPr[keys]{A}{B}{C}{<- raggio} disegna la circonferenza passante per i tre punti A, B e C
 \newcommand*{\circPPPr}[5][]{\circPPPcr[#1]{#2}{#3}{#4}{circPPPcentro}{#5};}
 
@@ -985,27 +995,27 @@
 
 % \interLC{<- P1}{<- P2}{A}{B}{O}{\R} trova i due punti di intersezione P1 e P2 fra la retta AB e la circonferenza di centro O e raggio \R
 \newcommand*{\interLC}[6]{
-	\path[name path=interLCcirconferenza](#5)circle(#6);
+	\path[name path=interLCcirconferenza] (#5) circle (#6);
 	\distanza{\interLCdistAO}{#3}{#5};
 	\tikzdef\interLCdiffraggisign{sign(\interLCdistAO cm-#6 cm});
 	\ifnum\interLCdiffraggisign=-1 % se A è interno alla circonferenza
 		\allont[2*#6]{interLCdistAOpuntofuori}{#3}{#4};
-		\path[name path=interLCABsegmento](#3)--(interLCdistAOpuntofuori);
+		\path[name path=interLCABsegmento] (#3) -- (interLCdistAOpuntofuori);
 		\intpaths{#1}{interLCcirconferenza}{interLCABsegmento};
 		\verso[2*#6]{interLCdistAOpuntofuori}{#3}{#4};
-		\path[name path=interLCABsegmento](#3)--(interLCdistAOpuntofuori);
+		\path[name path=interLCABsegmento] (#3) -- (interLCdistAOpuntofuori);
 		\intpaths{#2}{interLCcirconferenza}{interLCABsegmento};
 	\fi
 	\ifnum\interLCdiffraggisign=1 % se A è esterno alla circonferenza
 		\proj{interLCproj}{#5}{#3}{#4};
-		\path[name path=interLCABsegmento](#3)--(interLCproj);
+		\path[name path=interLCABsegmento] (#3) -- (interLCproj);
 		\intpaths{#1}{interLCcirconferenza}{interLCABsegmento};
 		\allont[2*#6]{interLCdistAOpuntofuori}{interLCproj}{#3};
-		\path[name path=interLCABsegmento](interLCproj)--(interLCdistAOpuntofuori);
+		\path[name path=interLCABsegmento] (interLCproj) -- (interLCdistAOpuntofuori);
 		\intpaths{#2}{interLCcirconferenza}{interLCABsegmento};
 	\fi
 	\ifnum\interLCdiffraggisign=0 % se A appartiene alla circonferenza
-		\coordinate(#1)at(#3);
+		\coordinate (#1) at (#3);
 		\proj{interLCproj}{#5}{#3}{#4};
 		\opposto{#2}{#3}{interLCproj};
 	\fi
@@ -1013,10 +1023,10 @@
 
 % \interCC{<- P1}{<- P2}{O1}{\R1}{O2}{\R2} trova i due punti di intersezione P1 e P2 fra le due circonferenze di centri O1 e O2 e raggi \R1 e \R2
 \newcommand*{\interCC}[6]{
-	\coordinate(interCCcentroA)at(#3);
-	\coordinate(interCCcentroB)at(#5);
-	\coordinate(interCCpuntosucirconferenzaA)at($(#3)+(#4,0)$);
-	\coordinate(interCCpuntosucirconferenzaB)at($(#5)+(#6,0)$);
+	\coordinate (interCCcentroA) at (#3);
+	\coordinate (interCCcentroB) at (#5);
+	\coordinate (interCCpuntosucirconferenzaA) at ($(#3)+(#4,0)$);
+	\coordinate (interCCpuntosucirconferenzaB) at ($(#5)+(#6,0)$);
 	\tkzInterCC(interCCcentroA,interCCpuntosucirconferenzaA)(interCCcentroB,interCCpuntosucirconferenzaB)
 		\tkzGetPoints{#1}{#2}
 }
@@ -1056,15 +1066,15 @@
 
 % \arcocirc[opzioni]{O}{A}{B} disegna un arco di circonferenza di centro O che va da A alla semiretta OB
 \newcommand*{\arcocirc}[4][]{
-	\coordinate(arcocircO)at(#2);
-	\coordinate(arcocircA)at(#3);
-	\coordinate(arcocircB)at(#4);
+	\coordinate (arcocircO) at(#2);
+	\coordinate (arcocircA) at(#3);
+	\coordinate (arcocircB) at(#4);
 	\tkzDrawArc[#1](arcocircO,arcocircA)(arcocircB);
 }
 % \arcocircang[opzioni]{O}{A}{ang} disegna un arco di circonferenza di centro O che parte da A e ruota di un angolo ang
 \newcommand*{\arcocircang}[4][]{
-	\coordinate(arcocircangO)at(#2);
-	\coordinate(arcocircangA)at(#3);
+	\coordinate (arcocircangO) at (#2);
+	\coordinate (arcocircangA) at (#3);
 	\tkzDrawArc[#1,rotate](arcocircangO,arcocircangA)(#4);
 }
 
@@ -1078,22 +1088,23 @@
 %%%%%%%%%%%%%%%%	ALTRE CONICHE
 
 % \ellisse[opzioni]{centro}{semiasse a}{semiasse b}
-\newcommand*{\ellisse}[4][]{\draw[#1](#2)ellipse(#3cm and #4cm);}
+\newcommand*{\ellisse}[4][]{\draw[#1] (#2) ellipse (#3cm and #4cm);}
 
 % \ellisserot[opzioni]{centro}{semiasse a}{semiasse b}{ang}
-\newcommand*{\ellisserot}[5][]{\draw[#1,rotate around={#5:(#2)}](#2)ellipse(#3cm and #4cm);}
+\newcommand*{\ellisserot}[5][]{\draw[#1,rotate around={#5:(#2)}] (#2) ellipse (#3cm and #4cm);}
 
 % \parabolaVPP[opzioni]{V}{P1}{P2} disegna un tratto di parabola con vertice V con estremi in P1 e P2. Serve che V sia fra P1 e P2. In realtà vengono disegnati due archi di parabola. \parabolaVPPy è identico a \parabolaVPP
 \newcommand*{\parabolaVPP}[4][]{\parabolaVPPy[#1]{#2}{#3}{#4};}
+
 \newcommand*{\parabolaVPPy}[4][]{
-	\draw[#1](#2)parabola(#3);
-	\draw[#1](#2)parabola(#4);
+	\draw[#1] (#2) parabola (#3);
+	\draw[#1] (#2) parabola (#4);
 }
 
 % \parabolaVPPx[opzioni]{V}{P1}{P2} è analogo a \parabolaVPPy per parabole con l'asse di simmetria parallelo all'asse x
 \newcommand*{\parabolaVPPx}[4][]{
-	\coordinate(parabolaVPPxPuno)at(#3);
-	\coordinate(parabolaVPPxPdue)at(#4);
+	\coordinate (parabolaVPPxPuno) at (#3);
+	\coordinate (parabolaVPPxPdue) at (#4);
 	\begin{rotazione}[#2]{-90}
 		\parabolaVPPy[#1]{#2}{parabolaVPPxPuno}{parabolaVPPxPdue}{-90};
 	\end{rotazione}
@@ -1165,22 +1176,22 @@
 	\def\extractcoordpairseparator{#1}
 	\def\extractcoordpairx{}
 	\def\extractcoordpairy{}
-	\extractcoordpairIterFist#4\extractcoordpairseparator
+	\PRIVextractcoordpairIterFist#4\extractcoordpairseparator
 	\tikzdef#2{\extractcoordpairx}
 	\tikzdef#3{\extractcoordpairy}
 }
-\newcommand*{\extractcoordpairIterFist}[1]{
+\newcommand*{\PRIVextractcoordpairIterFist}[1]{
 	\if\extractcoordpairseparator#1 
-		\expandafter\extractcoordpairIterSecond
+		\expandafter\PRIVextractcoordpairIterSecond
 	\else 
 		\estendistr\extractcoordpairx{#1}
-		\expandafter\extractcoordpairIterFist
+		\expandafter\PRIVextractcoordpairIterFist
 	\fi
 }
-\newcommand*{\extractcoordpairIterSecond}[1]{
+\newcommand*{\PRIVextractcoordpairIterSecond}[1]{
 	\if\extractcoordpairseparator#1 \else
 		\estendistr\extractcoordpairy{#1}
-		\expandafter\extractcoordpairIterSecond
+		\expandafter\PRIVextractcoordpairIterSecond
 	\fi
 }
 
@@ -1194,35 +1205,35 @@
 	\def\poligonoInputBuilder{(} % la stringa (A)--(B)--(C)--(A) Viene costruita progressivamente
 	\def\poligonoFirstPointBuilder{} % la stringa A
 	\setcounter{poligonoNumPointsBuilder}{1}
-	\poligonoIter#2;
-	\draw[#1]\poligonoInputBuilder;
+	\PRIVpoligonoIter#2;
+	\draw[#1] \poligonoInputBuilder;
 }
 % necessario per la funzione \poligono
-\newcommand*{\poligonoIter}[1]{
-	\ifx;#1\estendistr\poligonoInputBuilder{)--(\poligonoFirstPointBuilder)}\else
-		\ifx,#1\estendistr\poligonoInputBuilder{)--(}\stepcounter{poligonoNumPointsBuilder}\else
+\newcommand*{\PRIVpoligonoIter}[1]{
+	\ifx;#1\estendistr\poligonoInputBuilder{) -- (\poligonoFirstPointBuilder)}\else
+		\ifx,#1\estendistr\poligonoInputBuilder{) -- (}\stepcounter{poligonoNumPointsBuilder}\else
 			\estendistr\poligonoInputBuilder{#1}
 			\ifnum\thepoligonoNumPointsBuilder=1
 				\estendistr\poligonoFirstPointBuilder{#1}
 			\fi
 		\fi
-		\expandafter\poligonoIter
+		\expandafter\PRIVpoligonoIter
 	\fi
 }
 
 % \poligonale[opzioni]{A,B,C,...} disegna una poligonale (una linea spezzata)
 \newcommand*{\poligonale}[2][]{
 	\def\poligonaleInputBuilder{(} % la stringa (A)--(B)--(C) Viene costruita progressivamente
-	\poligonaleIter#2;
-	\draw[#1]\poligonaleInputBuilder;
+	\PRIVpoligonaleIter#2;
+	\draw[#1] \poligonaleInputBuilder;
 }
 % necessario per la funzione \poligonale
-\newcommand*{\poligonaleIter}[1]{
+\newcommand*{\PRIVpoligonaleIter}[1]{
 	\ifx;#1\estendistr\poligonaleInputBuilder{)}\else
-		\ifx,#1\estendistr\poligonaleInputBuilder{)--(}\else
+		\ifx,#1\estendistr\poligonaleInputBuilder{) -- (}\else
 			\estendistr\poligonaleInputBuilder{#1}
 		\fi
-		\expandafter\poligonaleIter
+		\expandafter\PRIVpoligonaleIter
 	\fi
 }
 
@@ -1259,8 +1270,8 @@
 	\setkeyvaluesifempty
 		{col draw}{\kv{col}}
 		{col fill}{\kv{col}!\kv{opacity}}
-	\ifkeyequal{no fill}{false}{\fill[\kv{col fill}] (#2)--++(#5:#3)--++(#5+90:#4)--++(#5+180:#3)--++(#5+270:#4);}{}
-	\draw[\kv{col draw},\kv{width},\kv{pattern}] (#2)--++(#5:#3)--++(#5+90:#4)--++(#5+180:#3)--++(#5+270:#4);
+	\ifkeyequal{no fill}{false}{\fill[\kv{col fill}] (#2) --++ (#5:#3) --++ (#5+90:#4) --++ (#5+180:#3) --++ (#5+270:#4);}{}
+	\draw[\kv{col draw},\kv{width},\kv{pattern}] (#2) --++ (#5:#3) --++ (#5+90:#4) --++ (#5+180:#3) --++ (#5+270:#4);
 	\PRIVstylelbl[
 		PRIVlbl lbl=\kv{lbl},
 		PRIVlbl lbl size=\kv{lbl size},
@@ -1281,7 +1292,7 @@
 		arrow dist/.initial = 0.8, % a che distanza percentuale mettere la freccia
 	} \setkeyfld{#1};
 	\medio[\kv{arrow dist}]{raggioluceposizionefreccia}{#2}{#3};
-	\draw[\kv{col},\kv{width},\kv{pattern},\kv{arrow}] (#3)--(raggioluceposizionefreccia) (#2)--(raggioluceposizionefreccia);
+	\draw[\kv{col},\kv{width},\kv{pattern},\kv{arrow}] (#3) -- (raggioluceposizionefreccia)  (#2) -- (raggioluceposizionefreccia);
 	\@ifnextchar\bgroup{\expandafter\raggioluce[#1]{#3}}{}
 }
 \makeatother
@@ -1309,12 +1320,12 @@
 		\ruotapuntoN[\kv{dist}]{graffapuntoA}{#3}{#2}{+90};
 		\ruotapuntoN[\kv{dist}]{graffapuntoB}{#2}{#3}{-90};
 	}
-	\draw[\kv{col},\kv{width},\kv{pattern},decorate,decoration={\kv{shape},amplitude=\kv{amplitude}pt}](graffapuntoA) --(graffapuntoB);
+	\draw[\kv{col},\kv{width},\kv{pattern},decorate,decoration={\kv{shape},amplitude=\kv{amplitude}pt}] (graffapuntoA) -- (graffapuntoB);
 	\medio{graffaPM}{graffapuntoA}{graffapuntoB};
 	\ifkeyequal{mirror}{false}{\def\graffaanglbl{90};}{\def\graffaanglbl{270};}	
 	\ifkeyequal{mirror}{false}
-	{\ruotapunto{graffapuntoruotato}{graffapuntoB}{graffaPM}{\graffaanglbl};}
-	{\ruotapunto{graffapuntoruotato}{graffapuntoA}{graffaPM}{\graffaanglbl};}
+		{\ruotapunto{graffapuntoruotato}{graffapuntoB}{graffaPM}{\graffaanglbl};}
+		{\ruotapunto{graffapuntoruotato}{graffapuntoA}{graffaPM}{\graffaanglbl};}
 	\verso[\kv{lbl dist}]{graffalblpos}{graffaPM}{graffapuntoruotato};
 	\PRIVstylelbl[
 		PRIVlbl lbl=\kv{lbl},
@@ -1366,13 +1377,13 @@
 		{h}{1.0*\kv{s}}
 		{x}{\kv{w}}
 		{y}{\kv{h}}
-	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(+0.3*\kv{x},0.88*\kv{y})$)--++(0,0.12*\kv{y})--++(-0.1*\kv{x},0)--++(0,-0.08*\kv{y}); % camino
-	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.1*\kv{x},0)$)--++(0,0.3*\kv{y})--++(-0.15*\kv{x},0)--++(0,-0.3*\kv{y}); % porta
-	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(0.1*\kv{x},0.15*\kv{y})$)rectangle++(0.2*\kv{x},0.12*\kv{y}) ($(#2)+(0.2*\kv{x},0.15*\kv{y})$)--++(0,0.12*\kv{y}); % finestra in basso a destra
-	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(0.1*\kv{x},0.55*\kv{y})$)rectangle++(0.2*\kv{x},0.12*\kv{y}) ($(#2)+(0.2*\kv{x},0.55*\kv{y})$)--++(0,0.12*\kv{y}); % finestra in alto a destra
-	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.1*\kv{x},0.55*\kv{y})$)rectangle++(-0.2*\kv{x},0.12*\kv{y}) ($(#2)+(-0.2*\kv{x},0.55*\kv{y})$)--++(0,0.12*\kv{y}); % finestra in alto a sinistra
-	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.4*\kv{x},0.8*\kv{y})$)--++(0,-0.8*\kv{y})--++(0.8*\kv{x},0)--++(0,0.8*\kv{y}); % corpo
-	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.5*\kv{x},0.8*\kv{y})$)--++(0.5*\kv{x},0.2*\kv{y})--++(0.5*\kv{x},-0.2*\kv{y})--++(-\kv{x},0); % tetto
+	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(+0.3*\kv{x},0.88*\kv{y})$) --++ (0,0.12*\kv{y}) --++ (-0.1*\kv{x},0) --++ (0,-0.08*\kv{y}); % camino
+	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.1*\kv{x},0)$) --++ (0,0.3*\kv{y}) --++ (-0.15*\kv{x},0) --++ (0,-0.3*\kv{y}); % porta
+	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(0.1*\kv{x},0.15*\kv{y})$) rectangle++ (0.2*\kv{x},0.12*\kv{y})  ($(#2)+(0.2*\kv{x},0.15*\kv{y})$) --++ (0,0.12*\kv{y}); % finestra in basso a destra
+	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(0.1*\kv{x},0.55*\kv{y})$) rectangle++ (0.2*\kv{x},0.12*\kv{y})  ($(#2)+(0.2*\kv{x},0.55*\kv{y})$) --++ (0,0.12*\kv{y}); % finestra in alto a destra
+	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.1*\kv{x},0.55*\kv{y})$) rectangle++ (-0.2*\kv{x},0.12*\kv{y})  ($(#2)+(-0.2*\kv{x},0.55*\kv{y})$) --++ (0,0.12*\kv{y}); % finestra in alto a sinistra
+	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.4*\kv{x},0.8*\kv{y})$) --++ (0,-0.8*\kv{y}) --++ (0.8*\kv{x},0) --++ (0,0.8*\kv{y}); % corpo
+	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.5*\kv{x},0.8*\kv{y})$) --++ (0.5*\kv{x},0.2*\kv{y}) --++ (0.5*\kv{x},-0.2*\kv{y}) --++ (-\kv{x},0); % tetto
 }
 
 % \uomo[keys]{pos} disegna un omino stilizzato. pos è il centro della sua base
@@ -1404,14 +1415,14 @@
 		{\ifkeyequal{mirror}{false}{\def\uomomirrorper{}}{\def\uomomirrorper{180-}}}
 		{\ifkeyequal{mirror}{true}{\def\uomomirrorper{}}{\def\uomomirrorper{180-}}}
 	\tikzdef\uomoh{\kv{s}*\kv{h}}
-	\draw[\kv{col},\kv{width}]($(#2)+(0,0.9*\uomoh)$)circle(0.1*\uomoh); % testa
-	\draw[\kv{col},\kv{width}]($(#2)+(0,0.8*\uomoh)$)--++(0,-0.1*\uomoh); % collo
-	\draw[\kv{col},ultra thick]($(#2)+(0,0.7*\uomoh)$)--++(0,-0.3*\uomoh); % corpo
-	\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\uomoh)$)--++(\uomomirrorper\kv{ang braccio 1}:\kv{lung braccio}*\uomoh)node(\kv{mano 1}){}; % braccio 1
-	\ifkeyempty{ang braccio 2}{}{\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\uomoh)$)--++(\uomomirrorper\kv{ang braccio 2}:\kv{lung braccio}*\uomoh)node(\kv{mano 2}){};} % braccio 2
+	\draw[\kv{col},\kv{width}] ($(#2)+(0,0.9*\uomoh)$) circle (0.1*\uomoh); % testa
+	\draw[\kv{col},\kv{width}] ($(#2)+(0,0.8*\uomoh)$) --++ (0,-0.1*\uomoh); % collo
+	\draw[\kv{col},ultra thick] ($(#2)+(0,0.7*\uomoh)$) --++ (0,-0.3*\uomoh); % corpo
+	\draw[\kv{col},\kv{width}] ($(#2)+(0,0.7*\uomoh)$) --++ (\uomomirrorper\kv{ang braccio 1}:\kv{lung braccio}*\uomoh) node (\kv{mano 1}){}; % braccio 1
+	\ifkeyempty{ang braccio 2}{}{\draw[\kv{col},\kv{width}] ($(#2)+(0,0.7*\uomoh)$) --++ (\uomomirrorper\kv{ang braccio 2}:\kv{lung braccio}*\uomoh) node (\kv{mano 2}){};} % braccio 2
 	\intrette{\kv{piede 1}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\uomoh)$}{$(#2)+(0,0.4*\uomoh)+(\uomomirrorper\kv{ang gamba 1}:1)$}; % la posizione del primo piede
 	\intrette{\kv{piede 2}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\uomoh)$}{$(#2)+(0,0.4*\uomoh)+(\uomomirrorper\kv{ang gamba 2}:1)$}; % la posizione del secondo piede
-	\draw[\kv{col},\kv{width}](\kv{piede 1})--($(#2)+(0,0.4*\uomoh)$)--(\kv{piede 2}); % le gambe
+	\draw[\kv{col},\kv{width}] (\kv{piede 1}) -- ($(#2)+(0,0.4*\uomoh)$) -- (\kv{piede 2}); % le gambe
 }
 
 % \donna[keys]{pos} disegna una donnina stilizzata. pos è il centro della sua base
@@ -1443,17 +1454,17 @@
 		{\ifkeyequal{mirror}{false}{\def\donnamirrorper{}}{\def\donnamirrorper{180-}}}
 		{\ifkeyequal{mirror}{true}{\def\donnamirrorper{}}{\def\donnamirrorper{180-}}}
 	\tikzdef\donnah{\kv{s}*\kv{h}}
-	\draw[\kv{col},\kv{width}]($(#2)+(0,0.9*\donnah)$)circle(0.1*\donnah); % testa
-	\draw[\kv{col},\kv{width}]($(#2)+(0,0.8*\donnah)$)--++(0,-0.1*\donnah); % collo
-	\draw[\kv{col},ultra thick]($(#2)+(0,0.7*\donnah)$)--++(0,-0.3*\donnah); % corpo
-	\draw[\kv{col},\kv{width}]($(#2)+(0,0.4*\donnah)$)--++(-0.2*\donnah,-0.2*\donnah)--++(+0.4*\donnah,0)--++(-0.2*\donnah,+0.2*\donnah); % gonna
-	\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\donnah)$)--++(\donnamirrorper\kv{ang braccio 1}:\kv{lung braccio}*\donnah)node(\kv{mano 1}){}; % braccio 1
-	\ifkeyempty{ang braccio 2}{}{\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\donnah)$)--++(\donnamirrorper\kv{ang braccio 2}:\kv{lung braccio}*\donnah)node(\kv{mano 2}){};} % braccio 2
+	\draw[\kv{col},\kv{width}] ($(#2)+(0,0.9*\donnah)$) circle (0.1*\donnah); % testa
+	\draw[\kv{col},\kv{width}] ($(#2)+(0,0.8*\donnah)$) --++ (0,-0.1*\donnah); % collo
+	\draw[\kv{col},ultra thick] ($(#2)+(0,0.7*\donnah)$) --++ (0,-0.3*\donnah); % corpo
+	\draw[\kv{col},\kv{width}] ($(#2)+(0,0.4*\donnah)$) --++ (-0.2*\donnah,-0.2*\donnah) --++ (+0.4*\donnah,0) --++ (-0.2*\donnah,+0.2*\donnah); % gonna
+	\draw[\kv{col},\kv{width}] ($(#2)+(0,0.7*\donnah)$) --++ (\donnamirrorper\kv{ang braccio 1}:\kv{lung braccio}*\donnah) node (\kv{mano 1}){}; % braccio 1
+	\ifkeyempty{ang braccio 2}{}{\draw[\kv{col},\kv{width}] ($(#2)+(0,0.7*\donnah)$) --++ (\donnamirrorper\kv{ang braccio 2}:\kv{lung braccio}*\donnah) node (\kv{mano 2}){};} % braccio 2
 	\intrette{\kv{piede 1}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\donnah)$}{$(#2)+(0,0.4*\donnah)+(\donnamirrorper\kv{ang gamba 1}:1)$}; % la posizione del primo piede
 	\intrette{\kv{piede 2}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\donnah)$}{$(#2)+(0,0.4*\donnah)+(\donnamirrorper\kv{ang gamba 2}:1)$}; % la posizione del secondo piede
 	\medio{GambaDxGonna}{\kv{piede 1}}{$(#2)+(0,0.4*\donnah)$};
 	\medio{GambaSxGonna}{\kv{piede 2}}{$(#2)+(0,0.4*\donnah)$};
-	\draw[\kv{col},\kv{width}](GambaDxGonna)--(\kv{piede 1}) (GambaSxGonna)--(\kv{piede 2}); % le gambe
+	\draw[\kv{col},\kv{width}] (GambaDxGonna) -- (\kv{piede 1})  (GambaSxGonna) -- (\kv{piede 2}); % le gambe
 }
 
 % \auto[keys]{pos} disegna un'automobile. pos è il centro della sua base
@@ -1482,14 +1493,14 @@
 	\tikzdef{\autosizex}{\automirrorper*\kv{s}*\kv{x}/30};
 	\tikzdef{\autosizey}{\kv{s}*\kv{y}/20};
 	% ruote
-	\coordinate(autocentroruotaposteriore)at($(#2)+(-9*\autosizex,2*\autosizey)$);
-	\coordinate(autocentroruotaanteriore)at($(#2)+(+4.5*\autosizex,2*\autosizey)$);
-	\draw[\kv{col},\kv{width}](autocentroruotaposteriore)circle(2*\autosizey);
-	\draw[\kv{col},\kv{width}](autocentroruotaanteriore)circle(2*\autosizey);
-	\draw[\kv{col},\kv{width},fill=\kv{col}](autocentroruotaposteriore)circle(0.2*\autosizey);
-	\draw[\kv{col},\kv{width},fill=\kv{col}](autocentroruotaanteriore)circle(0.2*\autosizey);
-	\coordinate(autobottomfront)at($(#2)+(12*\autosizex,2.4*\autosizey)$);
-	\coordinate(autobottomback)at($(#2)+(-15*\autosizex,2.4*\autosizey)$);
+	\coordinate (autocentroruotaposteriore) at ($(#2)+(-9*\autosizex,2*\autosizey)$);
+	\coordinate (autocentroruotaanteriore) at ($(#2)+(+4.5*\autosizex,2*\autosizey)$);
+	\draw[\kv{col},\kv{width}] (autocentroruotaposteriore) circle (2*\autosizey);
+	\draw[\kv{col},\kv{width}] (autocentroruotaanteriore) circle (2*\autosizey);
+	\draw[\kv{col},\kv{width},fill=\kv{col}] (autocentroruotaposteriore) circle (0.2*\autosizey);
+	\draw[\kv{col},\kv{width},fill=\kv{col}] (autocentroruotaanteriore) circle (0.2*\autosizey);
+	\coordinate (autobottomfront) at ($(#2)+(12*\autosizex,2.4*\autosizey)$);
+	\coordinate (autobottomback) at ($(#2)+(-15*\autosizex,2.4*\autosizey)$);
 	\interLC{autoruotaanteriorefront}{autoruotaanterioreback}{autobottomfront}{autobottomback}{autocentroruotaanteriore}{2.4*\autosizey};
 	\interLC{autoruotaposteriorefront}{autoruotaposterioreback}{autobottomfront}{autobottomback}{autocentroruotaposteriore}{2.4*\autosizey};
 	\ifkeyequal{side}{->}{
@@ -1500,7 +1511,7 @@
 		\arcocirc[\kv{col},\kv{width}]{autocentroruotaanteriore}{autoruotaanterioreback}{autoruotaanteriorefront};
 	}
 	%carrozzeria
-	\draw[\kv{col},\kv{width},rounded corners=\kv{s}*0.5mm] (autoruotaposteriorefront)--(autoruotaanterioreback) (autoruotaanteriorefront)--(autobottomfront)--($(#2)+(15*\autosizex,5*\autosizey)$)--++(0,2*\autosizey)--++(-6*\autosizex,3*\autosizey)--++(0,10*\autosizey)--($(#2)+(-15*\autosizex,20*\autosizey)$)--(autobottomback)--(autoruotaposterioreback);
+	\draw[\kv{col},\kv{width},rounded corners=\kv{s}*0.5mm] (autoruotaposteriorefront) -- (autoruotaanterioreback)  (autoruotaanteriorefront) -- (autobottomfront) -- ($(#2)+(15*\autosizex,5*\autosizey)$) --++ (0,2*\autosizey) --++ (-6*\autosizex,3*\autosizey) --++ (0,10*\autosizey) -- ($(#2)+(-15*\autosizex,20*\autosizey)$) -- (autobottomback) -- (autoruotaposterioreback);
 	}{ %se dobbiamo ruotare l'auto
 		\begin{rotazione}[#2]{\kv{ang}} \auto[#1,ang=]{#2} \end{rotazione}
 	}
@@ -1532,14 +1543,14 @@
 	\tikzdef{\camionsizex}{\camionmirrorper*\kv{s}*\kv{x}/60};
 	\tikzdef{\camionsizey}{\kv{s}*\kv{y}/30};
 	% ruote
-	\coordinate(camioncentroruotaposteriore)at($(#2)+(-24*\camionsizex,3*\camionsizey)$);
-	\coordinate(camioncentroruotaanteriore)at($(#2)+(+21*\camionsizex,3*\camionsizey)$);
-	\draw[\kv{col},\kv{width}](camioncentroruotaposteriore)circle(3*\camionsizey);
-	\draw[\kv{col},\kv{width}](camioncentroruotaanteriore)circle(3*\camionsizey);
-	\draw[\kv{col},\kv{width},fill=\kv{col}](camioncentroruotaposteriore)circle(0.2*\camionsizey);
-	\draw[\kv{col},\kv{width},fill=\kv{col}](camioncentroruotaanteriore)circle(0.2*\camionsizey);
-	\coordinate(camionbottomfront)at($(#2)+(+30*\camionsizex,3.6*\camionsizey)$);
-	\coordinate(camionbottomback)at($(#2)+(-30*\camionsizex,3.6*\camionsizey)$);
+	\coordinate (camioncentroruotaposteriore) at ($(#2)+(-24*\camionsizex,3*\camionsizey)$);
+	\coordinate (camioncentroruotaanteriore) at ($(#2)+(+21*\camionsizex,3*\camionsizey)$);
+	\draw[\kv{col},\kv{width}] (camioncentroruotaposteriore) circle (3*\camionsizey);
+	\draw[\kv{col},\kv{width}] (camioncentroruotaanteriore) circle (3*\camionsizey);
+	\draw[\kv{col},\kv{width},fill=\kv{col}] (camioncentroruotaposteriore) circle (0.2*\camionsizey);
+	\draw[\kv{col},\kv{width},fill=\kv{col}] (camioncentroruotaanteriore) circle (0.2*\camionsizey);
+	\coordinate (camionbottomfront) at ($(#2)+(+30*\camionsizex,3.6*\camionsizey)$);
+	\coordinate (camionbottomback) at ($(#2)+(-30*\camionsizex,3.6*\camionsizey)$);
 	\interLC{camionruotaanteriorefront}{camionruotaanterioreback}{camionbottomfront}{camionbottomback}{camioncentroruotaanteriore}{3.6*\camionsizey};
 	\interLC{camionruotaposteriorefront}{camionruotaposterioreback}{camionbottomfront}{camionbottomback}{camioncentroruotaposteriore}{3.6*\camionsizey};
 	\ifkeyequal{side}{->}{
@@ -1550,8 +1561,8 @@
 		\arcocirc[\kv{col},\kv{width}]{camioncentroruotaanteriore}{camionruotaanterioreback}{camionruotaanteriorefront};
 	}
 	%carrozzeria
-	\draw[\kv{col},\kv{width}] (camionruotaposteriorefront)--(camionruotaanterioreback) (camionruotaanteriorefront)--(camionbottomfront)--($(#2)+(30*\camionsizex,6*\camionsizey)$)--++(-\camionsizex,0) (camionruotaposterioreback)--(camionbottomback)--++(0,9*\camionsizey)--++(45*\camionsizex,0)--++(0,17.4*\camionsizey)--++(-43.5*\camionsizex,0)--++(0,-17.4*\camionsizey);
-	\draw[\kv{col},\kv{width},rounded corners=\kv{s}*0.5mm] ($(#2)+(29*\camionsizex,6*\camionsizey)$)--++(0,6*\camionsizey)--++(-3*\camionsizex,0)--++(0,12*\camionsizey)--++(-11*\camionsizex,0);
+	\draw[\kv{col},\kv{width}] (camionruotaposteriorefront) -- (camionruotaanterioreback)  (camionruotaanteriorefront) -- (camionbottomfront) -- ($(#2)+(30*\camionsizex,6*\camionsizey)$) --++ (-\camionsizex,0)  (camionruotaposterioreback) -- (camionbottomback) --++ (0,9*\camionsizey) --++ (45*\camionsizex,0) --++ (0,17.4*\camionsizey) --++ (-43.5*\camionsizex,0) --++ (0,-17.4*\camionsizey);
+	\draw[\kv{col},\kv{width},rounded corners=\kv{s}*0.5mm] ($(#2)+(29*\camionsizex,6*\camionsizey)$) --++ (0,6*\camionsizey) --++ (-3*\camionsizex,0) --++ (0,12*\camionsizey) --++ (-11*\camionsizex,0);
 	}{ %se dobbiamo ruotare il camion
 		\begin{rotazione}[#2]{\kv{ang}} \camion[#1,ang=]{#2} \end{rotazione}
 	}
@@ -1582,22 +1593,22 @@
 		{\ifkeyequal{mirror}{true}{\def\motomirrorper{+1}}{\def\motomirrorper{-1}}}
 	\tikzdef{\motosizex}{\motomirrorper*\kv{s}*\kv{x}/20};
 	\tikzdef{\motosizey}{\kv{s}*\kv{y}/15};
-	\coordinate(motocentroruotaposteriore)at($(#2)+(-10*\motosizex+\motomirrorper*2*\motosizey,2*\motosizey)$);
-	\coordinate(motocentroruotaanteriore)at($(#2)+(+10*\motosizex-\motomirrorper*2*\motosizey,2*\motosizey)$);
-	\draw[\kv{col},\kv{width}](motocentroruotaposteriore)circle(2*\motosizey);
-	\draw[\kv{col},\kv{width}](motocentroruotaanteriore)circle(2*\motosizey);
-	\draw[\kv{col},\kv{width},fill=\kv{col}](motocentroruotaposteriore)circle(0.2*\motosizey);
-	\draw[\kv{col},\kv{width},fill=\kv{col}](motocentroruotaanteriore)circle(0.2*\motosizey);
+	\coordinate (motocentroruotaposteriore) at ($(#2)+(-10*\motosizex+\motomirrorper*2*\motosizey,2*\motosizey)$);
+	\coordinate (motocentroruotaanteriore) at ($(#2)+(+10*\motosizex-\motomirrorper*2*\motosizey,2*\motosizey)$);
+	\draw[\kv{col},\kv{width}] (motocentroruotaposteriore) circle (2*\motosizey);
+	\draw[\kv{col},\kv{width}] (motocentroruotaanteriore) circle (2*\motosizey);
+	\draw[\kv{col},\kv{width},fill=\kv{col}] (motocentroruotaposteriore) circle (0.2*\motosizey);
+	\draw[\kv{col},\kv{width},fill=\kv{col}] (motocentroruotaanteriore) circle (0.2*\motosizey);
 	\ifkeyequal{side}{->}
-	{\coordinate(motofrontattachpoint)at($(#2)+(+10*\motosizex-\motomirrorper*2*\motosizey,3*\motosizey)+(110:3*\motosizey)$);}
-	{\coordinate(motofrontattachpoint)at($(#2)+(+10*\motosizex-\motomirrorper*2*\motosizey,3*\motosizey)+(70:3*\motosizey)$);}
-	\draw[\kv{col},\kv{width}](motocentroruotaanteriore)--(motofrontattachpoint);
-	\draw[\kv{col},\kv{width}](motocentroruotaposteriore)--($(motocentroruotaanteriore)+(-\motomirrorper*3*\motosizey,0)$)--++(0,\motosizey)arc(90+\motomirrorper*90:90:3*\motosizey)--++(\motosizex,0)arc(90-\motomirrorper*90:90:4*\motosizey)--++(0,-2*\motosizey)--++(-4*\motosizex,0)arc(90:90+\motomirrorper*90:\motosizey cm and 2*\motosizey cm)--++(-5*\motosizex,0)--++(-\motosizex,\motosizey)--++(-4*\motosizex,0)--++(0,-\motosizey)arc(90:90-\motomirrorper*90:5*\motosizey cm and 3*\motosizey cm)--++(0,-\motosizey);
-	\draw[\kv{col},\kv{width}]($(#2)+(-4*\motosizex,3*\motosizey)$)--++(5*\motosizex,2*\motosizey)--++(-4*\motosizex,\motosizey)--++(5*\motosizex,5*\motosizey)node(motocollopunto){}++(-\motosizex,-\motosizey)--++(4*\motosizex,-3*\motosizey)node(motomanubriopunto){};
-	\draw[\kv{col},\kv{width},fill=\kv{col}](motomanubriopunto)circle(0.1*\motosizey);
-	\coordinate(motocentrocasco)at($(motocollopunto)+(0,2*\motosizey)$);
-	\draw[\kv{col},\kv{width}]($(motocentrocasco)+(90-\motomirrorper*60:2*\motosizey)$)--($(motocentrocasco)+(0,\motosizey)$)--($(motocentrocasco)+(0,-\motosizey)$)--($(motocentrocasco)+(-90+\motomirrorper*60:2*\motosizey)$);
-	\draw[\kv{col},\kv{width}](motocentrocasco)circle(2*\motosizey);
+		{\coordinate (motofrontattachpoint) at ($(#2)+(+10*\motosizex-\motomirrorper*2*\motosizey,3*\motosizey)+(110:3*\motosizey)$);}
+		{\coordinate (motofrontattachpoint) at ($(#2)+(+10*\motosizex-\motomirrorper*2*\motosizey,3*\motosizey)+(70:3*\motosizey)$);}
+	\draw[\kv{col},\kv{width}] (motocentroruotaanteriore) -- (motofrontattachpoint);
+	\draw[\kv{col},\kv{width}] (motocentroruotaposteriore) -- ($(motocentroruotaanteriore)+(-\motomirrorper*3*\motosizey,0)$) --++ (0,\motosizey) arc (90+\motomirrorper*90:90:3*\motosizey) --++ (\motosizex,0) arc (90-\motomirrorper*90:90:4*\motosizey) --++ (0,-2*\motosizey) --++ (-4*\motosizex,0) arc (90:90+\motomirrorper*90:\motosizey cm and 2*\motosizey cm) --++ (-5*\motosizex,0) --++ (-\motosizex,\motosizey) --++ (-4*\motosizex,0) --++ (0,-\motosizey) arc (90:90-\motomirrorper*90:5*\motosizey cm and 3*\motosizey cm) --++ (0,-\motosizey);
+	\draw[\kv{col},\kv{width}] ($(#2)+(-4*\motosizex,3*\motosizey)$) --++ (5*\motosizex,2*\motosizey) --++ (-4*\motosizex,\motosizey) --++ (5*\motosizex,5*\motosizey) node (motocollopunto){}  ++  (-\motosizex,-\motosizey) --++ (4*\motosizex,-3*\motosizey) node (motomanubriopunto){};
+	\draw[\kv{col},\kv{width},fill=\kv{col}] (motomanubriopunto) circle (0.1*\motosizey);
+	\coordinate (motocentrocasco) at ($(motocollopunto)+(0,2*\motosizey)$);
+	\draw[\kv{col},\kv{width}] ($(motocentrocasco)+(90-\motomirrorper*60:2*\motosizey)$) -- ($(motocentrocasco)+(0,\motosizey)$) -- ($(motocentrocasco)+(0,-\motosizey)$) -- ($(motocentrocasco)+(-90+\motomirrorper*60:2*\motosizey)$);
+	\draw[\kv{col},\kv{width}](motocentrocasco) circle (2*\motosizey);
 	}{ %se dobbiamo ruotare la moto
 		\begin{rotazione}[#2]{\kv{ang}} \moto[#1,ang=]{#2} \end{rotazione}
 	}
@@ -1628,20 +1639,20 @@
 		{\ifkeyequal{mirror}{true}{\def\bicimirrorper{+1}}{\def\bicimirrorper{-1}}}
 	\tikzdef{\bicisizey}{\kv{s}*\kv{y}/20};
 	\tikzdef{\bicisizex}{\bicimirrorper*\bicisizey};
-	\coordinate(bicicentroruotaposteriore)at($(#2)+(-0.5*\bicimirrorper*\kv{s}*\kv{x}+3*\bicisizex,+3*\bicisizey)$);
-	\coordinate(bicicentroruotaanteriore)at($(#2)+(+0.5*\bicimirrorper*\kv{s}*\kv{x}-3*\bicisizex,+3*\bicisizey)$);
-	\draw[\kv{col},\kv{width}](bicicentroruotaposteriore)circle(3*\bicisizey);
-	\draw[\kv{col},\kv{width}](bicicentroruotaanteriore)circle(3*\bicisizey);
-	\coordinate(bicicatena)at($(bicicentroruotaposteriore)+(4*\bicisizex,0)$);
-	\coordinate(bicifulcro)at($(bicicatena)+(-4*\bicisizex*4/7,4*\bicisizey)$);
-	\draw[\kv{col},\kv{width}](bicicentroruotaanteriore)--++(-\bicisizex,4*\bicisizey)--++(-\bicisizex,-0.25*\bicisizey)--++(0.5*\bicisizex,2*\bicisizey)node(bicifrontpoint){}--++(\bicisizex,+0.25*\bicisizey)--++(0,\bicisizey);
-	\draw[\kv{col},\kv{width}](bicicatena)--($(bicifrontpoint)+(0.25*\bicisizex,-\bicisizey)$)--(bicifulcro)--(bicicentroruotaposteriore)--(bicicatena)--++(-2*\bicisizex,7*\bicisizey)node(bicisellino){};
-	\draw[\kv{col},\kv{width}]($(bicisellino)+(-\bicisizex,0)$)--++(2*\bicisizex,0);
-	\draw[\kv{col},\kv{width},fill=\kv{col}](bicicentroruotaposteriore)circle(0.3*\bicisizey);
-	\draw[\kv{col},\kv{width},fill=\kv{col}](bicicentroruotaanteriore)circle(0.3*\bicisizey);
-	\draw[\kv{col},\kv{width},fill=\kv{col}](bicicatena)circle(0.7*\bicisizey);
-	\draw[\kv{col},\kv{width}](bicicatena)--++(2*\bicisizex,5*\bicisizey)--++(-3*\bicisizex,2*\bicisizey)--++(-1.6*\bicisizex,0)--++(2.5*\bicisizex,6*\bicisizey)node(bicicollo){}++(-0.5*\bicisizex,-\bicisizey)--($(bicifrontpoint)+(\bicisizex,+0.75*\bicisizey)$);
-	\draw[\kv{col},\kv{width}]($(bicicollo)+(0,2*\bicisizey)$)circle(2*\bicisizey);
+	\coordinate (bicicentroruotaposteriore) at ($(#2)+(-0.5*\bicimirrorper*\kv{s}*\kv{x}+3*\bicisizex,+3*\bicisizey)$);
+	\coordinate (bicicentroruotaanteriore) at ($(#2)+(+0.5*\bicimirrorper*\kv{s}*\kv{x}-3*\bicisizex,+3*\bicisizey)$);
+	\draw[\kv{col},\kv{width}] (bicicentroruotaposteriore) circle (3*\bicisizey);
+	\draw[\kv{col},\kv{width}] (bicicentroruotaanteriore) circle (3*\bicisizey);
+	\coordinate (bicicatena) at ($(bicicentroruotaposteriore)+(4*\bicisizex,0)$);
+	\coordinate (bicifulcro) at ($(bicicatena)+(-4*\bicisizex*4/7,4*\bicisizey)$);
+	\draw[\kv{col},\kv{width}] (bicicentroruotaanteriore) --++ (-\bicisizex,4*\bicisizey) --++ (-\bicisizex,-0.25*\bicisizey) --++ (0.5*\bicisizex,2*\bicisizey) node (bicifrontpoint){} --++ (\bicisizex,+0.25*\bicisizey) --++ (0,\bicisizey);
+	\draw[\kv{col},\kv{width}] (bicicatena) -- ($(bicifrontpoint)+(0.25*\bicisizex,-\bicisizey)$) -- (bicifulcro) -- (bicicentroruotaposteriore) -- (bicicatena) --++ (-2*\bicisizex,7*\bicisizey) node (bicisellino){};
+	\draw[\kv{col},\kv{width}] ($(bicisellino)+(-\bicisizex,0)$) --++ (2*\bicisizex,0);
+	\draw[\kv{col},\kv{width},fill=\kv{col}] (bicicentroruotaposteriore) circle (0.3*\bicisizey);
+	\draw[\kv{col},\kv{width},fill=\kv{col}] (bicicentroruotaanteriore) circle (0.3*\bicisizey);
+	\draw[\kv{col},\kv{width},fill=\kv{col}] (bicicatena) circle (0.7*\bicisizey);
+	\draw[\kv{col},\kv{width}] (bicicatena) --++ (2*\bicisizex,5*\bicisizey) --++ (-3*\bicisizex,2*\bicisizey) --++ (-1.6*\bicisizex,0) --++ (2.5*\bicisizex,6*\bicisizey) node (bicicollo){}  ++  (-0.5*\bicisizex,-\bicisizey) -- ($(bicifrontpoint)+(\bicisizex,+0.75*\bicisizey)$);
+	\draw[\kv{col},\kv{width}] ($(bicicollo)+(0,2*\bicisizey)$) circle (2*\bicisizey);
 	}{ %se dobbiamo ruotare la bici
 		\begin{rotazione}[#2]{\kv{ang}} \bici[#1,ang=]{#2} \end{rotazione}
 	}
