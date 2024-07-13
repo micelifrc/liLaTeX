@@ -3,16 +3,18 @@
 \newcommand{\TipoDoc}{libro}
 \newcommand{\FontSize}{11}
 \input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+\usepackage{fancyvrb} % per Verbatim (per mettere il box attorno)
 
 \def\showimmagini{1} % rendi 0 se non vuoi mostrare le immagini (può essere utile per guadagnare runtime mentre si scrive il manuale). 1 se vogliamo mostrarle
 \def\showslowimmagini{\showimmagini} % rendi 0 se non vuoi mostrare le immagini più lente (può essere utile per guadagnare runtime mentre si scrive il manuale). \showimmagini se vogliamo mostrarle
 
 \newcommand{\bs}{\textbackslash}
 \newcommand{\ttt}[1]{\texttt{#1}}
+\newcommand{\dash}{{-}{-}}
 \newcommand{\liLaTeX}{\ttt{liLaTeX}}
 \newcommand{\liLaTeXtikz}{\ttt{liLaTeXtikz}}
-\newcommand{\codice}[2][\large]{\vspace*{1mm}\noindent\fbox{\parbox{\textwidth}{#1\ttt{#2}}}}
-\newcommand{\comando}[2][\large]{\codice[#1]{#2}\vspace*{3mm}}
+\newcommand{\comandons}[2][\large]{\vspace*{1mm}\noindent\fbox{\parbox{\textwidth}{#1\ttt{#2}}}}
+\newcommand{\comando}[2][\large]{\comandons[#1]{#2}\vspace*{3mm}}
 \newcommand{\blue}[1]{\textcolor{blue}{#1}}
 \newcommand{\Green}[1]{\textcolor{Green}{#1}}
 \newcommand{\cyan}[1]{\textcolor{cyan}{#1}}
@@ -24,8 +26,6 @@
 \newcommand{\key}[1]{\textcolor{brown}{\ttt{#1}}}
 \newcommand{\keyop}[1]{\textcolor{orange}{\ttt{#1}}}
 \newcommand{\keyval}[1]{\cyan{\ttt{#1}}}
-\newcommand{\dash}{{-}{-}}
-\newcommand{\tab}{\hspace*{4mm}}
 
 \title{Manuale del pacchetto \liLaTeXtikz}
 \author{Federico Miceli}
@@ -47,7 +47,7 @@ Questo manuale conterrà alcuni esempi minimali, in genere a conclusione di cias
 \subsubsection{Il comando \ttt{\bs coordinate}}
 Per creare dei punti in tikz ci sono due comandi principali, con le seguenti sintassi:
 
-\codice{\bs coordinate (\blue{nome}) at (\blue{$x$,$y$});}
+\comandons{\bs coordinate (\blue{nome}) at (\blue{$x$,$y$});}
 crea una coordinata di nome \blue{nome} nella posizione indicata.
 
 La posizione può essere indicata con coordinate cartesiane (\blue{$x,y$}), oppure con coordinate polari (\blue{$\vartheta:r$}).
@@ -166,7 +166,7 @@ Il range può anche essere fornito completamente a mano, per elencazione (se è 
 \subsection{Esempio di uso del pacchetto \ttt{tikz} di base}
 Il codice seguente produce l'immagine allegata:
 
-\codice{\bs begin\{figure\}[!ht] \bs centering\\
+\comandons{\bs begin\{figure\}[!ht] \bs centering\\
 \bs begin\{tikzpicture\}\\
 \bs foreach \bs x in \{0,1,...,10\} \{ \bs draw[gray,very thin] (\bs x,0) \dash++ (0,6); \}\\
 \bs foreach \bs y in \{0,1,...,6\} \{ \bs draw[gray,very thin] (0,\bs y) \dash++ (10,0); \}\\
@@ -233,20 +233,23 @@ L'\ttt{angolo} indica l'angolo di rotazione (in gradi in senso antiorario), ment
 
 \textbf{Attenzione!} se all'interno del \textcolor{brown}{body} si inserisce una coordinata come $(2,1)$ questa verrà regolarmente ruotata. Se però si crea un punto $A=(2,1)$ fuori dall'ambiente \ttt{rotazione} e si usa $A$ dentro all'ambiente rotazione questo non verrà ruotato. Il comportamento (controintuitivo) è illustrato nel seguente esempio:
 
-\codice{\bs node (O) at (2,0) \{\$O\$\};\\
-\bs coordinate (A) at (3,0.5);\\
-\bs begin\{rotazione\}[O]\{+90\}\\
-\tab\bs node[red] (Al) at (A) \{\$A\$\};\\
-\tab\bs node[blue] (Bl) at (3,0.5) \{\$B\$\};\\
-\bs end\{rotazione\}}
+\begin{Verbatim}[frame=single]
+\node(O)at(2,0){$O$};
+\coordinate(A)at(3,0.5);
+\begin{rotazione}[O]{+90}
+  \node[red](Al)at(A){$A$};
+  \node[blue](Bl)at(3,0.5){$B$};
+\end{rotazione}
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showimmagini=1
 \begin{immagine}
 \node(O)at(2,0){$O$};
 \coordinate(A)at(3,0.5);
 \begin{rotazione}[O]{+90}
-	\node[red](Al)at(A){$A$};
-	\node[blue](Bl)at(3,0.5){$B$};
+  \node[red](Al)at(A){$A$};
+  \node[blue](Bl)at(3,0.5){$B$};
 \end{rotazione}
 \end{immagine}
 \fi
@@ -295,10 +298,13 @@ Le più comuni sono:
 
 Vediamo un semplice esempio:
 
-\codice{\bs auto[col=blue]\{0,0\};\\
-\bs auto[col=red,mirror]\{4,0\};\\
-\bs circCR[col=Green]\{8,1\}\{1\};\\
-\bs circCR[col=orange,fill]\{11,1\}\{1\};}
+\begin{Verbatim}[frame=single]
+\auto[col=blue]{0,0};
+\auto[col=red,mirror]{4,0};
+\circCR[col=Green]{8,1}{1};
+\circCR[col=orange,fill]{11,1}{1};
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showslowimmagini=1
 \begin{immagine}[scale=0.5]
@@ -316,18 +322,18 @@ Il key-manager di \liLaTeXtikz\ è una parte interna a \liLaTeXtikz\ di cui l'ut
 
 Contiene alcune funzioni importanti che vengono elencate qui di seguito:
 
-\codice{\bs ifkeyempty\{\blue{KEY}\}\{\blue{TRUE}\}\{\blue{FALSE}\};}
+\comandons{\bs ifkeyempty\{\blue{KEY}\}\{\blue{TRUE}\}\{\blue{FALSE}\};}
 controlla se la key \blue{KEY} è vuota. Se è vuota esegue il comando \blue{TRUE}, altrimenti esegue il comando \blue{FALSE}.
 
-\codice{\bs ifkeyequal\{\blue{KEY}\}\{\blue{str}\}\{\blue{TRUE}\}\{\blue{FALSE}\};}
+\comandons{\bs ifkeyequal\{\blue{KEY}\}\{\blue{str}\}\{\blue{TRUE}\}\{\blue{FALSE}\};}
 controlla se la key \blue{KEY} è uguale alla stringa \blue{str}. Se è uguale esegue il comando \blue{TRUE}, altrimenti esegue il comando \blue{FALSE}.
 
 Il comando
 
-\codice{\bs setkeyvalue\{\blue{KEY}\}\{\blue{val}\};}
+\comandons{\bs setkeyvalue\{\blue{KEY}\}\{\blue{val}\};}
 assegna il valore \blue{val} alla key \blue{KEY}, mentre il comando
 
-\codice{\bs copykeyvalue\{\blue{KEYto}\}\{\blue{KEYfr}\};}
+\comandons{\bs copykeyvalue\{\blue{KEYto}\}\{\blue{KEYfr}\};}
 copia il valore della key \blue{KEYfr} nella key \blue{KEYto}.
 
 I comandi \ttt{\bs setkeyvalueifempty\{\blue{KEY}\}\{\blue{val}\};} e \ttt{\bs copykeyvalueifempty\{\blue{KEYto}\}\{\blue{KEYfr}\};} funzionano in modi analoghi, ma si attivano solo se la key da sovrascrivere (quella nel primo input) è vuota.
@@ -335,7 +341,7 @@ I comandi \ttt{\bs setkeyvalueifempty\{\blue{KEY}\}\{\blue{val}\};} e \ttt{\bs c
 Ci sono infine i comandi
 
 \comando{\bs setkeyvaluesifempty\{\blue{KEY1}\}\{\blue{val1}\}\{\blue{KEY2}\}\{\blue{val2}\}\{\blue{KEY3}\}\{\blue{val3}\}\dots;}
-\codice{\bs copykeyvaluesifempty\{\blue{KEYto1}\}\{\blue{KEYfr1}\}\{\blue{KEYto2}\}\{\blue{KEYfr2}\}\{\blue{KEYto3}\}\{\blue{KEYfr3}\}\dots;}
+\comandons{\bs copykeyvaluesifempty\{\blue{KEYto1}\}\{\blue{KEYfr1}\}\{\blue{KEYto2}\}\{\blue{KEYfr2}\}\{\blue{KEYto3}\}\{\blue{KEYfr3}\}\dots;}
 che ripetono rispettivamente \ttt{\bs setkeyvalueifempty} e \ttt{\bs copykeyvalueifempty} per tutte le coppie specificate.
 
 \subsection{Le funzioni PRIV}\label{PRIVsec}
@@ -349,7 +355,7 @@ L'utente medio non deve ignorare queste funzioni, che risultano invece molto imp
 \section{La funzione \ttt{\bs griglia}}
 A volte siamo interessati a disegnare una griglia (una parte di foglio a quadretti). Per farlo utilizziamo il comando
 
-\codice{\bs griglia[\keys]\{\blue{Ovest}\}\{\blue{Est}\}\{\blue{Sud}\}\{\blue{Nord}\};}
+\comandons{\bs griglia[\keys]\{\blue{Ovest}\}\{\blue{Est}\}\{\blue{Sud}\}\{\blue{Nord}\};}
 Dove gli argomenti \ttt{Ovest}, \ttt{Est}, \ttt{Sud} e \ttt{Nord} indicano i confini della griglia.
 
 Se dobbiamo porre \ttt{Est} e \ttt{Sud} entrambi a zero, possiamo usare anche la seguente sintassi equivalente:
@@ -365,9 +371,12 @@ Le \keys\ sono:
 
 Vediamo un esempio:
 
-\codice{\bs grigliaO[s y=0.5,col=pink]\{3\}\{2\};\\
-\bs griglia[s=0.4]\{4\}\{7\}\{0\}\{1\};\\
-\bs griglia[col fill=yellow!30]\{8\}\{10.5\}\{0\}\{2.5\};}
+\begin{Verbatim}[frame=single]
+\grigliaO[s y=0.5,col=pink]{3}{2};
+\griglia[s=0.4]{4}{7}{0}{1};
+\griglia[col fill=yellow!30]{8}{10.5}{0}{2.5};
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showimmagini=1
 \begin{immagine}
@@ -380,7 +389,7 @@ Vediamo un esempio:
 \subsection{La carta millimetrata}
 In fisica siamo spesso interessati a riprodurre parti di carta millimetrata. Ciò può essere fatto utilizzando il comando
 
-\codice{\bs cartamillimetrata[\keys]\{\blue{Ovest}\}\{\blue{Est}\}\{\blue{Sud}\}\{\blue{Nord}\};}
+\comandons{\bs cartamillimetrata[\keys]\{\blue{Ovest}\}\{\blue{Est}\}\{\blue{Sud}\}\{\blue{Nord}\};}
 dove \ttt{Ovest}, \ttt{Est}, \ttt{Sud} e \ttt{Nord} hanno gli stessi significati appena spiegati per la funzione \ttt{\bs griglia}.
 
 In questo caso le \keys sono:
@@ -391,7 +400,7 @@ In questo caso le \keys sono:
 
 C'è anche la possibilità di creare un'intera pagina di carta millimetrata usando il comando
 
-\codice{\bs cartamillimetratapagina[\keys];}
+\comandons{\bs cartamillimetratapagina[\keys];}
 con le stesse \keys.
 
 \textbf{Attenzione!} Il comando \ttt{\bs cartamillimetratapagina} funziona solo se \ttt{\bs TipoDoc = \keyval{immagine}}. Per inserire una pagina di carta millimetrata all'interno di un altro documento conviene quindi generare la pagina di carta millimetrata in un altro documento, e poi includere la pagina in questione all'interno del documento reale usando un \ttt{\bs includepdf}.
@@ -448,10 +457,13 @@ Le coordinate \ttt{\bs x} e \ttt{\bs y} nei due comandi indicano le posizioni de
 
 Il seguente esempio illustra come utilizzare il sistema cartesiano in un caso semplice.
 
-\codice{\bs griglia[s=0.5]\{-1\}\{10\}\{-1\}\{5\};\\
-\bs assixy\{-1\}\{9.7\}\{-1\}\{4.7\};\\
-\bs foreach \bs x in \{1,2,...,9\} \bs assexbar\{\bs x\}\{\$\bs x\$\};\\
-\bs foreach \bs y in \{-1,1,2,...,8\} \bs asseybar[mirror]\{0.5*\bs y\}\{\$\bs y\$\};}
+\begin{Verbatim}[frame=single]
+\griglia[s=0.5]{-1}{10}{-1}{5};
+\assixy{-1}{9.7}{-1}{4.7};
+\foreach \x in {1,2,...,9} \assexbar{\x}{$\x$};
+\foreach \y in {-1,1,2,...,8} \asseybar[mirror]{0.5*\y}{$\y$};
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showimmagini=1
 \begin{immagine}
@@ -465,7 +477,7 @@ Il seguente esempio illustra come utilizzare il sistema cartesiano in un caso se
 \subsection{Sistemi di riferimento in fisica col comando \ttt{\bs sistrif}}
 Il comando \ttt{\bs sistrif} consente di inserire un sistema di riferimento (eventualmente ruotato) all'interno di un'immagine di fisica. Lo si usa con la sintassi seguente:
 
-\codice{\bs sistrif[\keys]\{\blue{centro}\}\{\blue{angolo}\};}
+\comandons{\bs sistrif[\keys]\{\blue{centro}\}\{\blue{angolo}\};}
 dove \ttt{centro} indica il centro del sistema di riferimento (dove vogliamo disegnare l'origine), mentre \ttt{angolo} indica l'angolo di inclinazione dell'asse $x$. Le \keys\ sono:
 \begin{itemize}[nolistsep]
 \item \ttt{\key{col} := \keyval{magenta}}, \ttt{\key{lbl col} = \key{col lbl}}, \key{width}, \key{pattern}, \ttt{\key{arrow} := \keyval{->}}, \ttt{\key{lbl dist} := \keyval{0.3}} come spiegate nella sezione \ref{keysec}. Si riferiscono a entrambi gli assi cartesiani.
@@ -477,9 +489,12 @@ dove \ttt{centro} indica il centro del sistema di riferimento (dove vogliamo dis
 
 Vediamo un semplice esempio:
 
-\codice{\bs sistrif[no label]\{0,0\}\{0\};\\
-\bs sistrif[col=teal,lbl x=\$t\$]\{4,0\}\{30\};\\
-\bs sistrif[col=gray!70,lbl x=\$\bs ra\$,mirror]\{8,0\}\{15\};}
+\begin{Verbatim}[frame=single]
+\sistrif[no label]{0,0}{0};
+\sistrif[col=teal,lbl x=$t$]{4,0}{30};
+\sistrif[col=gray!70,lbl x=$\ra$,mirror]{8,0}{15};
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showimmagini=1
 \begin{immagine}
@@ -508,7 +523,7 @@ con le \keys:
 
 Spesso vogliamo specificare solo alcune delle keys di \ttt{\bs punto}. Per farlo ci sono i seguenti comandi più concisi, che internamente richiamano \ttt{\bs punto}. Vogliamo invece chiamare esplicitamente \ttt{\bs punto} se vogliamo personalizzare altri parametri:
 
-\codice{\bs pnt[\textcolor{gray}{col}]\{\blue{name}\}\{\blue{coordinate}\};}
+\comandons{\bs pnt[\textcolor{gray}{col}]\{\blue{name}\}\{\blue{coordinate}\};}
 utile se non vogliamo inserire un label.
 
 Se invece vogliamo un label, la versione più generale è
@@ -525,15 +540,18 @@ Ci sono infine versioni di \ttt{\bs pntlbl} ancora più concise, in cui il label
 
 Vediamo un semplice esempio illustrativo.
 
-\codice{\bs grigliaO\{9\}\{2\};\\
-\bs punto[shape=rectangle,size=2.5]\{1,1\};\\
-\bs pnt[orange]\{T\}\{2,1\};\\
-\bs pntlbl[violet]\{A\}\{\$A\$\}\{45\}\{4,1\};\\
-\bs draw[->,magenta] (T)\dash(A);\\
-\bs pntl[blue]\{P\}\{-90\}\{6,1\};\\
-\bs pntlp[red]\{P\}\{-90\}\{7,1\}; \textcolor{gray}{\% il punto si chiama Pp}\\
-\bs pntls[Green]\{P\}\{0\}\{8,1\}; \textcolor{gray}{\% il punto si chiama Ps}\\
-\bs draw[->,teal] (Pp) to[bend left=90] (Ps);}
+\begin{Verbatim}[frame=single]
+\grigliaO{9}{2};
+\punto[shape=rectangle,size=2.5]{1,1};
+\pnt[orange]{T}{2,1};
+\pntlbl[violet]{A}{$A$}{45}{4,1};
+\draw[->,magenta] (T)--(A);
+\pntl[blue]{P}{-90}{6,1};
+\pntlp[red]{P}{-90}{7,1}; % il punto si chiama Pp
+\pntls[Green]{P}{0}{8,1}; % il punto si chiama Ps
+\draw[->,teal] (Pp) to[bend left=90] (Ps);
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showimmagini=1
 \begin{immagine}
@@ -555,7 +573,7 @@ Vediamo un semplice esempio illustrativo.
 \section{L'aggiunta dei label con \ttt{\bs stylelbl}}
 Aggiungere label può essere molto scomodo. Soprattutto se vogliamo scrivere il label usando un ambiente matematico (\ttt{\bs mathrm}, \ttt{\bs mathbf} o \ttt{\bs mathcal}). Per fare ciò, nel pacchetto \liLaTeXtikz\ è definito un comando specifico:
 
-\codice{\bs stylelbl[\keys]\{\blue{posizione}\};}
+\comandons{\bs stylelbl[\keys]\{\blue{posizione}\};}
 dove \ttt{coord} è la posizione del punto dove creare il label. Le \keys\ sono:
 \begin{itemize}[nolistsep]
 \item \key{lbl}, \key{lbl size}, \ttt{\key{lbl name} := \keyval{scriptlblName}}, \ttt{\key{col lbl} = \key{lbl col} = \key{col}} come spiegate nella sezione \ref{keysec}.
@@ -572,14 +590,17 @@ Possiamo anche trovare un punto $P$ di intersezione fra due paths chiamati \ttt{
 
 I due comandi sono illustrati nel seguente esempio:
 
-\codice{\bs grigliaO\{10\}\{3\};\\
-\bs draw(1,0)\dash(7,3) (0,2)\dash++(10,0);\\
-\bs intrette\{P\}\{1,0\}\{3,1\}\{0,2\}\{1,2\};\\
-\bs pntl[blue]\{P\}\{90\}\{P\};\\
-\bs draw[Green,dashed,name path=circ] (P) circle (1);\\
-\bs draw[name path=line,->] (P)\dash++(-45:2);\\
-\bs intpaths\{Q\}\{circ\}\{line\};\\
-\bs punto[col=red]\{Q\};}
+\begin{Verbatim}[frame=single]
+\grigliaO{10}{3};
+\draw(1,0)--(7,3) (0,2)--++(10,0);
+\intrette{P}{1,0}{3,1}{0,2}{1,2};
+\pntl[blue]{P}{90}{P};
+\draw[Green,dashed,name path=circ](P)circle(1);
+\draw[name path=line,->](P)--++(-45:2);
+\intpaths{Q}{circ}{line};
+\punto[col=red]{Q};
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showimmagini=1
 \begin{immagine}
@@ -597,20 +618,23 @@ I due comandi sono illustrati nel seguente esempio:
 \newpage\section{Funzioni con punti in input e un numero come output}
 All'interno del pacchetto \liLaTeXtikz\ sono presenti alcune funzioni che restituiscono un numero in output (prendendo dei punti come input). Queste sono le funzioni principali:
 
-\codice{\bs distanza\{\Green{\bs d}\}\{\blue{A}\}\{\blue{B}\};}
+\comandons{\bs distanza\{\Green{\bs d}\}\{\blue{A}\}\{\blue{B}\};}
 scrive in \ttt{\bs d} la distanza fra $A$ e $B$.
 
-\codice{\bs angolopolare\{\Green{\bs and}\}\{\blue{P}\}\{\blue{O}\};}
+\comandons{\bs angolopolare\{\Green{\bs and}\}\{\blue{P}\}\{\blue{O}\};}
 scrive in \ttt{\bs ang} l'angolo del vettore $\vc{OP}$ (in gradi).
 
 Vediamo un semplice esempio:
 
-\codice{\bs pntl\{A\}\{180\}\{0,0\};\\
-\bs pntl\{B\}\{35\}\{35:1.5\};\\
-\bs distanza\{\bs r\}\{A\}\{B\};\\
-\bs angolopolare\{\bs a\}\{B\}\{A\};\\
-\bs draw[red,thin,dashed] (A) circle (\bs r);\\
-\bs pntlp[blue]\{B\}\{-35\}\{-\bs a:\bs r\};}
+\begin{Verbatim}[frame=single]
+\pntl{A}{180}{0,0};
+\pntl{B}{35}{35:1.5};
+\distanza{\r}{A}{B};
+\angolopolare{\a}{B}{A};
+\draw[red,thin,dashed] (A) circle (\r);
+\pntlp[blue]{B}{-35}{-\a:\r};
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showimmagini=1
 \begin{immagine}
@@ -628,77 +652,80 @@ Il pacchetto \liLaTeXtikz\ contiene diverse funzioni che ci permettono di manipo
 
 Le principali sono descritte in questa sezione:
 
-\codice{\bs verso[\teal{L} := \keyval{1}]\{\Green{P}\}\{\blue{A}\}\{\blue{B}\};}
+\comandons{\bs verso[\teal{L} := \keyval{1}]\{\Green{P}\}\{\blue{A}\}\{\blue{B}\};}
 crea un punto $P$ sulla semiretta $AB$ (a distanza \ttt{L} da $A$).
 
-\codice{\bs allont[\teal{L} := \keyval{1}]\{\Green{P}\}\{\blue{A}\}\{\blue{B}\};}
+\comandons{\bs allont[\teal{L} := \keyval{1}]\{\Green{P}\}\{\blue{A}\}\{\blue{B}\};}
 crea un punto $P$ sulla semiretta $BA$ (a distanza \ttt{L} da $A$).
 
-\codice{\bs parallelo[\teal{L} := \keyval{1}]\{\Green{P}\}\{\blue{S}\}\{\blue{A}\}\{\blue{B}\};}
+\comandons{\bs parallelo[\teal{L} := \keyval{1}]\{\Green{P}\}\{\blue{S}\}\{\blue{A}\}\{\blue{B}\};}
 crea un punto $P$, ottenuto traslando $S$ per una lunghezza $L$ nel verso nel vettore $\vc{AB}$.
 
-\codice{\bs perpendicolare[\teal{L} := \keyval{1}]\{\Green{P}\}\{\blue{S}\}\{\blue{A}\}\{\blue{B}\};}
+\comandons{\bs perpendicolare[\teal{L} := \keyval{1}]\{\Green{P}\}\{\blue{S}\}\{\blue{A}\}\{\blue{B}\};}
 crea un punto $P$, ottenuto traslando $S$ per una lunghezza $L$ nel verso perpendicolare a $\vc{AB}$ (si suppone $SAB$ in senso antiorario).
 
-\codice{\bs medio[\teal{k} := \keyval{0.5}]\{\Green{M}\}\{\blue{A}\}\{\blue{B}\};}
+\comandons{\bs medio[\teal{k} := \keyval{0.5}]\{\Green{M}\}\{\blue{A}\}\{\blue{B}\};}
 definisce $M$ come il punto $(1-k)*A+k*B$. Nel caso speciale di $k=0.5$, $M$ è il punto medio del segmento $AB$. Quindi se $k=0$ risulta $M:=A$, mentre se $k=1$ risulta $M:=B$.
 
-\codice{\bs opposto\{\Green{P'}\}\{\blue{P}\}\{\blue{O}\};}
+\comandons{\bs opposto\{\Green{P'}\}\{\blue{P}\}\{\blue{O}\};}
 definisce il punto $P'$ come l'opposto di $P$ rispetto ad $O$ (quindi $O$ risulterà essere il punto medio di $PP'$).
 
-\codice{\bs simmetrico\{\Green{P'}\}\{\blue{P}\}\{\blue{A}\}\{\blue{B}\};}
+\comandons{\bs simmetrico\{\Green{P'}\}\{\blue{P}\}\{\blue{A}\}\{\blue{B}\};}
 definisce il punto $P'$ come il simmetrico di $P$ rispetto alla retta $AB$.
 
-\codice{\bs proj\{\Green{H}\}\{\blue{P}\}\{\blue{A}\}\{\blue{B}\};}
+\comandons{\bs proj\{\Green{H}\}\{\blue{P}\}\{\blue{A}\}\{\blue{B}\};}
 definisce il punto $H$ come la proiezione ortogonale di $P$ sulla retta $AB$.
 
-\codice{\bs sumvett\{\Green{C}\}\{\blue{A}\}\{\blue{B}\}\{\blue{D}\};}
+\comandons{\bs sumvett\{\Green{C}\}\{\blue{A}\}\{\blue{B}\}\{\blue{D}\};}
 definisce il punto $C$ in modo che $\vc{AC}=\vc{AB}+\vc{AD}$. Questo vuol dire in particolare che $C$ sarà definito in modo che il quadrilatero $ABCD$ sia un parallelogramma.
 
-\codice{\bs ruotapunto\{\Green{R}\}\{\blue{P}\}\{\blue{O}\}\{\blue{a}\};}
+\comandons{\bs ruotapunto\{\Green{R}\}\{\blue{P}\}\{\blue{O}\}\{\blue{a}\};}
 definisce il punto $R$ ottenuto ruotando $P$ in senso antiorario di un angolo \ttt{a} (con centro di rotazione in $O$).
 
-\codice{\bs ruotapuntoN[\teal{N} := \keyval{1}]\{\Green{R}\}\{\blue{P}\}\{\blue{O}\}\{\blue{a}\};}
+\comandons{\bs ruotapuntoN[\teal{N} := \keyval{1}]\{\Green{R}\}\{\blue{P}\}\{\blue{O}\}\{\blue{a}\};}
 analogo a \ttt{\bs ruotapunto} ma normalizza il vettore $\vc{OR}$ in modo che misuri \ttt{L}.
 
-\codice{\bs triangoloequilatero\{\Green{C}\}\{\blue{A}\}\{\blue{B}\};}
+\comandons{\bs triangoloequilatero\{\Green{C}\}\{\blue{A}\}\{\blue{B}\};}
 crea un punto $C$ in modo che il triangolo $ABC$ sia equilatero (con vertici in senso antiorario).
 
 Vediamo un esempio in cui sono illustrate le funzioni di questa sezione.
 
-\codice{\bs grigliaO\{12\}\{5\};\\
-\bs pntl\{A\}\{-90\}\{3,1\};\\
-\bs pntl\{B\}\{90\}\{5,3\};\\
-\bs pntl\{C\}\{135\}\{2,2\};\\
-\bs verso\{D\}\{A\}\{B\};\\
-\bs pntl[violet]\{D\}\{0\}\{D\};\\
-\bs allont[2]\{E\}\{B\}\{C\};\\
-\bs pntl[red]\{E\}\{135\}\{E\};\\
-\bs parallelo[2]\{F\}\{D\}\{B\}\{E\};\\
-\bs pntl[blue]\{F\}\{-45\}\{F\};\\
-\bs perpendicolare\{G\}\{D\}\{B\}\{E\};\\
-\bs pntl[teal]\{G\}\{-45\}\{G\};\\
-\bs medio[0.7]\{M\}\{B\}\{C\};\\
-\bs pntl[orange]\{M\}\{90\}\{M\};\\
-\bs opposto\{Mp\}\{M\}\{C\};\\
-\bs pntlp[green]\{M\}\{90\}\{Mp\};\\
-\bs simmetrico\{Bp\}\{B\}\{D\}\{F\};\\
-\bs pntlp[green]\{B\}\{-30\}\{Bp\};\\
-\bs proj\{H\}\{B\}\{D\}\{F\};\\
-\bs pntl[magenta]\{H\}\{-120\}\{H\};\\
-\bs sumvett\{V\}\{B\}\{E\}\{F\};\\
-\bs pntl[cyan]\{V\}\{-90\}\{V\};\\
-\bs ruotapunto\{R\}\{E\}\{V\}\{-150\};\\
-\bs pntl[pink]\{R\}\{-90\}\{R\};\\
-\bs ruotapuntoN[3]\{Rp\}\{E\}\{V\}\{-150\};\\
-\bs pntlp[pink]\{R\}\{-90\}\{Rp\};\\
-\bs triangoloequilatero\{T\}\{R\}\{Rp\};\\
-\bs pntl[brown]\{T\}\{90\}\{T\};\\
-\bs draw[gray] (Mp)\dash(C)\dash(M)\dash(B)\dash(E)\dash(V)\dash(F)\dash(H)\dash(D)\dash(G);\\
-\bs draw[gray] (A)\dash(D)\dash(B) (F)\dash(B)\dash(H)\dash(Bp) (V)\dash(R)\dash(Rp)\dash(T)\dash(R);}
+\begin{Verbatim}[frame=single]
+\grigliaO{12}{5};
+\pntl{A}{-90}{3,1};
+\pntl{B}{90}{5,3};
+\pntl{C}{135}{2,2};
+\verso{D}{A}{B};
+\pntl[violet]{D}{0}{D};
+\allont[2]{E}{B}{C};
+\pntl[red]{E}{135}{E};
+\parallelo[2]{F}{D}{B}{E};
+\pntl[blue]{F}{-45}{F};
+\perpendicolare{G}{D}{B}{E};
+\pntl[teal]{G}{-45}{G};
+\medio[0.7]{M}{B}{C};
+\pntl[orange]{M}{90}{M};
+\opposto{Mp}{M}{C};
+\pntlp[green]{M}{90}{Mp};
+\simmetrico{Bp}{B}{D}{F};
+\pntlp[green]{B}{-30}{Bp};
+\proj{H}{B}{D}{F};
+\pntl[magenta]{H}{-120}{H};
+\sumvett{V}{B}{E}{F};
+\pntl[cyan]{V}{-90}{V};
+\ruotapunto{R}{E}{V}{-150};
+\pntl[pink]{R}{-90}{R};
+\ruotapuntoN[3]{Rp}{E}{V}{-150};
+\pntlp[pink]{R}{-90}{Rp};
+\triangoloequilatero{T}{R}{Rp};
+\pntl[brown]{T}{90}{T};
+\draw[gray] (Mp)--(C)--(M)--(B)--(E)--(V)--(F)--(H)--(D)--(G);
+\draw[gray] (A)--(D)--(B) (F)--(B)--(H)--(Bp) (V)--(R)--(Rp)--(T)--(R);
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showimmagini=1
-\begin{immagine}[scale=0.9]
+\begin{immagine}
 \grigliaO{12}{5};
 \pntl{A}{-90}{3,1};
 \pntl{B}{90}{5,3};
@@ -735,15 +762,15 @@ Vediamo un esempio in cui sono illustrate le funzioni di questa sezione.
 \section{Il triangolo}
 Se abbiamo un triangolo $ABC$ (si assume sempre che i vertici siano in ordine antiorario), possiamo trovare i piedi $P$ di altezza, mediana e bisettrice condotte da $B$ con i comandi
 
-\codice{\bs piedealt\{\Green{P}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
-\codice{\bs piedemed\{\Green{P}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
+\comandons{\bs piedealt\{\Green{P}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
+\comandons{\bs piedemed\{\Green{P}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
 \comando{\bs piedebis\{\Green{P}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}
 
 In modi analoghi possiamo trovare il baricentro $M$, l'ortocentro $H$, il circocentro $O$, e l'incentro $I$ del triangolo $ABC$ coi seguenti comandi:
 
-\codice{\bs baricentro\{\Green{M}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
-\codice{\bs ortocentro\{\Green{H}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
-\codice{\bs circocentro\{\Green{O}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
+\comandons{\bs baricentro\{\Green{M}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
+\comandons{\bs ortocentro\{\Green{H}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
+\comandons{\bs circocentro\{\Green{O}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
 \comando{\bs incentro\{\Green{I}\}\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}
 
 In modo analogo, possiamo trovare l'excentro $E$ riferito al vertice $B$ come
@@ -765,7 +792,10 @@ che disegna il triangolo nei vertici $A$, $B$, $C$ specificati. In questo caso l
 
 Vediamo l'effetto di \ttt{\bs triangolobase}:
 
-\codice{\bs triangolobase\{0,3\}\{-2,0\}\{6,1\};}
+\begin{Verbatim}[frame=single]
+\triangolobase{0,3}{-2,0}{6,1};
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showimmagini=1
 \begin{immagine}
@@ -776,8 +806,8 @@ Vediamo l'effetto di \ttt{\bs triangolobase}:
 \newpage\section{Retta e semiretta}
 Possiamo disegnare una retta $AB$ o una semiretta $AB$ con i comandi
 
-\codice{\bs retta[\keys]\{\blue{A}\}\{\blue{B}\};}\\
-\codice{\bs semiretta[\keys]\{\blue{A}\}\{\blue{B}\};}
+\comandons{\bs retta[\keys]\{\blue{A}\}\{\blue{B}\};}\\
+\comandons{\bs semiretta[\keys]\{\blue{A}\}\{\blue{B}\};}
 con le seguenti \keys:
 \begin{itemize}[nolistsep]
 \item \key{col}, \key{width}, \key{lbl}, \ttt{\key{lbl name} := \keyval{rettaLblName}} (o \keyval{semirettaLblName}), \ttt{\key{lbl dist} := \keyval{0.2}}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl}} come illustrati nella sezione \ref{keysec}.
@@ -791,19 +821,22 @@ con le seguenti \keys:
 \section{Poligono e Poligonale}
 Nel pacchetto \liLaTeXtikz\ ci sono anche due comandi utili per disegnare un poligono e una poligonale (una linea spezzata). Si usano con la sintassi:
 
-\codice{\bs poligono[\opzioni]\{\blue{A,B,C,\dots}\};}
+\comandons{\bs poligono[\opzioni]\{\blue{A,B,C,\dots}\};}
 \comando{\bs poligonale[\opzioni]\{\blue{A,B,C,\dots}\};}
 
 Il loro funzionamento è illustrato nel seguente esempio:
 
-\codice{\bs pntl\{A\}\{-90\}\{3,0\};\\
-\bs pntl\{B\}\{180\}\{1,1\};\\
-\bs pntl\{C\}\{90\}\{4,2\};\\
-\bs pntl\{D\}\{0\}\{6,1.5\};\\
-\bs pntl\{E\}\{-90\}\{7,0\};\\
-\bs pntl[red]\{F\}\{0\}\{10,1\};\\
-\bs poligono[Green,fill=yellow]\{A,B,C,D,E\};\\
-\bs poligonale[violet,thick]\{A,C,E,F\};}
+\begin{Verbatim}[frame=single]
+\pntl{A}{-90}{3,0};
+\pntl{B}{180}{1,1};
+\pntl{C}{90}{4,2};
+\pntl{D}{0}{6,1.5};
+\pntl{E}{-90}{7,0};
+\pntl[red]{F}{0}{10,1};
+\poligono[Green,fill=yellow]{A,B,C,D,E};
+\poligonale[violet,thick]{A,C,E,F};
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showimmagini=1
 \begin{immagine}
@@ -824,7 +857,7 @@ Il loro funzionamento è illustrato nel seguente esempio:
 \newpage\section{Circonferenze}
 La funzione
 
-\codice{\bs circCR[\keys]\{\blue{C}\}\{\blue{R}\};}
+\comandons{\bs circCR[\keys]\{\blue{C}\}\{\blue{R}\};}
 disegna una circonferenza di centro $C$ e raggio $R$. Le \keys\ sono:
 \begin{itemize}[nolistsep]
 \item \key{col}, \key{width}, \key{pattern}, \key{name path}, \ttt{\key{fill} := \keyval{false}}, \key{col fill}, \ttt{\key{opacity} := \keyval{30}}, \key{lbl}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl}} e \ttt{\key{lbl name} := \keyval{circCPlblName}} come descritte nella sezione \ref{keysec}.
@@ -835,25 +868,28 @@ disegna una circonferenza di centro $C$ e raggio $R$. Le \keys\ sono:
 
 Se invece vogliamo disegnare una circonferenza sapendo il centro $C$ e un suo punto $P$, possiamo usare le due funzioni (con le stesse \keys\ di \ttt{\bs circCR}):
 
-\codice{\bs circCP[\keys]\{\blue{C}\}\{\blue{P}\};}\\
+\comandons{\bs circCP[\keys]\{\blue{C}\}\{\blue{P}\};}\\
 \comando{\bs circCPr[\keys]\{\blue{C}\}\{\blue{P}\}\{\Green{r}\};}
 La differenza è che \ttt{\bs circCPr} registra in \ttt{r} la lunghezza del raggio della circonferenza disegnata.
 
 Infine, possiamo disegnare una circonferenza passante per tre punti $A$, $B$ e $C$. Nel farlo possiamo registrare il centro in $O$ o il raggio in $\rr$ usando i vari comandi qui definiti (hanno tutti le stesse \keys\ di \ttt{\bs circCR}).
-\codice{\bs circPPP[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
-\codice{\bs circPPPc[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\}\{\Green{O}\};}\\
-\codice{\bs circPPPr[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\}\{\Green{c}\};}\\
+\comandons{\bs circPPP[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
+\comandons{\bs circPPPc[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\}\{\Green{O}\};}\\
+\comandons{\bs circPPPr[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\}\{\Green{c}\};}\\
 \comando{\bs circPPPcr[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\}\{\Green{O}\}\{\Green{c}\};}
 
 Il seguente esempio illustra come usare i comandi per disegnare le circonferenze
 
-\codice{\bs pntl[red]\{A\}\{-90\}\{0,0\};\\
-\bs pntl[blue]\{B\}\{90\}\{2,1\};\\
-\bs circCPr[col=red,width=thin]\{A\}\{B\}\{\bs r\};\\
-\bs circCR[col=blue,width=thin]\{B\}\{\bs r\};\\
-\bs pntl[Green]\{C\}\{0\}\{2,-1\};\\
-\bs circPPPc[col=orange,pattern=dotted]\{A\}\{B\}\{C\}\{O\};\\
-\bs pntl[orange]\{O\}\{-90\}\{O\};}
+\begin{Verbatim}[frame=single]
+\pntl[red]{A}{-90}{0,0};
+\pntl[blue]{B}{90}{2,1};
+\circCPr[col=red,width=thin]{A}{B}{\r};
+\circCR[col=blue,width=thin]{B}{\r};
+\pntl[Green]{C}{0}{2,-1};
+\circPPPc[col=orange,pattern=dotted]{A}{B}{C}{O};
+\pntl[orange]{O}{-90}{O};
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showimmagini=1
 \begin{immagine}
@@ -872,7 +908,7 @@ Il seguente esempio illustra come usare i comandi per disegnare le circonferenze
 
 Il comando
 
-\codice{\bs interLC\{\Green{P1}\}\{\Green{P2}\}\{\blue{A}\}\{\blue{B}\}\{\blue{O}\}\{\blue{R}\};}
+\comandons{\bs interLC\{\Green{P1}\}\{\Green{P2}\}\{\blue{A}\}\{\blue{B}\}\{\blue{O}\}\{\blue{R}\};}
 trova i due punti di intersezione fra la retta $AB$ e la circonferenza di centro $O$ e raggio $R$ (si assume che $AB$ sia secante). Quindi registra questi due punti di intersezione in $P1$ e in $P2$.
 
 Se $A$ è interno alla circonferenza, allora $P1$ sarà il punto di intersezione sulla semiretta $BA$, mentre $P2$ sarà il punto di intersezione sulla semiretta $AB$.
@@ -893,23 +929,26 @@ Infine, date due circonferenze di centri $O1$ e $O2$ e raggi $R1$ e $R2$ (serve 
 
 Vediamo un semplice esempio applicativo.
 
-\codice{\bs pntlbl[blue]\{Oa\}\{\$O\_1\$\}\{180\}\{0,0\};\\
-\bs pntlbl[red]\{Ob\}\{\$O\_2\$\}\{0\}\{2,1\};\\
-\bs draw[red](Ob)circle(1);\\
-\bs circCPr[col=blue]\{Oa\}\{Ob\}\{\bs r\};\\
-\bs pntl\{A\}\{-90\}\{-3,-2\};\\
-\bs pntl\{B\}\{-90\}\{-2,-2\};\\
-\bs draw[thin,gray](A)\dash++(8,0);\\
-\bs interLC\{C\}\{D\}\{A\}\{B\}\{Oa\}\{\bs r\};\\
-\bs pntl[orange]\{C\}\{-90\}\{C\};\\
-\bs pntl[orange]\{D\}\{-90\}\{D\};\\
-\bs interCC\{E\}\{F\}\{Oa\}\{\bs r\}\{Ob\}\{1\};\\
-\bs pntl[violet]\{E\}\{90\}\{E\};\\
-\bs pntl[violet]\{F\}\{-30\}\{F\};\\
-\bs PtangenzaCC\{P\}\{Oa\}\{\bs r\}\{Ob\}\{1\};\\
-\bs pntl[Green]\{P\}\{0\}\{P\};\\
-\bs tangentiPC\{G\}\{H\}\{P\}\{Oa\}\{\bs r\};\\
-\bs draw[Green] (G)\dash(P)\dash(H);}
+\begin{Verbatim}[frame=single]
+\pntlbl[blue]{Oa}{$O_1$}{180}{0,0};
+\pntlbl[red]{Ob}{$O_2$}{0}{2,1};
+\draw[red](Ob)circle(1);
+\circCPr[col=blue]{Oa}{Ob}{\r};
+\pntl{A}{-90}{-3,-2};
+\pntl{B}{-90}{-2,-2};
+\draw[thin,gray](A)--++(8,0);
+\interLC{C}{D}{A}{B}{Oa}{\r};
+\pntl[orange]{C}{-90}{C};
+\pntl[orange]{D}{-90}{D};
+\interCC{E}{F}{Oa}{\r}{Ob}{1};
+\pntl[violet]{E}{90}{E};
+\pntl[violet]{F}{-30}{F};
+\PtangenzaCC{P}{Oa}{\r}{Ob}{1};
+\pntl[Green]{P}{0}{P};
+\tangentiPC{G}{H}{P}{Oa}{\r};
+\draw[Green] (G)--(P)--(H);
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showimmagini=1
 \begin{immagine}
@@ -942,12 +981,12 @@ Un primo comando ci permette di tracciare un arco di circonferenza di centro $O$
 
 In alternativa possiamo usare il comando
 
-\codice{\bs arcocircang[\opzioni]\{\blue{O}\}\{\blue{A}\}\{\blue{ang}\};}
+\comandons{\bs arcocircang[\opzioni]\{\blue{O}\}\{\blue{A}\}\{\blue{ang}\};}
 che ci permette di disegnare un arco di centro $O$ che parte da $A$ e gira per un angolo complessivo \ttt{ang} (espresso in gradi). Se l'angolo è positivo si assume un senso di rotazione antiorario, se invece è positivo l'arco ruota in senso orario.
 
 Abbiamo infine il comando
 
-\codice{\bs semicirc[\opzioni]\{\blue{A}\}\{\blue{B}\};}
+\comandons{\bs semicirc[\opzioni]\{\blue{A}\}\{\blue{B}\};}
 che disegna una semicirconferenza di diametro $AB$.
 
 \textbf{Attenzione!} Se nelle opzioni vengono specificate delle frecce come \keyval{->}, gli archi sono sempre da intendersi tracciati in senso antiorario.
@@ -961,7 +1000,7 @@ Questo disegna una curva parametrizzata (con parametro \ttt{\bs x} che varia nel
 
 Ad esempio il seguente codice disegna la funzione $f(x)=\frac{\sin(x)}{x}$ per un intervallo $[-6:+6$]:
 
-\ttt{\bs plot\{$-6:+6$\}\{\bs x\}\{sin(\bs x*180/pi)/(\bs x)\};} {\tab\small\textcolor{gray}{\% le funzioni \ttt{sin} e \ttt{cos} prendono l'input in gradi.}}
+\ttt{\bs plot\{$-6:+6$\}\{\bs x\}\{sin(\bs x*180/pi)/(\bs x)\};} {\hspace*{1cm}\small\textcolor{gray}{\% le funzioni \ttt{sin} e \ttt{cos} prendono l'input in gradi.}}
 
 \ifnum\showimmagini=1
 \begin{immagine}
@@ -1029,7 +1068,7 @@ Esiste anche il comando \ttt{\bs parabolaeqy}, identico a \ttt{\bs parabolaeq}. 
 \subsection{Disegnare una funzione di proporzionalità inversa}
 Possiamo anche disegnare un tratto di funzione di proporzionalità inversa (un'iperbole equilatera ruotata di $45^\circ$). Il seguente comando ci permette di disegnare un tratto di funzione $xy=k$:
 
-\codice{\bs propinv[\opzioni]\{\blue{$x_1:x_2$}\}\{\blue{$y_1:y_2$}\}\{\blue{k}\};}
+\comandons{\bs propinv[\opzioni]\{\blue{$x_1:x_2$}\}\{\blue{$y_1:y_2$}\}\{\blue{k}\};}
 Così facendo si disegno i punti $(x,y)$ tali per cui $xy=k$ e $x\in[x_1,x_2]$ e $y\in[y_1,y_2]$.
 
 Volendo è anche possibile disegnare una funzione di proporzionalità inversa traslata di un vettore $V$. Per farlo usiamo il comando
@@ -1052,7 +1091,7 @@ Può aver senso usare il comando \ttt{\bs segmento} anche se non siamo interessa
 
 Se vogliamo mettere un \key{mark} su un arco di circonferenza $\arco{AB}$ (si suppone che la circonferenza abbia centro $O$) si usa il comando
 
-\codice{\bs markarco[\keys]\{\blue{mark}\}\{\blue{O}\}\{\blue{A}\}\{\blue{B}\};}
+\comandons{\bs markarco[\keys]\{\blue{mark}\}\{\blue{O}\}\{\blue{A}\}\{\blue{B}\};}
 Per le opzioni per \blue{mark} si rimanda alle opzioni per la chiave \key{mark} descritte nella sezione \ref{keysec}. \ttt{\bs markarco} usa le seguenti \keys:
 \begin{itemize}[nolistsep]
 \item \ttt{\key{col} := \keyval{black}} che rappresenta il colore del \blue{mark}.
@@ -1064,7 +1103,7 @@ Per le opzioni per \blue{mark} si rimanda alle opzioni per la chiave \key{mark} 
 Per disegnare degli angoli $A\widehat{B}C$ (eventualmente marcati) abbiamo invece i seguenti comandi (il comando \ttt{\bs angoloretto} è specifico per gli angoli retti):
 
 \comando{\bs angolo[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}\\
-\codice{\bs angoloretto[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}
+\comandons{\bs angoloretto[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}
 con le seguenti keys:
 \begin{itemize}[nolistsep]
 \item \key{col}, \key{col draw}, \key{width}, \key{pattern}, \key{arrow}, \key{col fill}, \ttt{\key{opacity} := \keyval{30}} come descritti in sezione \ref{keysec}.
@@ -1079,12 +1118,15 @@ con le seguenti keys:
 
 Vediamo un semplice esempio di utilizzo di questi comandi:
 
-\codice{\bs coordinate (A) at (4,1);\\
-\bs pntl\{B\}\{-90\}\{1,0\};\\
-\bs coordinate (C) at (-1,2);\\
-\bs angolo[lbl=\$\bs beta\$,col=Green,fill,mark=||]\{A\}\{B\}\{C\};\\
-\bs segmento[col=red,lbl=\$\bs ra\$]\{B\}\{A\};\\
-\bs segmento[col=blue,mark=oo]\{B\}\{C\};}
+\begin{Verbatim}[frame=single]
+\coordinate (A) at (4,1);
+\pntl{B}{-90}{1,0};
+\coordinate (C) at (-1,2);
+\angolo[lbl=$\beta$,col=Green,fill,mark=||]{A}{B}{C};
+\segmento[col=red,lbl=$\ra$]{B}{A};
+\segmento[col=blue,mark=oo]{B}{C};
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showimmagini=1
 \begin{immagine}
@@ -1110,7 +1152,7 @@ Il pacchetto \liLaTeXtikz\ definisce una semplice funzione per disegnare una sfe
 \subsection{La molla}
 Il pacchetto \liLaTeXtikz\ fornisce inoltre un comando specifico per disegnare una molla da un punto $A$ a un punto $B$:
 
-\codice{\bs molla[\keys]\{\blue{$A$}\}\{\blue{$B$}\};}
+\comandons{\bs molla[\keys]\{\blue{$A$}\}\{\blue{$B$}\};}
 con le seguenti \keys:
 \begin{itemize}[nolistsep]
 \item \ttt{\key{col} := \keyval{gray}}, \key{width}, \ttt{\key{s} = \key{scale} := \keyval{1}} con i significati spiegati nella sezione \ref{keysec}.
@@ -1121,8 +1163,11 @@ con le seguenti \keys:
 
 Vediamo un semplice esempio di utilizzo:
 
-\codice{\bs molla\{0,0\}\{3,0\};\\
-\bs sfera\{3.3,0\}\{0.3\};}
+\begin{Verbatim}[frame=single]
+\molla{0,0}{3,0};
+\sfera{3.3,0}{0.3};
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showimmagini=1
 \begin{immagine}
@@ -1134,7 +1179,7 @@ Vediamo un semplice esempio di utilizzo:
 \subsection{La carrucola}
 Nel problemi di statica del corpo rigido e di dinamica rotazionale dobbiamo spesso utilizzare le carrucole. Il pacchetto \liLaTeXtikz\ definisce quindi il seguente comando per disegnare una carrucola di centro $C$ e raggio $\rR$:
 
-\codice{\bs carrucola[\keys]\{\blue{$C$}\}\{\blue{$\rR$}\};}
+\comandons{\bs carrucola[\keys]\{\blue{$C$}\}\{\blue{$\rR$}\};}
 con le seguenti \keys:
 \begin{itemize}[nolistsep]
 \item \ttt{\key{col1} := \keyval{gray!70}}, \ttt{\key{col2} := \keyval{gray}} e \ttt{\key{col3} := \keyval{black}} sono i colori dei tre cerchi che compongono la carrucola (\key{col1} è il colore più esterno, mentre \key{col3} è quello più interno).
@@ -1144,7 +1189,7 @@ con le seguenti \keys:
 \subsection{La cassa per il piano inclinato}
 Siamo spesso interessati a disegnare delle casse, soprattutto sui piani inclinati (di un angolo \ttt{ang}). Per farlo, possiamo usare il seguente comando
 
-\codice{\bs cassa[\keys]\{\blue{punto iniziale}\}\{\blue{$x$}\}\{\blue{$y$}\}\{\blue{ang}\};}
+\comandons{\bs cassa[\keys]\{\blue{punto iniziale}\}\{\blue{$x$}\}\{\blue{$y$}\}\{\blue{ang}\};}
 dove $x$ e $y$ indicano le lunghezze della cassa lungo le due direzioni (possono eventualmente essere negativi). Le \keys\ in questo caso sono:
 \begin{itemize}[nolistsep]
 \item \key{col}, \key{width}, \key{pattern}, \key{col draw}, \key{col fill}, \ttt{\key{opacity} := \keyval{10}}, \key{lbl}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl} := \keyval{black}} come descritti nella sezione \ref{keysec}.
@@ -1157,7 +1202,7 @@ dove $x$ e $y$ indicano le lunghezze della cassa lungo le due direzioni (possono
 \subsection{La parentesi graffa}
 La graffa viene spesso usata per specificare delle lunghezze nell'immagine. Per farlo, utilizziamo la sintassi seguente:
 
-\codice{\bs graffa[\keys]\{\blue{$A$}\}\{\blue{$B$}\};}
+\comandons{\bs graffa[\keys]\{\blue{$A$}\}\{\blue{$B$}\};}
 dove la parentesi graffa ha gli estremi in $A$ e $B$. Il comando usa queste \keys:
 \begin{itemize}[nolistsep]
 \item \key{col}, \key{width}, \key{pattern}, \key{lbl}, \ttt{\key{lbl name} := \keyval{graffanamelbl}}, \ttt{\key{lbl dist} := \keyval{0.5}} e \ttt{\key{lbl col} = \key{col lbl}} come spiegati nella sezione \ref{keysec}.
@@ -1167,22 +1212,24 @@ dove la parentesi graffa ha gli estremi in $A$ e $B$. Il comando usa queste \key
 \item L'opzione \keyop{mirror}, se specificata ribalta la graffa. Questo in realtà è equivalente a scambiare $A$ e $B$ nell'input.
 \end{itemize}
 
-\codice{\bs tikzdef\bs ang\{35\}\\
-\bs coordinate (O) at(0,0);\\
-\bs coordinate (NE) at (\bs ang:8);\\
-\bs coordinate (E) at (O-|NE);\\
-\bs poligono[fill=gray!20]\{O,E,NE\};\\
-\bs angolo[col=Green,fill,lbl=\$\bs ang\string^\bs circ\$,lbl dist=0.4]\{E\}\{O\}\{NE\};\\
-\bs coordinate (C) at (\$(NE)+(45:0.3)\$);\\
-\bs draw (\$(C)+(0.9,0)\$)\dash++(0,-1.5);\\
-\bs draw (\$(C)+(\bs ang+90:0.9)\$)\dash++(\bs ang:-2.5)node(top)\{\};\\
-\bs cassa[col=red,lbl=\$\bs mathbf\{m\_2\}\$]\{\$(C)+(0.9-0.4,-1.5)\$\}\{0.8\}\{-1\}\{0\};\\
-\bs proj\{H\}\{top\}\{O\}\{NE\};\\
-\bs cassa[col=blue,lbl=\$\bs mathbf\{m\_1\}\$]\{H\}\{-1.8\}\{1.2\}\{\bs ang\};\\
-\bs carrucola\{C\}\{1\};\\
-\bs graffa[lbl=\{\$2\{,\}4\bs,\bs SI\{m\}\$\}]\{O\}\{E\};\\
-\bs coordinate (A) at (\bs ang:2);\\
-\bs auto[col=red,ang=\bs ang]\{\bs ang:2\};}
+\begin{Verbatim}[frame=single]
+\tikzdef\ang{35}
+\coordinate (O) at(0,0);
+\coordinate (NE) at (\ang:8);
+\coordinate (E) at (O-|NE);
+\poligono[fill=gray!20]{O,E,NE};
+\angolo[col=Green,fill,lbl=$\ang^\circ$,lbl dist=0.4]{E}{O}{NE};
+\coordinate (C) at ($(NE)+(45:0.3)$);
+\draw ($(C)+(0.9,0)$)--++(0,-1.5);
+\draw ($(C)+(\ang+90:0.9)$)--++(\ang:-2.5)node(top){};
+\cassa[col=red,lbl=$\mathbf{m_2}$]{$(C)+(0.9-0.4,-1.5)$}{0.8}{-1}{0};
+\proj{H}{top}{O}{NE};
+\cassa[col=blue,lbl=$\mathbf{m_1}$]{H}{-1.8}{1.2}{\ang};
+\carrucola{C}{1};
+\graffa[lbl=$2{,}4\,\SI{m}$]{O}{E};
+\auto[col=red,ang=\ang]{\ang:2};
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showslowimmagini=1
 \begin{immagine}
@@ -1207,7 +1254,7 @@ dove la parentesi graffa ha gli estremi in $A$ e $B$. Il comando usa queste \key
 \newpage\subsection{Il raggio di luce}
 In ottica siamo spesso interessati a disegnare un raggio di luce che segue una linea spezzata. Per farlo possiamo usare il comando
 
-\codice{\bs raggioluce[\keys]\{\blue{$P_1$}\}\{\blue{$P_2$}\}\{\blue{$P_3$}\}\blue{\dots};}
+\comandons{\bs raggioluce[\keys]\{\blue{$P_1$}\}\{\blue{$P_2$}\}\{\blue{$P_3$}\}\blue{\dots};}
 dove $P_1$, $P_2$, $P_3$, $\dots$ sono i vertici della linea spezzata. Le \keys\ sono:
 \begin{itemize}[nolistsep]
 \item \ttt{\key{col} := \keyval{orange}}, \key{width}, \key{pattern}, \ttt{\key{arrow} := \keyval{->}} come illustrati nella sezione \ref{keysec}.
@@ -1216,8 +1263,11 @@ dove $P_1$, $P_2$, $P_3$, $\dots$ sono i vertici della linea spezzata. Le \keys\
 
 Vediamo un semplice esempio di utilizzo:
 
-\codice{\bs grigliaO\{8\}\{1\};\\
-\bs raggioluce\{1,0\}\{4,1\}\{5,0\}\{7,1\}\{5,1\};}
+\begin{Verbatim}[frame=single]
+\grigliaO{8}{1};
+\raggioluce{1,0}{4,1}{5,0}{7,1}{5,1};
+\end{Verbatim}
+\vspace*{-5mm}
 
 \ifnum\showimmagini=1
 \begin{immagine}
@@ -1229,7 +1279,7 @@ Vediamo un semplice esempio di utilizzo:
 \subsection{La casetta}
 Il comando \ttt{\bs casetta} ci permette di disegnare una casetta:
 
-\codice{\bs casetta[\keys]\{\blue{$B$}\};}
+\comandons{\bs casetta[\keys]\{\blue{$B$}\};}
 dove $B$ è il centro della base della casetta. Le \keys\ per questo comando sono:
 \begin{itemize}[nolistsep]
 \item \key{col}, \key{width}, \key{pattern}, \ttt{\key{s} = \key{scale} := \keyval{1}} come spiegate nella sezione \ref{keysec}.
@@ -1240,7 +1290,7 @@ dove $B$ è il centro della base della casetta. Le \keys\ per questo comando son
 Il pacchetto \liLaTeXtikz\ definisce anche due comandi per disegnare degli omini stilizzati:
 
 \comando{\bs uomo[\keys]\{\blue{$B$}\};}\\
-\codice{\bs donna[\keys]\{\blue{$B$}\};}
+\comandons{\bs donna[\keys]\{\blue{$B$}\};}
 dove $B$ indica il centro della base dell'immagine e le \keys\ (uguali per i due comandi) sono:
 \begin{itemize}[nolistsep]
 \item \key{col}, \ttt{\key{width} := \keyval{thick}}, \ttt{\key{side} := \keyval{->}}, \ttt{\key{s} = \key{scale} := \keyval{1}} come illustrate nella sezione \ref{keysec}.
@@ -1251,15 +1301,18 @@ dove $B$ indica il centro della base dell'immagine e le \keys\ (uguali per i due
 \item \ttt{\key{ang gamba} = \key{ang gamba 1} := \keyval{-60}} l'angolo con cui viene disegnata la prima gamba.
 \item \ttt{\key{ang gamba 2} := \keyval{-90}} l'angolo della seconda gamba.
 \item \ttt{\key{mano 1} := \keyval{ManoDx}}, \ttt{\key{mano 2} := \keyval{ManoSx}}, \ttt{\key{piede 1} := \keyval{PiedeDx}}e  \ttt{\key{piede 2} := \keyval{PiedeSx}} sono i nomi da dare a mani e piedi (possono essere utili per disegnare altri oggetti successivi).
-\item L'opzione \keyop{mirror}, se specificata, specchi l'immagine.
+\item L'opzione \keyop{mirror}, se specificata, specchia l'immagine.
 \end{itemize}
 
 Vediamo un semplice esempio:
 
-\codice{\bs grigliaO[step=0.5]\{6\}\{1\};\\
-\bs casetta\{2,0\};\\
-\bs uomo[col=blue]\{4,0\};\\
-\bs donna[mirror,col=red]\{5,0\};}
+\begin{Verbatim}[frame=single]
+\grigliaO[step=0.5]{6}{1};
+\casetta{2,0};
+\uomo[col=blue]{4,0};
+\donna[mirror,col=red]{5,0};
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showslowimmagini=1
 \begin{immagine}
@@ -1276,7 +1329,7 @@ Il pacchetto \liLaTeXtikz\ definisce anche comandi per disegnare diversi tipi di
 \comando{\bs auto[\keys]\{\blue{$B$}\};}\\
 \comando{\bs camion[\keys]\{\blue{$B$}\};}\\
 \comando{\bs moto[\keys]\{\blue{$B$}\};}\\
-\codice{\bs bici[\keys]\{\blue{$B$}\};}
+\comandons{\bs bici[\keys]\{\blue{$B$}\};}
 dove $B$ indica il centro della base del veicolo. I quattro comandi per i veicoli hanno tutti le stesse \keys:
 \begin{itemize}[nolistsep]
 \item \key{col}, \ttt{\key{width} := \keyval{thick}}, \ttt{\key{side} := \keyval{->}} e \ttt{\key{s} = \key{scale} := \keyval{1}} come illustrate nella sezione \ref{keysec}.
@@ -1293,11 +1346,14 @@ dove $B$ indica il centro della base del veicolo. I quattro comandi per i veicol
 
 La seguente immagine mostra il funzionamento dei veicoli:
 
-\codice{\bs grigliaO\{15\}\{3\};\\
-\bs camion\{3,0\};\\
-\bs auto[col=red,side=<-]\{8.5,0\};\\
-\bs moto[col=blue,mirror]\{12,0\};\\
-\bs bici[col=Green,side=<-,mirror]\{14,0\};}
+\begin{Verbatim}[frame=single]
+\grigliaO{15}{3};
+\camion{3,0};
+\auto[col=red,side=<-]{8.5,0};
+\moto[col=blue,mirror]{12,0};
+\bici[col=Green,side=<-,mirror,lbl=$a$]{14,0};
+\end{Verbatim}
+\vspace*{-4mm}
 
 \ifnum\showslowimmagini=1
 \begin{immagine}
