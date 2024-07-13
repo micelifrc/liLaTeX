@@ -22,6 +22,7 @@
 \newcommand{\opzioni}{\textcolor{teal}{\ttt{opzioni}}}
 \newcommand{\keys}{\textcolor{teal}{\ttt{keys}}}
 \newcommand{\key}[1]{\textcolor{brown}{\ttt{#1}}}
+\newcommand{\keyop}[1]{\textcolor{orange}{\ttt{#1}}}
 \newcommand{\keyval}[1]{\cyan{\ttt{#1}}}
 \newcommand{\dash}{{-}{-}}
 \newcommand{\tab}{\hspace*{4mm}}
@@ -280,6 +281,36 @@ Questo è un elenco delle \keys\ più comuni e dei valori di default che conteng
 \item \ttt{\key{side} := \keyval{->}} può assumere anche il valore \keyval{<-} e indica come deve essere orientata l'immagine (utile per alcune immagini ``complesse'').
 \end{itemize}
 
+\subsection{Le keys opzionali}
+In alcuni casi è possibile definire delle \keys\ opzionali. Un esempio può essere la chiave \keyop{mirror} per \ttt{\bs auto} (e per molte altre funzioni simili).
+
+Per queste keys non serve assegnare un valore esplicitamente.
+
+Le più comuni sono:
+\begin{itemize}[nolistsep]
+\item \keyop{mirror}, che, se specificata, riflette l'immagine.
+\item \keyop{fill}, che, se specificata, riempie l'interno dell'immagine. Alcuni comandi usano invece \keyop{no fill}.
+\item \keyop{no label}, che se specificata rimuove i label dell'immagine.
+\end{itemize}
+
+Vediamo un semplice esempio:
+
+\codice{\bs auto[col=blue]\{0,0\};\\
+\bs auto[col=red,mirror]\{4,0\};\\
+\bs circCR[col=Green]\{8,1\}\{1\};\\
+\bs circCR[col=orange,fill]\{11,1\}\{1\};}
+
+\ifnum\showslowimmagini=1
+\begin{immagine}[scale=0.5]
+\auto[col=blue]{0,0};
+\auto[col=red,mirror]{4,0};
+\circCR[col=Green]{8,1}{1};
+\circCR[col=orange,fill]{11,1}{1};
+\end{immagine}
+\fi
+
+Per vedere come definire una key opzionale si rimanda all'esempio della key opzionale \keyop{mirror} definita nel comando \ttt{\bs auto}.
+
 \subsection{Il key-manager in \liLaTeXtikz}
 Il key-manager di \liLaTeXtikz\ è una parte interna a \liLaTeXtikz\ di cui l'utente normale non deve preoccuparsi, ma che risulta importante per chi intende modificare/estendere il pacchetto.
 
@@ -304,7 +335,6 @@ I comandi \ttt{\bs setkeyvalueifempty\{\blue{KEY}\}\{\blue{val}\};} e \ttt{\bs c
 Ci sono infine i comandi
 
 \comando{\bs setkeyvaluesifempty\{\blue{KEY1}\}\{\blue{val1}\}\{\blue{KEY2}\}\{\blue{val2}\}\{\blue{KEY3}\}\{\blue{val3}\}\dots;}
-
 \codice{\bs copykeyvaluesifempty\{\blue{KEYto1}\}\{\blue{KEYfr1}\}\{\blue{KEYto2}\}\{\blue{KEYfr2}\}\{\blue{KEYto3}\}\{\blue{KEYfr3}\}\dots;}
 che ripetono rispettivamente \ttt{\bs setkeyvalueifempty} e \ttt{\bs copykeyvalueifempty} per tutte le coppie specificate.
 
@@ -382,8 +412,8 @@ con le \keys:
 \begin{itemize}[nolistsep]
 \item \key{col}, \key{width}, \key{pattern}, \ttt{\key{arrow} := \keyval{->}}, \key{lbl}, \key{lbl name}, \key{lbl size}, \key{lbl dist}, \ttt{\key{lbl col} = \key{col lbl}} coi significati della sezione \ref{keysec}.
 \item \ttt{\key{y} := \keyval{0}} (solo per \ttt{\bs assex}) specifica la coordinata $y$ dell'asse delle ascisse. Analogamente \ttt{\key{x} := \keyval{0}} (solo per \ttt{\bs assey}) specifica la coordinata $x$ dell'asse delle ordinate.
-\item \ttt{\key{flip lbl} := \keyval{false}} se reso \keyval{true} il label viene ruotato di $180^\circ$.
 \item \ttt{\key{ang shift} := \keyval{0}} una rotazione extra per il label (oltre a quella prevista dalla posizione iniziale).
+\item L'opzione \keyop{mirror lbl}, se specificata, ruota il label di $180^\circ$.
 \end{itemize}
 
 Volendo è anche possibile definire i due assi cartesiani insieme col comando
@@ -412,8 +442,8 @@ Le coordinate \ttt{\bs x} e \ttt{\bs y} nei due comandi indicano le posizioni de
 \begin{itemize}[nolistsep]
 \item \key{col}, \ttt{\key{width} := \keyval{very thin}}, \key{pattern}, \key{arrow}, \ttt{\key{lbl col} = \key{col lbl}} coi significati della sezione \ref{keysec}.
 \item \ttt{\key{l} = \key{length} := \keyval{0.2}} la lunghezza della barretta.
-\item \ttt{\key{\bs flip} := \keyval{true}} se posto uguale a \keyval{true} pone i label verso l'alto (nel caso di \ttt{\bs assexbar}) o verso destra (nel caso di \ttt{\bs asseybar}).
 \item \ttt{\key{y} := \keyval{0}} (solo per \ttt{\bs assexbar}) e \ttt{\key{x} := \keyval{0}} (solo per \ttt{\bs asseybar}) è l'altra coordinata del centro della barretta.
+\item L'opzione \keyop{\bs mirror}, se specificata, pone i label verso l'alto (nel caso di \ttt{\bs assexbar}) o verso destra (nel caso di \ttt{\bs asseybar}).
 \end{itemize}
 
 Il seguente esempio illustra come utilizzare il sistema cartesiano in un caso semplice.
@@ -421,14 +451,14 @@ Il seguente esempio illustra come utilizzare il sistema cartesiano in un caso se
 \codice{\bs griglia[s=0.5]\{-1\}\{10\}\{-1\}\{5\};\\
 \bs assixy\{-1\}\{9.7\}\{-1\}\{4.7\};\\
 \bs foreach \bs x in \{1,2,...,9\} \bs assexbar\{\bs x\}\{\$\bs x\$\};\\
-\bs foreach \bs y in \{-1,1,2,...,8\} \bs asseybar[flip=true]\{0.5*\bs y\}\{\$\bs y\$\};}
+\bs foreach \bs y in \{-1,1,2,...,8\} \bs asseybar[mirror]\{0.5*\bs y\}\{\$\bs y\$\};}
 
 \ifnum\showimmagini=1
 \begin{immagine}
 \griglia[s=0.5]{-1}{10}{-1}{5};
 \assixy{-1}{9.7}{-1}{4.7};
 \foreach \x in {1,2,...,9} \assexbar{\x}{$\x$};
-\foreach \y in {-1,1,2,...,8} \asseybar[flip=true]{0.5*\y}{$\y$};
+\foreach \y in {-1,1,2,...,8} \asseybar[mirror]{0.5*\y}{$\y$};
 \end{immagine}
 \fi
 
@@ -441,21 +471,21 @@ dove \ttt{centro} indica il centro del sistema di riferimento (dove vogliamo dis
 \item \ttt{\key{col} := \keyval{magenta}}, \ttt{\key{lbl col} = \key{col lbl}}, \key{width}, \key{pattern}, \ttt{\key{arrow} := \keyval{->}}, \ttt{\key{lbl dist} := \keyval{0.3}} come spiegate nella sezione \ref{keysec}. Si riferiscono a entrambi gli assi cartesiani.
 \item \ttt{\key{front} := \keyval{2}} e \ttt{\key{back} := \keyval{0.3}} indicano le lunghezze dei due assi cartesiani in avanti (per valori positivi) e indietro (per valori negativi). Possono essere sovrascritti separatamente per i due assi con le \keys\ \key{front x}, \key{front y}, \key{back x} e \key{back y}.
 \item \ttt{\key{lbl x} := \keyval{\$x\$}} e \ttt{\key{lbl y} := \keyval{\$y\$}} sono i label per i due assi cartesiani. Se si vuole togliere un label scrivere, ad esempio, \ttt{\key{lbl x}=}.
-\item \ttt{\key{label} := \keyval{true}}. Se reso \keyval{false} vengono rimossi entrambi i label.
-\item \ttt{\key{filp} := \keyval{false}} è da rendere uguale a \keyval{true} se vogliamo che l'asse $y$ si trovi ruotato di $90^\circ$ in senso \textit{orario} (anziché \textit{antiorario}) rispetto all'asse $y$.
+\item L'opzione \keyop{no label}, se specificata, rimuove i label.
+\item L'opzione \keyop{filp} può essere specificata se vogliamo che l'asse $y$ si trovi ruotato di $90^\circ$ in senso \textit{orario} (anziché \textit{antiorario}) rispetto all'asse $y$.
 \end{itemize}
 
 Vediamo un semplice esempio:
 
-\codice{\bs sistrif\{0,0\}\{0\};\\
+\codice{\bs sistrif[no label]\{0,0\}\{0\};\\
 \bs sistrif[col=teal,lbl x=\$t\$]\{4,0\}\{30\};\\
-\bs sistrif[col=gray!70,lbl x=\$\bs ra\$,flip=true]\{8,1\}\{60\};}
+\bs sistrif[col=gray!70,lbl x=\$\bs ra\$,mirror]\{8,0\}\{15\};}
 
 \ifnum\showimmagini=1
 \begin{immagine}
-\sistrif{0,0}{0};
+\sistrif[no label]{0,0}{0};
 \sistrif[col=teal,lbl x=$t$]{4,0}{30};
-\sistrif[col=gray!70,lbl x=$\ra$,flip=true]{8,1}{60};
+\sistrif[col=gray!70,lbl x=$\ra$,mirror]{8,0}{15};
 \end{immagine}
 \fi
 
@@ -727,11 +757,10 @@ che disegna il triangolo nei vertici $A$, $B$, $C$ specificati. In questo caso l
 \begin{itemize}[nolistsep]
 \item \key{col}, \key{width}, \key{pattern} come descritti nella sezione \ref{keysec}.
 \item \key{col vertici}, \key{col lati} e \key{col angoli} specificano separatamente i colori per le varie componenti del triangolo (se non specificate copiano \key{col}).
-\item \ttt{\key{lbl vertici} := \keyval{true}}, \ttt{\key{lbl lati} := \keyval{true}} e \ttt{\key{lbl angoli} := \keyval{true}} dicono se creare dei label per vertici (nel caso saranno $A$, $B$ e $C$), lati (nel caso saranno $\ra$, $\rb$ e $\rc$) e angoli (nel caso saranno $\alpha$, $\beta$ e $\gamma$).
 \item \ttt{\key{lbl vertici dist} := \keyval{0.3}} la distanza dei label dei vertici dai vertici stessi.
-\item \ttt{\key{fill angoli} := \keyval{false}} se reso \keyval{true} gli angoli verranno riempiti, altrimenti resteranno vuoti.
 \item \key{col fill angoli} il colore del filling degli angoli (se specificato vengono riempiti).
 \item \ttt{\key{opacity angoli} := \keyval{30}} il livello di trasparenza degli angoli. Utilizzato solo se \key{col fill angoli} viene lasciato vuoto ma viene specificato \ttt{\key{fill angoli} := \keyval{true}}.
+\item Le opzioni \keyop{no label vertici}, \keyop{no label lati} e \keyop{no label angoli}, se specificati, rimuovono i label dei vertici (nel caso saranno $A$, $B$ e $C$), dei lati (nel caso saranno $\ra$, $\rb$ e $\rc$) e degli angoli (nel caso saranno $\alpha$, $\beta$ e $\gamma$).empie \item L'opzione \keyop{fill angoli}, se specificata, riempie gli angoli (altrimenti gli angoli vengono lasciati internamente vuoti).
 \end{itemize}
 
 Vediamo l'effetto di \ttt{\bs triangolobase}:
@@ -756,7 +785,7 @@ con le seguenti \keys:
 \item \key{name path} dà un nome al tratto continuo.
 \item \key{draw length}, se specificato aggiunge un tratto continuo lungo \key{draw length} oltre i vertici $A$ e $B$ (solo $B$ per \ttt{\bs semiretta}).
 \item \ttt{\key{prol length} := \keyval{0.8}} la lunghezza del tratto tratteggiato.
-\item \ttt{\key{flip lbl} := \keyval{false}} se reso \keyval{true} ribalta i label.
+\item L'opzione \keyop{mirror lbl}, se specificata, ribalta i label.
 \end{itemize}
 
 \section{Poligono e Poligonale}
@@ -798,9 +827,10 @@ La funzione
 \codice{\bs circCR[\keys]\{\blue{C}\}\{\blue{R}\};}
 disegna una circonferenza di centro $C$ e raggio $R$. Le \keys\ sono:
 \begin{itemize}[nolistsep]
-\item \key{col}, \key{width}, \key{pattern}, \key{name path}, \ttt{\key{fill} := \keyval{false}}, \key{col fill}, \ttt{\key{opacity} := \keyval{30}}, \key{lbl}, \ttt{\key{lbl name} := \keyval{circCPlblName}}, \key{lbl size}e \ttt{\key{lbl col} = \key{col lbl}} come descritte nella sezione \ref{keysec}.
+\item \key{col}, \key{width}, \key{pattern}, \key{name path}, \ttt{\key{fill} := \keyval{false}}, \key{col fill}, \ttt{\key{opacity} := \keyval{30}}, \key{lbl}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl}} e \ttt{\key{lbl name} := \keyval{circCPlblName}} come descritte nella sezione \ref{keysec}.
 \item \ttt{\key{lbl ang} := \keyval{-150}} è l'angolo a cui viene posizionato il label (rispetto al centro della circonferenza).
 \item \ttt{\key{lbl dist} := \keyval{0.3}} è la distanza del label dalla circonferenza.
+\item L'opzione \keyop{fill}, se specificata, riempie l'interno del poligono con il colore \ttt{\key{col fill}!\key{opacity}}.
 \end{itemize}
 
 Se invece vogliamo disegnare una circonferenza sapendo il centro $C$ e un suo punto $P$, possiamo usare le due funzioni (con le stesse \keys\ di \ttt{\bs circCR}):
@@ -1037,13 +1067,14 @@ Per disegnare degli angoli $A\widehat{B}C$ (eventualmente marcati) abbiamo invec
 \codice{\bs angoloretto[\keys]\{\blue{A}\}\{\blue{B}\}\{\blue{C}\};}
 con le seguenti keys:
 \begin{itemize}[nolistsep]
-\item \key{col}, \key{col draw}, \key{width}, \key{pattern}, \key{arrow}, \ttt{\key{fill} := \keyval{false}}, \key{col fill}, \ttt{\key{opacity} := \keyval{30}} come descritti in sezione \ref{keysec}.
+\item \key{col}, \key{col draw}, \key{width}, \key{pattern}, \key{arrow}, \key{col fill}, \ttt{\key{opacity} := \keyval{30}} come descritti in sezione \ref{keysec}.
 \item \key{r} ha valori di default e significati diversi per i due comandi:
 \begin{itemize}[nolistsep]
 \item \ttt{\key{r} := \keyval{0.6}} rappresenta il raggio dell'angolo per \ttt{\bs angolo};
 \item \ttt{\key{r} := \keyval{0.4}} rappresenta il lato del quadratino per \ttt{\bs angoloretto}.
 \end{itemize}
 \item \key{lbl}, \ttt{\key{lbl dist} := \keyval{0.2}}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl}}, \ttt{\key{mark} := \keyval{none}} come descritti in sezione \ref{keysec} sono disponibili solo per \ttt{\bs angolo} (non per \ttt{\bs angoloretto}).
+\item L'opzione \keyop{fill}, se specificata, riempie l'interno dell'angolo (che altrimenti viene lasciato vuoto).
 \end{itemize}
 
 Vediamo un semplice esempio di utilizzo di questi comandi:
@@ -1051,7 +1082,7 @@ Vediamo un semplice esempio di utilizzo di questi comandi:
 \codice{\bs coordinate (A) at (4,1);\\
 \bs pntl\{B\}\{-90\}\{1,0\};\\
 \bs coordinate (C) at (-1,2);\\
-\bs angolo[lbl=\$\bs beta\$,col=Green,fill=true,mark=||]\{A\}\{B\}\{C\};\\
+\bs angolo[lbl=\$\bs beta\$,col=Green,fill,mark=||]\{A\}\{B\}\{C\};\\
 \bs segmento[col=red,lbl=\$\bs ra\$]\{B\}\{A\};\\
 \bs segmento[col=blue,mark=oo]\{B\}\{C\};}
 
@@ -1060,7 +1091,7 @@ Vediamo un semplice esempio di utilizzo di questi comandi:
 \coordinate (A) at (4,1);
 \pntl{B}{-90}{1,0};
 \coordinate (C) at (-1,2);
-\angolo[lbl=$\beta$,col=Green,fill=true,mark=||]{A}{B}{C};
+\angolo[lbl=$\beta$,col=Green,fill,mark=||]{A}{B}{C};
 \segmento[col=red,lbl=$\ra$]{B}{A};
 \segmento[col=blue,mark=oo]{B}{C};
 \end{immagine}
@@ -1116,9 +1147,12 @@ Siamo spesso interessati a disegnare delle casse, soprattutto sui piani inclinat
 \codice{\bs cassa[\keys]\{\blue{punto iniziale}\}\{\blue{$x$}\}\{\blue{$y$}\}\{\blue{ang}\};}
 dove $x$ e $y$ indicano le lunghezze della cassa lungo le due direzioni (possono eventualmente essere negativi). Le \keys\ in questo caso sono:
 \begin{itemize}[nolistsep]
-\item \key{col}, \key{width}, \key{pattern}, \key{col draw}, \key{col fill}, \ttt{\key{opacity} := \keyval{20}}, \ttt{\key{fill} := \keyval{true}}, \key{lbl}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl} := \keyval{black}} come descritti nella sezione \ref{keysec}.
+\item \key{col}, \key{width}, \key{pattern}, \key{col draw}, \key{col fill}, \ttt{\key{opacity} := \keyval{10}}, \key{lbl}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl} := \keyval{black}} come descritti nella sezione \ref{keysec}.
 \item \ttt{\key{centro} := \keyval{cassacentro}} è il nome che verrà dato al centro della cassa (dove viene scritto l'eventuale label).
+\item L'opzione \keyop{no fill}, se specificata, rimuove il filling.
 \end{itemize}
+
+\textbf{Nota:} si suggerisce di scrivere \key{lbl} in grassetto (usando \ttt{\bs mathbf}).
 
 \subsection{La parentesi graffa}
 La graffa viene spesso usata per specificare delle lunghezze nell'immagine. Per farlo, utilizziamo la sintassi seguente:
@@ -1127,20 +1161,18 @@ La graffa viene spesso usata per specificare delle lunghezze nell'immagine. Per 
 dove la parentesi graffa ha gli estremi in $A$ e $B$. Il comando usa queste \keys:
 \begin{itemize}[nolistsep]
 \item \key{col}, \key{width}, \key{pattern}, \key{lbl}, \ttt{\key{lbl name} := \keyval{graffanamelbl}}, \ttt{\key{lbl dist} := \keyval{0.5}} e \ttt{\key{lbl col} = \key{col lbl}} come spiegati nella sezione \ref{keysec}.
-\item \ttt{\key{mirror} := \keyval{false}}, se posto uguale a \keyval{true} ribalta la graffa. Questo in realtà è equivalente a scambiare $A$ e $B$ nell'input.
 \item \ttt{\key{amplitude} := \keyval{5}} è l'ampiezza della graffa. Tendenzialmente è un parametro da non toccare.
 \item \ttt{\key{shape} := \keyval{brace}} dice che dobbiamo disegnare una graffa (e non un altro tipo di parentesi). Anche questo è un parametro da non toccare.
 \item \ttt{\key{dist} := \keyval{0.05}} la distanza dei punti della graffa dai punti $A$ e $B$.
+\item L'opzione \keyop{mirror}, se specificata ribalta la graffa. Questo in realtà è equivalente a scambiare $A$ e $B$ nell'input.
 \end{itemize}
-
-\textbf{Attenzione!} Spesso vogliamo usare delle unità di misura all'interno del label. Questo è incompatibile con la key \key{lbl}. Per ottenere un label di questo tipo è quindi necessario utilizzare la key \key{lbl name}, come illustrato nelle ultime righe del seguente esempio.
 
 \codice{\bs tikzdef\bs ang\{35\}\\
 \bs coordinate (O) at(0,0);\\
 \bs coordinate (NE) at (\bs ang:8);\\
 \bs coordinate (E) at (O-|NE);\\
 \bs poligono[fill=gray!20]\{O,E,NE\};\\
-\bs angolo[col=Green,fill=true,lbl=\$\bs ang\string^\bs circ\$,lbl dist=0.4]\{E\}\{O\}\{NE\};\\
+\bs angolo[col=Green,fill,lbl=\$\bs ang\string^\bs circ\$,lbl dist=0.4]\{E\}\{O\}\{NE\};\\
 \bs coordinate (C) at (\$(NE)+(45:0.3)\$);\\
 \bs draw (\$(C)+(0.9,0)\$)\dash++(0,-1.5);\\
 \bs draw (\$(C)+(\bs ang+90:0.9)\$)\dash++(\bs ang:-2.5)node(top)\{\};\\
@@ -1148,12 +1180,9 @@ dove la parentesi graffa ha gli estremi in $A$ e $B$. Il comando usa queste \key
 \bs proj\{H\}\{top\}\{O\}\{NE\};\\
 \bs cassa[col=blue,lbl=\$\bs mathbf\{m\_1\}\$]\{H\}\{-1.8\}\{1.2\}\{\bs ang\};\\
 \bs carrucola\{C\}\{1\};\\
-\bs graffa[lbl name=base]\{O\}\{E\};\\
-\bs node (baselbl) at (base) \{\$2\{,\}4\bs,\bs SI\{m\}\$\};\\
+\bs graffa[lbl=\{\$2\{,\}4\bs,\bs SI\{m\}\$\}]\{O\}\{E\};\\
 \bs coordinate (A) at (\bs ang:2);\\
-\bs begin\{rotazione\}[A]\{\bs ang\}\\
-\tab\bs auto[col=red]\{A\};\\
-\bs end\{rotazione\}}
+\bs auto[col=red,ang=\bs ang]\{\bs ang:2\};}
 
 \ifnum\showslowimmagini=1
 \begin{immagine}
@@ -1162,7 +1191,7 @@ dove la parentesi graffa ha gli estremi in $A$ e $B$. Il comando usa queste \key
 \coordinate (NE) at (\ang:8);
 \coordinate (E) at (O-|NE);
 \poligono[fill=gray!20]{O,E,NE};
-\angolo[col=Green,fill=true,lbl=$\ang^\circ$,lbl dist=0.4]{E}{O}{NE};
+\angolo[col=Green,fill,lbl=$\ang^\circ$,lbl dist=0.4]{E}{O}{NE};
 \coordinate (C) at ($(NE)+(45:0.3)$);
 \draw ($(C)+(0.9,0)$)--++(0,-1.5);
 \draw ($(C)+(\ang+90:0.9)$)--++(\ang:-2.5)node(top){};
@@ -1170,8 +1199,7 @@ dove la parentesi graffa ha gli estremi in $A$ e $B$. Il comando usa queste \key
 \proj{H}{top}{O}{NE};
 \cassa[col=blue,lbl=$\mathbf{m_1}$]{H}{-1.8}{1.2}{\ang};
 \carrucola{C}{1};
-\graffa[lbl name=base]{O}{E};
-\node (baselbl) at (base) {$2{,}4\,\SI{m}$};
+\graffa[lbl=$2{,}4\,\SI{m}$]{O}{E};
 \auto[col=red,ang=\ang]{\ang:2};
 \end{immagine}
 \fi
@@ -1223,21 +1251,22 @@ dove $B$ indica il centro della base dell'immagine e le \keys\ (uguali per i due
 \item \ttt{\key{ang gamba} = \key{ang gamba 1} := \keyval{-60}} l'angolo con cui viene disegnata la prima gamba.
 \item \ttt{\key{ang gamba 2} := \keyval{-90}} l'angolo della seconda gamba.
 \item \ttt{\key{mano 1} := \keyval{ManoDx}}, \ttt{\key{mano 2} := \keyval{ManoSx}}, \ttt{\key{piede 1} := \keyval{PiedeDx}}e  \ttt{\key{piede 2} := \keyval{PiedeSx}} sono i nomi da dare a mani e piedi (possono essere utili per disegnare altri oggetti successivi).
+\item L'opzione \keyop{mirror}, se specificata, specchi l'immagine.
 \end{itemize}
 
 Vediamo un semplice esempio:
 
-\codice{\bs grigliaO[step=0.5]\{6\}\{1.5\};\\
-\bs casetta[s=1.5]\{2,0\};\\
+\codice{\bs grigliaO[step=0.5]\{6\}\{1\};\\
+\bs casetta\{2,0\};\\
 \bs uomo[col=blue]\{4,0\};\\
-\bs donna[side=<-,col=red]\{5,0\};}
+\bs donna[mirror,col=red]\{5,0\};}
 
 \ifnum\showslowimmagini=1
 \begin{immagine}
-\grigliaO[step=0.5]{6}{1.5};
-\casetta[s=1.5]{2,0};
+\grigliaO[step=0.5]{6}{1};
+\casetta{2,0};
 \uomo[col=blue]{4,0};
-\donna[side=<-,col=red]{5,0};
+\donna[mirror,col=red]{5,0};
 \end{immagine}
 \fi
 
@@ -1251,6 +1280,7 @@ Il pacchetto \liLaTeXtikz\ definisce anche comandi per disegnare diversi tipi di
 dove $B$ indica il centro della base del veicolo. I quattro comandi per i veicoli hanno tutti le stesse \keys:
 \begin{itemize}[nolistsep]
 \item \key{col}, \ttt{\key{width} := \keyval{thick}}, \ttt{\key{side} := \keyval{->}} e \ttt{\key{s} = \key{scale} := \keyval{1}} come illustrate nella sezione \ref{keysec}.
+\item L'opzione \keyop{mirror}, se specificata, specchia l'immagine.
 \item \key{ang} se specificato ruota l'immagine attorno a $B$ dell'angolo specificato.
 \item \ttt{\key{y} = \key{h}} e \ttt{\key{x} = \key{w}} indicano rispettivamente l'altezza e la larghezza del veicolo (in realtà l'altezza e la larghezza misurano rispettivamente $\key{s}\cdot\key{y}$ e $\key{s}\cdot\key{x}$. Il valori di default cambiano in base al veicolo specificato, come qui illustrato:
 \begin{itemize}[nolistsep]
@@ -1266,16 +1296,16 @@ La seguente immagine mostra il funzionamento dei veicoli:
 \codice{\bs grigliaO\{15\}\{3\};\\
 \bs camion\{3,0\};\\
 \bs auto[col=red,side=<-]\{8.5,0\};\\
-\bs moto[col=blue]\{12,0\};\\
-\bs bici[col=Green,side=<-]\{14,0\};}
+\bs moto[col=blue,mirror]\{12,0\};\\
+\bs bici[col=Green,side=<-,mirror]\{14,0\};}
 
 \ifnum\showslowimmagini=1
 \begin{immagine}
 \grigliaO{15}{3};
 \camion{3,0};
 \auto[col=red,side=<-]{8.5,0};
-\moto[col=blue]{12,0};
-\bici[col=Green,side=<-]{14,0};
+\moto[col=blue,mirror]{12,0};
+\bici[col=Green,side=<-,mirror]{14,0};
 \end{immagine}
 \fi
 

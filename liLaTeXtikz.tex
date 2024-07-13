@@ -326,9 +326,9 @@
 		lbl dist/.initial = 0.3,
 		lbl col/.initial,
 		col lbl/.initial, % analogo a lbl col
-		flip lbl/.initial = false, % rendi true se vuoi ribaltare il label
+		mirror lbl/.initial = false, mirror lbl/.default = true, % rendi true se vuoi ribaltare il label
 	} \setkeyfld{#1};
-	\ifkeyequal{flip lbl}{true}{\def\assexflipper{180}}{\def\assexflipper{0}};
+	\ifkeyequal{mirror lbl}{true}{\def\assexmirrorper{180}}{\def\assexmirrorper{0}};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(0,\kv{y})+(\kv{ang shift}:#2)$) -- ($(0,\kv{y})+(\kv{ang shift}:#3)$)node(assexpunta){};
 	\PRIVstylelbl[
 		PRIVlbl lbl=\kv{lbl},
@@ -337,7 +337,7 @@
 		PRIVlbl col=\kv{col},
 		PRIVlbl lbl col=\kv{lbl col},
 		PRIVlbl col lbl=\kv{col lbl},
-	]{$(assexpunta)+(\kv{ang shift}-90+\assexflipper:\kv{lbl dist})$};
+	]{$(assexpunta)+(\kv{ang shift}-90+\assexmirrorper:\kv{lbl dist})$};
 }
 
 % \assey[keys]{y-bottom}{y-top} crea l'assey
@@ -355,9 +355,9 @@
 		lbl dist/.initial = 0.3,
 		lbl col/.initial,
 		col lbl/.initial, % analogo a lbl col
-		flip lbl/.initial = false, % rendi true se vuoi ribaltare il label
+		mirror lbl/.initial = false, mirror lbl/.default = true, % rendi true se vuoi ribaltare il label
 	} \setkeyfld{#1};
-	\ifkeyequal{flip lbl}{true}{\def\asseyflipper{180}}{\def\asseyflipper{0}};
+	\ifkeyequal{mirror lbl}{true}{\def\asseymirrorper{180}}{\def\asseymirrorper{0}};
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(\kv{x},0)+(\kv{ang shift}+90:#2)$) -- ($(\kv{x},0)+(\kv{ang shift}+90:#3)$)node(asseypunta){};
 	\PRIVstylelbl[
 		PRIVlbl lbl=\kv{lbl},
@@ -366,7 +366,7 @@
 		PRIVlbl col=\kv{col},
 		PRIVlbl lbl col=\kv{lbl col},
 		PRIVlbl col lbl=\kv{col lbl},
-	]{$(asseypunta)+(\kv{ang shift}+180+\asseyflipper:\kv{lbl dist})$};
+	]{$(asseypunta)+(\kv{ang shift}+180+\asseymirrorper:\kv{lbl dist})$};
 }
 
 % \assixy[keys]{x-left}{x-right}{y-left}{y-right} disegna gli assi cartesiani
@@ -453,16 +453,16 @@
 		l/.initial, % uguale a length
 		lbl col/.initial,
 		col lbl/.initial, % uguagle a lbl col
-		flip/.initial = false, % se posto a true il label viene messo verso l'alto anziché verso il basso
+		mirror/.initial = false, mirror/.default = true, % se posto a true il label viene messo verso l'alto anziché verso il basso
 	} \setkeyfld{#1};
 	%\ifnum\value{TipoDocVerificaCounter}=0 \setkeyvalueifempty{col}{gray} \fi % se non è una verifica la barra viene colorata di grigio
 	\copykeyvaluesifempty
 		{l}{length}
 		{lbl col}{col}
 		{col lbl}{lbl col}
-	\ifkeyequal{flip}{false}
-	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](#2,\kv{y}+0.5*\kv{l})--++(0,-\kv{l})node[anchor=north,\kv{col lbl}]{#3};}
-	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](#2,\kv{y}-0.5*\kv{l})--++(0,+\kv{l})node[anchor=south,\kv{col lbl}]{#3};}
+	\ifkeyequal{mirror}{false}
+		{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](#2,\kv{y}+0.5*\kv{l})--++(0,-\kv{l})node[anchor=north,\kv{col lbl}]{#3};}
+		{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](#2,\kv{y}-0.5*\kv{l})--++(0,+\kv{l})node[anchor=south,\kv{col lbl}]{#3};}
 }
 
 % \asseybar[keys]{\y}{lbl} disegna una barretta orizzontale sull'asse y in posizione \y per segnare il label lbl
@@ -477,16 +477,16 @@
 		l/.initial, % uguale a length
 		lbl col/.initial,
 		col lbl/.initial, % uguagle a lbl col
-		flip/.initial = false, % se posto a true il label viene messo verso l'alto anziché verso il basso
+		mirror/.initial = false, mirror/.default = true, % se posto a true il label viene messo verso l'alto anziché verso il basso
 	} \setkeyfld{#1};
 	%\ifnum\value{TipoDocVerificaCounter}=0 \setkeyvalueifempty{col}{gray} \fi % se non è una verifica la barra viene colorata di grigio
 	\copykeyvaluesifempty
 		{l}{length}
 		{lbl col}{col}
 		{col lbl}{lbl col}
-	\ifkeyequal{flip}{false}
-	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](\kv{x}+0.5*\kv{l},#2)--++(-\kv{l},0)node[anchor=east,\kv{col lbl}]{#3};}
-	{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](\kv{x}-0.5*\kv{l},#2)--++(+\kv{l},0)node[anchor=west,\kv{col lbl}]{#3};}
+	\ifkeyequal{mirror}{false}
+		{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](\kv{x}+0.5*\kv{l},#2)--++(-\kv{l},0)node[anchor=east,\kv{col lbl}]{#3};}
+		{\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}](\kv{x}-0.5*\kv{l},#2)--++(+\kv{l},0)node[anchor=west,\kv{col lbl}]{#3};}
 }
 
 % \sistrif[keys]{centro}{angolo} crea il sistema di riferimento, ruotato dell'angolo specificato. Si usa in cinematica/dinamica per indicare le direzioni e i versi degli assi cartesiani utilizzati
@@ -502,8 +502,8 @@
 		back x/.initial,
 		front y/.initial,
 		back y/.initial,
-		flip/.initial = false, % rendi true se vuoi capovolgere il verso dell'asse y
-		label/.initial = true, % rendi false se non vuoi il label
+		mirror/.initial = false, mirror/.default = true, % rendi true se vuoi capovolgere il verso dell'asse y
+		no label/.initial = false, no label/.default = true, % rendi true se non vuoi il label
 		lbl dist/.initial = 0.3,
 		lbl x/.initial = $x$,
 		lbl y/.initial = $y$,
@@ -517,13 +517,13 @@
 		{back y}{back}
 		{lbl col}{col}
 		{col lbl}{lbl col}
-	\ifkeyequal{flip}{false}{\def\sistrifflipper{+1}}{\def\sistrifflipper{-1}}
+	\ifkeyequal{mirror}{false}{\def\sistrifmirrorper{+1}}{\def\sistrifmirrorper{-1}}
 	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(#3:-\kv{back x})$) -- ($(#2)+(#3:\kv{front x})$)node(sistrifLblXpunta){};
-	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(\sistrifflipper*90+#3:-\kv{back y})$) -- ($(#2)+(\sistrifflipper*90+#3:\kv{front y})$)node(sistrifLblYpunta){};
-	\ifkeyequal{label}{true}{
-		\PRIVstylelbl[PRIVlbl lbl=\kv{lbl x},PRIVlbl col lbl=\kv{col lbl}]{$(sistrifLblXpunta)+(#3-90*\sistrifflipper:\kv{lbl dist})$};
-		\PRIVstylelbl[,PRIVlbl lbl=\kv{lbl y},PRIVlbl col lbl=\kv{col lbl}]{$(sistrifLblYpunta)+(#3+180:\kv{lbl dist})$};
-	}{}
+	\draw[\kv{col},\kv{arrow},\kv{width},\kv{pattern}] ($(#2)+(\sistrifmirrorper*90+#3:-\kv{back y})$) -- ($(#2)+(\sistrifmirrorper*90+#3:\kv{front y})$)node(sistrifLblYpunta){};
+	\ifkeyequal{no label}{true}{}{
+		\PRIVstylelbl[PRIVlbl lbl=\kv{lbl x},PRIVlbl col lbl=\kv{col lbl}]{$(sistrifLblXpunta)+(#3-90*\sistrifmirrorper:\kv{lbl dist})$};
+		\PRIVstylelbl[PRIVlbl lbl=\kv{lbl y},PRIVlbl col lbl=\kv{col lbl}]{$(sistrifLblYpunta)+(#3+180:\kv{lbl dist})$};
+	}
 }
 
 
@@ -571,45 +571,45 @@
 		col vertici/.initial,
 		col lati/.initial,
 		col angoli/.initial,
-		fill angoli/.initial = false,
+		fill angoli/.initial = false, fill angoli/.default = true,
 		col fill angoli/.initial,
 		opacity angoli/.initial = 30,
 		width/.initial, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
-		lbl vertici/.initial = true,
-		lbl lati/.initial = true,
-		lbl angoli/.initial = true,
+		no label vertici/.initial = false, no label vertici/.default = true,
+		no label lati/.initial = false, no label lati/.default = true,
+		no label angoli/.initial = false, no label angoli/.default = true,
 		lbl vertici dist/.initial = 0.3,
 	} \setkeyfld{#1};
 	\copykeyvaluesifempty
 		{col vertici}{col}
 		{col lati}{col}
 		{col angoli}{col}
-	\ifkeyequal{fill angoli}{false}{}{
+	\ifkeyequal{fill angoli}{true}{
 		\ifkeyempty{col angoli}
 		{\setkeyvalueifempty{col fill angoli}{black!\kv{opacity angoli}}}
 		{\setkeyvalueifempty{col fill angoli}{\kv{col angoli}!\kv{opacity angoli}}}
-	}
+	}{}
 	\ifkeyempty{col fill angoli}{}{\setkeyvalue{fill angoli}{true}}
-	\ifkeyequal{lbl angoli}{true}{
-		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV col fill=\kv{col fill angoli},PRIV lbl=$\alpha$]{#3}{#2}{#4};
-		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV col fill=\kv{col fill angoli},PRIV lbl=$\beta$]{#4}{#3}{#2};
-		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV col fill=\kv{col fill angoli},PRIV lbl=$\gamma$]{#2}{#4}{#3};
-	}{
+	\ifkeyequal{no label angoli}{true}{
 		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV col fill=\kv{col fill angoli}]{#3}{#2}{#4};
 		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV col fill=\kv{col fill angoli}]{#4}{#3}{#2};
 		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV col fill=\kv{col fill angoli}]{#2}{#4}{#3};
-	}
-	\ifkeyequal{lbl lati}{true}{
-		\PRIVsegmento[PRIV col=\kv{col lati},PRIV lbl=$\ra$]{#3}{#4};
-		\PRIVsegmento[PRIV col=\kv{col lati},PRIV lbl=$\rb$]{#4}{#2};
-		\PRIVsegmento[PRIV col=\kv{col lati},PRIV lbl=$\rc$]{#2}{#3};
 	}{
+		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV col fill=\kv{col fill angoli},PRIV lbl=$\alpha$]{#3}{#2}{#4};
+		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV col fill=\kv{col fill angoli},PRIV lbl=$\beta$]{#4}{#3}{#2};
+		\PRIVangolo[PRIV col=\kv{col angoli},PRIV fill=\kv{fill angoli},PRIV col fill=\kv{col fill angoli},PRIV lbl=$\gamma$]{#2}{#4}{#3};
+	}
+	\ifkeyequal{no label lati}{true}{
 		\PRIVsegmento[PRIV col=\kv{col lati}]{#3}{#4};
 		\PRIVsegmento[PRIV col=\kv{col lati}]{#4}{#2};
 		\PRIVsegmento[PRIV col=\kv{col lati}]{#2}{#3};
+	}{
+		\PRIVsegmento[PRIV col=\kv{col lati},PRIV lbl=$\ra$]{#3}{#4};
+		\PRIVsegmento[PRIV col=\kv{col lati},PRIV lbl=$\rb$]{#4}{#2};
+		\PRIVsegmento[PRIV col=\kv{col lati},PRIV lbl=$\rc$]{#2}{#3};
 	}
-	\ifkeyequal{lbl vertici}{true}{
+	\ifkeyequal{no label vertici}{false}{
 		\baricentro{triangolobasebaricentro}{#2}{#3}{#4};
 		\allont[\kv{lbl vertici dist}]{triangolobaselbllato}{#2}{triangolobasebaricentro};
 		\node[\kv{col vertici}](triangolobaselbllato)at(triangolobaselbllato){$A$};
@@ -636,7 +636,7 @@
 		arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
 		name path/.initial, % può essere usato per dare un nome al path
 		lbl/.initial,
-		lbl name/.initial = segmentoLabelPos, % il nome da dare alla posizione del label
+		lbl name/.initial, % il nome da dare alla posizione del label
 		lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
 		lbl size/.initial,
 		lbl col/.initial,
@@ -674,12 +674,13 @@
 		PRIV arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
 		PRIV name path/.initial, % può essere usato per dare un nome al path
 		PRIV lbl/.initial,
-		PRIV lbl name/.initial = segmentoLabelPos, % il nome da dare alla posizione del label
+		PRIV lbl name/.initial, % il nome da dare alla posizione del label
 		PRIV lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
 		PRIV lbl size/.initial,
 		PRIV lbl col/.initial,
 		PRIV col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
 	} \setkeyfld{#1};
+	\setkeyvalueifempty{PRIV lbl name}{segmentoLabelPos}
 	\copykeyvalueifempty{PRIV col draw}{PRIV col};
 	\coordinate(segmentoA)at(#2);
 	\coordinate(segmentoB)at(#3);
@@ -723,7 +724,7 @@
 		width/.initial, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
-		fill/.initial = false, % può essere true o false
+		fill/.initial = false, fill/.default = true, % può essere true o false
 		col fill/.initial, % il colore del filling
 		opacity/.initial = 30, % un numero fra 0 e 1 che indica l'intensità della colorazione
 		lbl/.initial,
@@ -763,7 +764,7 @@
 		PRIV arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
 		PRIV fill/.initial = false, % può essere true o false
 		PRIV col fill/.initial, % il colore del filling
-		PRIV opacity/.initial = 0.3, % un numero fra 0 e 1 ch indica l'intensità della colorazione
+		PRIV opacity/.initial = 30, % un numero fra 0 e 1 ch indica l'intensità della colorazione
 		PRIV lbl/.initial,
 		PRIV lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
 		PRIV lbl size/.initial,
@@ -793,7 +794,7 @@
 		width/.initial, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
-		fill/.initial = false, % può essere true o false
+		fill/.initial = false, fill/.default = true, % può essere true o false
 		col fill/.initial, % il colore del filling
 		opacity/.initial = 30, % un numero fra 0 e 1 ch indica l'intensità della colorazione
 	} \setkeyfld{#1};
@@ -824,7 +825,7 @@
 		lbl/.initial,
 		lbl name/.initial = rettaLblName, % il nome da dare alla posizione del label
 		lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
-		flip lbl/.initial = false, % dice se vogliamo ribaltare la posizione del label
+		mirror lbl/.initial = false, mirror lbl/.default = true, % dice se vogliamo ribaltare la posizione del label
 		lbl size/.initial,
 		lbl col/.initial,
 		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
@@ -847,7 +848,7 @@
 		\draw[\kv{col},\kv{width},\kv{pattern prol}] (rettaDrawA)--(rettaProlA) (rettaDrawB)--(rettaProlB);
 	}
 	\verso[0.2]{rettaFulcro}{rettaProlB}{#2};
-	\ifkeyequal{flip lbl}{false}{\def\semirettaLblAng{-90}}{\def\semirettaLblAng{+90}}
+	\ifkeyequal{mirror lbl}{false}{\def\semirettaLblAng{-90}}{\def\semirettaLblAng{+90}}
 	\ruotapuntoN[\kv{lbl dist}]{\kv{lbl name}}{rettaProlB}{rettaFulcro}{\semirettaLblAng};
 	\PRIVstylelbl[
 		PRIVlbl lbl=\kv{lbl},
@@ -872,7 +873,7 @@
 		lbl/.initial,
 		lbl name/.initial = semirettaLblName, % il nome da dare alla posizione del label
 		lbl dist/.initial = 0.2, % la distanza da aggiungere al raggio
-		flip lbl/.initial = false, % dice se vogliamo ribaltare la posizione del label
+		mirror lbl/.initial = false, mirror lbl/.default = true, % dice se vogliamo ribaltare la posizione del label
 		lbl size/.initial,
 		lbl col/.initial,
 		col lbl/.initial, % uguale a lbl col (così li accetta entrambi)
@@ -892,7 +893,7 @@
 		\draw[\kv{col},\kv{width},\kv{pattern prol}](semirettaDrawTo)--(semirettaProlTo);
 	}
 	\verso[0.2]{semirettaFulcro}{semirettaProlTo}{#2};
-	\ifkeyequal{flip lbl}{false}{\def\semirettaLblAng{-90}}{\def\semirettaLblAng{+90}}
+	\ifkeyequal{mirror lbl}{false}{\def\semirettaLblAng{-90}}{\def\semirettaLblAng{+90}}
 	\ruotapuntoN[\kv{lbl dist}]{\kv{lbl name}}{semirettaProlTo}{semirettaFulcro}{\semirettaLblAng};
 	\PRIVstylelbl[
 		PRIVlbl lbl=\kv{lbl},
@@ -914,7 +915,7 @@
 		width/.initial, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		name path/.initial, % può essere usato per dare un nome al path
-		fill/.initial = false,
+		fill/.initial = false, fill/.default = true,
 		col fill/.initial,
 		opacity/.initial = 30, % l'opacity del fill, se non è stato specificato col fill
 		lbl name/.initial = circCPlblName, % il nome da dare all'eventuale label (se presente)
@@ -1245,8 +1246,8 @@
 		col/.initial,
 		col draw/.initial,
 		col fill/.initial,
-		opacity/.initial = 20,
-		fill/.initial = true,
+		opacity/.initial = 10,
+		no fill/.initial = false, no fill/.default = true,
 		width/.initial, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		centro/.initial = cassacentro, % dove registrare il nome del centro della cassa
@@ -1258,7 +1259,7 @@
 	\setkeyvaluesifempty
 		{col draw}{\kv{col}}
 		{col fill}{\kv{col}!\kv{opacity}}
-	\ifkeyequal{fill}{true}{\fill[\kv{col fill}] (#2)--++(#5:#3)--++(#5+90:#4)--++(#5+180:#3)--++(#5+270:#4);}{}
+	\ifkeyequal{no fill}{false}{\fill[\kv{col fill}] (#2)--++(#5:#3)--++(#5+90:#4)--++(#5+180:#3)--++(#5+270:#4);}{}
 	\draw[\kv{col draw},\kv{width},\kv{pattern}] (#2)--++(#5:#3)--++(#5+90:#4)--++(#5+180:#3)--++(#5+270:#4);
 	\PRIVstylelbl[
 		PRIVlbl lbl=\kv{lbl},
@@ -1294,7 +1295,7 @@
 		shape/.initial = brace,
 		amplitude/.initial = 5, % in pt
 		dist/.initial = 0.05, % la distanza della molla dai punti A e B
-		mirror/.initial = false,
+		mirror/.initial = false, mirror/.default = true,
 		lbl name/.initial = graffanamelbl,
 		lbl/.initial,
 		lbl col/.initial,
@@ -1381,6 +1382,7 @@
 		width/.initial = thick, % può essere thin, thick, ...
 		h/.initial = 1, % l'altezza dell'omino
 		side/.initial = ->, % può essere settato a <- se vogliamo misurare gli angoli in senso orario da ore 9 (anziché misurarle in senso orario da ore 3)
+		mirror/.initial = false, mirror/.default = true, % se specificata flippa l'immagine
 		lung braccio/.initial = 0.3, % il braccio è lungo \kv{lung braccio}*\kv{h}
 		ang braccio/.initial, % equivalente a ang braccio 1
 		ang gamba/.initial, % equivalente a ang gamba 1
@@ -1398,15 +1400,17 @@
 	\copykeyvalueifempty{s}{scale};
 	\ifkeyempty{ang braccio}{}{\copykeyvalue{ang braccio 1}{ang braccio};}
 	\ifkeyempty{ang gamba}{}{\copykeyvalue{ang gamba 1}{ang gamba};}
-	\ifkeyequal{side}{->}{\def\uomoflipper{}}{\def\uomoflipper{180-}}
+	\ifkeyequal{side}{->}
+		{\ifkeyequal{mirror}{false}{\def\uomomirrorper{}}{\def\uomomirrorper{180-}}}
+		{\ifkeyequal{mirror}{true}{\def\uomomirrorper{}}{\def\uomomirrorper{180-}}}
 	\tikzdef\uomoh{\kv{s}*\kv{h}}
 	\draw[\kv{col},\kv{width}]($(#2)+(0,0.9*\uomoh)$)circle(0.1*\uomoh); % testa
 	\draw[\kv{col},\kv{width}]($(#2)+(0,0.8*\uomoh)$)--++(0,-0.1*\uomoh); % collo
 	\draw[\kv{col},ultra thick]($(#2)+(0,0.7*\uomoh)$)--++(0,-0.3*\uomoh); % corpo
-	\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\uomoh)$)--++(\uomoflipper\kv{ang braccio 1}:\kv{lung braccio}*\uomoh)node(\kv{mano 1}){}; % braccio 1
-	\ifkeyempty{ang braccio 2}{}{\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\uomoh)$)--++(\uomoflipper\kv{ang braccio 2}:\kv{lung braccio}*\uomoh)node(\kv{mano 2}){};} % braccio 2
-	\intrette{\kv{piede 1}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\uomoh)$}{$(#2)+(0,0.4*\uomoh)+(\uomoflipper\kv{ang gamba 1}:1)$}; % la posizione del primo piede
-	\intrette{\kv{piede 2}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\uomoh)$}{$(#2)+(0,0.4*\uomoh)+(\uomoflipper\kv{ang gamba 2}:1)$}; % la posizione del secondo piede
+	\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\uomoh)$)--++(\uomomirrorper\kv{ang braccio 1}:\kv{lung braccio}*\uomoh)node(\kv{mano 1}){}; % braccio 1
+	\ifkeyempty{ang braccio 2}{}{\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\uomoh)$)--++(\uomomirrorper\kv{ang braccio 2}:\kv{lung braccio}*\uomoh)node(\kv{mano 2}){};} % braccio 2
+	\intrette{\kv{piede 1}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\uomoh)$}{$(#2)+(0,0.4*\uomoh)+(\uomomirrorper\kv{ang gamba 1}:1)$}; % la posizione del primo piede
+	\intrette{\kv{piede 2}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\uomoh)$}{$(#2)+(0,0.4*\uomoh)+(\uomomirrorper\kv{ang gamba 2}:1)$}; % la posizione del secondo piede
 	\draw[\kv{col},\kv{width}](\kv{piede 1})--($(#2)+(0,0.4*\uomoh)$)--(\kv{piede 2}); % le gambe
 }
 
@@ -1417,6 +1421,7 @@
 		width/.initial = thick, % può essere thin, thick, ...
 		h/.initial = 1, % l'altezza dell'omino
 		side/.initial = ->, % può essere settato a <- se vogliamo misurare gli angoli in senso orario da ore 9 (anziché misurarle in senso orario da ore 3)
+		mirror/.initial = false, mirror/.default = true, % se specificata flippa l'immagine
 		lung braccio/.initial = 0.3, % il braccio è lungo \kv{lung braccio}*\kv{h}
 		ang braccio/.initial, % equivalente a ang braccio 1
 		ang gamba/.initial, % equivalente a ang gamba 1
@@ -1434,16 +1439,18 @@
 	\copykeyvalueifempty{s}{scale};
 	\ifkeyempty{ang braccio}{}{\copykeyvalue{ang braccio 1}{ang braccio};}
 	\ifkeyempty{ang gamba}{}{\copykeyvalue{ang gamba 1}{ang gamba};}
-	\ifkeyequal{side}{->}{\def\donnaflipper{}}{\def\donnaflipper{180-}}
+	\ifkeyequal{side}{->}
+		{\ifkeyequal{mirror}{false}{\def\donnamirrorper{}}{\def\donnamirrorper{180-}}}
+		{\ifkeyequal{mirror}{true}{\def\donnamirrorper{}}{\def\donnamirrorper{180-}}}
 	\tikzdef\donnah{\kv{s}*\kv{h}}
 	\draw[\kv{col},\kv{width}]($(#2)+(0,0.9*\donnah)$)circle(0.1*\donnah); % testa
 	\draw[\kv{col},\kv{width}]($(#2)+(0,0.8*\donnah)$)--++(0,-0.1*\donnah); % collo
 	\draw[\kv{col},ultra thick]($(#2)+(0,0.7*\donnah)$)--++(0,-0.3*\donnah); % corpo
 	\draw[\kv{col},\kv{width}]($(#2)+(0,0.4*\donnah)$)--++(-0.2*\donnah,-0.2*\donnah)--++(+0.4*\donnah,0)--++(-0.2*\donnah,+0.2*\donnah); % gonna
-	\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\donnah)$)--++(\donnaflipper\kv{ang braccio 1}:\kv{lung braccio}*\donnah)node(\kv{mano 1}){}; % braccio 1
-	\ifkeyempty{ang braccio 2}{}{\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\donnah)$)--++(\donnaflipper\kv{ang braccio 2}:\kv{lung braccio}*\donnah)node(\kv{mano 2}){};} % braccio 2
-	\intrette{\kv{piede 1}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\donnah)$}{$(#2)+(0,0.4*\donnah)+(\donnaflipper\kv{ang gamba 1}:1)$}; % la posizione del primo piede
-	\intrette{\kv{piede 2}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\donnah)$}{$(#2)+(0,0.4*\donnah)+(\donnaflipper\kv{ang gamba 2}:1)$}; % la posizione del secondo piede
+	\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\donnah)$)--++(\donnamirrorper\kv{ang braccio 1}:\kv{lung braccio}*\donnah)node(\kv{mano 1}){}; % braccio 1
+	\ifkeyempty{ang braccio 2}{}{\draw[\kv{col},\kv{width}]($(#2)+(0,0.7*\donnah)$)--++(\donnamirrorper\kv{ang braccio 2}:\kv{lung braccio}*\donnah)node(\kv{mano 2}){};} % braccio 2
+	\intrette{\kv{piede 1}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\donnah)$}{$(#2)+(0,0.4*\donnah)+(\donnamirrorper\kv{ang gamba 1}:1)$}; % la posizione del primo piede
+	\intrette{\kv{piede 2}}{#2}{$(#2)+(1,0)$}{$(#2)+(0,0.4*\donnah)$}{$(#2)+(0,0.4*\donnah)+(\donnamirrorper\kv{ang gamba 2}:1)$}; % la posizione del secondo piede
 	\medio{GambaDxGonna}{\kv{piede 1}}{$(#2)+(0,0.4*\donnah)$};
 	\medio{GambaSxGonna}{\kv{piede 2}}{$(#2)+(0,0.4*\donnah)$};
 	\draw[\kv{col},\kv{width}](GambaDxGonna)--(\kv{piede 1}) (GambaSxGonna)--(\kv{piede 2}); % le gambe
@@ -1455,6 +1462,7 @@
 		col/.initial,
 		width/.initial = thick, % può essere thin, thick, ...
 		side/.initial = ->, % può essere settato a <- se vogliamo ribaltare l'auto
+		mirror/.initial = false, mirror/.default = true, % se specificata flippa l'immagine
 		w/.initial = 3, % la lunghezza dell'auto
 		h/.initial = 2, % l'altezza dell'auto
 		x/.initial, % equivalente a w
@@ -1468,8 +1476,10 @@
 		{x}{w}
 		{y}{h}
 		{s}{scale}
-	\ifkeyequal{side}{->}{\def\autoflipper{+1}}{\def\autoflipper{-1}}
-	\tikzdef{\autosizex}{\autoflipper*\kv{s}*\kv{x}/30};
+	\ifkeyequal{side}{->}
+		{\ifkeyequal{mirror}{false}{\def\automirrorper{+1}}{\def\automirrorper{-1}}}
+		{\ifkeyequal{mirror}{true}{\def\automirrorper{+1}}{\def\automirrorper{-1}}}
+	\tikzdef{\autosizex}{\automirrorper*\kv{s}*\kv{x}/30};
 	\tikzdef{\autosizey}{\kv{s}*\kv{y}/20};
 	% ruote
 	\coordinate(autocentroruotaposteriore)at($(#2)+(-9*\autosizex,2*\autosizey)$);
@@ -1502,6 +1512,7 @@
 		col/.initial,
 		width/.initial = thick, % può essere thin, thick, ...
 		side/.initial = ->, % può essere settato a <- se vogliamo ribaltare il camion
+		mirror/.initial = false, mirror/.default = true, % se specificata flippa l'immagine
 		w/.initial = 6, % la lunghezza del camion
 		h/.initial = 3, % l'altezza del camion
 		x/.initial, % equivalente a w
@@ -1515,8 +1526,10 @@
 		{x}{w}
 		{y}{h}
 		{s}{scale}
-	\ifkeyequal{side}{->}{\def\camionflipper{+1}}{\def\camionflipper{-1}}
-	\tikzdef{\camionsizex}{\camionflipper*\kv{s}*\kv{x}/60};
+	\ifkeyequal{side}{->}
+		{\ifkeyequal{mirror}{false}{\def\camionmirrorper{+1}}{\def\camionmirrorper{-1}}}
+		{\ifkeyequal{mirror}{true}{\def\camionmirrorper{+1}}{\def\camionmirrorper{-1}}}
+	\tikzdef{\camionsizex}{\camionmirrorper*\kv{s}*\kv{x}/60};
 	\tikzdef{\camionsizey}{\kv{s}*\kv{y}/30};
 	% ruote
 	\coordinate(camioncentroruotaposteriore)at($(#2)+(-24*\camionsizex,3*\camionsizey)$);
@@ -1550,6 +1563,7 @@
 		col/.initial,
 		width/.initial = thick, % può essere thin, thick, ...
 		side/.initial = ->, % può essere settato a <- se vogliamo ribaltare la moto
+		mirror/.initial = false, mirror/.default = true, % se specificata flippa l'immagine
 		w/.initial = 2, % la lunghezza della moto
 		h/.initial = 1.5, % l'altezza della moto (col motociclista)
 		x/.initial, % equivalente a w
@@ -1563,24 +1577,26 @@
 		{x}{w}
 		{y}{h}
 		{s}{scale}
-	\ifkeyequal{side}{->}{\def\motoflipper{+1}}{\def\motoflipper{-1}}
-	\tikzdef{\motosizex}{\motoflipper*\kv{s}*\kv{x}/20};
+	\ifkeyequal{side}{->}
+		{\ifkeyequal{mirror}{false}{\def\motomirrorper{+1}}{\def\motomirrorper{-1}}}
+		{\ifkeyequal{mirror}{true}{\def\motomirrorper{+1}}{\def\motomirrorper{-1}}}
+	\tikzdef{\motosizex}{\motomirrorper*\kv{s}*\kv{x}/20};
 	\tikzdef{\motosizey}{\kv{s}*\kv{y}/15};
-	\coordinate(motocentroruotaposteriore)at($(#2)+(-10*\motosizex+\motoflipper*2*\motosizey,2*\motosizey)$);
-	\coordinate(motocentroruotaanteriore)at($(#2)+(+10*\motosizex-\motoflipper*2*\motosizey,2*\motosizey)$);
+	\coordinate(motocentroruotaposteriore)at($(#2)+(-10*\motosizex+\motomirrorper*2*\motosizey,2*\motosizey)$);
+	\coordinate(motocentroruotaanteriore)at($(#2)+(+10*\motosizex-\motomirrorper*2*\motosizey,2*\motosizey)$);
 	\draw[\kv{col},\kv{width}](motocentroruotaposteriore)circle(2*\motosizey);
 	\draw[\kv{col},\kv{width}](motocentroruotaanteriore)circle(2*\motosizey);
 	\draw[\kv{col},\kv{width},fill=\kv{col}](motocentroruotaposteriore)circle(0.2*\motosizey);
 	\draw[\kv{col},\kv{width},fill=\kv{col}](motocentroruotaanteriore)circle(0.2*\motosizey);
 	\ifkeyequal{side}{->}
-	{\coordinate(motofrontattachpoint)at($(#2)+(+10*\motosizex-\motoflipper*2*\motosizey,3*\motosizey)+(110:3*\motosizey)$);}
-	{\coordinate(motofrontattachpoint)at($(#2)+(+10*\motosizex-\motoflipper*2*\motosizey,3*\motosizey)+(70:3*\motosizey)$);}
+	{\coordinate(motofrontattachpoint)at($(#2)+(+10*\motosizex-\motomirrorper*2*\motosizey,3*\motosizey)+(110:3*\motosizey)$);}
+	{\coordinate(motofrontattachpoint)at($(#2)+(+10*\motosizex-\motomirrorper*2*\motosizey,3*\motosizey)+(70:3*\motosizey)$);}
 	\draw[\kv{col},\kv{width}](motocentroruotaanteriore)--(motofrontattachpoint);
-	\draw[\kv{col},\kv{width}](motocentroruotaposteriore)--($(motocentroruotaanteriore)+(-\motoflipper*3*\motosizey,0)$)--++(0,\motosizey)arc(90+\motoflipper*90:90:3*\motosizey)--++(\motosizex,0)arc(90-\motoflipper*90:90:4*\motosizey)--++(0,-2*\motosizey)--++(-4*\motosizex,0)arc(90:90+\motoflipper*90:\motosizey cm and 2*\motosizey cm)--++(-5*\motosizex,0)--++(-\motosizex,\motosizey)--++(-4*\motosizex,0)--++(0,-\motosizey)arc(90:90-\motoflipper*90:5*\motosizey cm and 3*\motosizey cm)--++(0,-\motosizey);
+	\draw[\kv{col},\kv{width}](motocentroruotaposteriore)--($(motocentroruotaanteriore)+(-\motomirrorper*3*\motosizey,0)$)--++(0,\motosizey)arc(90+\motomirrorper*90:90:3*\motosizey)--++(\motosizex,0)arc(90-\motomirrorper*90:90:4*\motosizey)--++(0,-2*\motosizey)--++(-4*\motosizex,0)arc(90:90+\motomirrorper*90:\motosizey cm and 2*\motosizey cm)--++(-5*\motosizex,0)--++(-\motosizex,\motosizey)--++(-4*\motosizex,0)--++(0,-\motosizey)arc(90:90-\motomirrorper*90:5*\motosizey cm and 3*\motosizey cm)--++(0,-\motosizey);
 	\draw[\kv{col},\kv{width}]($(#2)+(-4*\motosizex,3*\motosizey)$)--++(5*\motosizex,2*\motosizey)--++(-4*\motosizex,\motosizey)--++(5*\motosizex,5*\motosizey)node(motocollopunto){}++(-\motosizex,-\motosizey)--++(4*\motosizex,-3*\motosizey)node(motomanubriopunto){};
 	\draw[\kv{col},\kv{width},fill=\kv{col}](motomanubriopunto)circle(0.1*\motosizey);
 	\coordinate(motocentrocasco)at($(motocollopunto)+(0,2*\motosizey)$);
-	\draw[\kv{col},\kv{width}]($(motocentrocasco)+(90-\motoflipper*60:2*\motosizey)$)--($(motocentrocasco)+(0,\motosizey)$)--($(motocentrocasco)+(0,-\motosizey)$)--($(motocentrocasco)+(-90+\motoflipper*60:2*\motosizey)$);
+	\draw[\kv{col},\kv{width}]($(motocentrocasco)+(90-\motomirrorper*60:2*\motosizey)$)--($(motocentrocasco)+(0,\motosizey)$)--($(motocentrocasco)+(0,-\motosizey)$)--($(motocentrocasco)+(-90+\motomirrorper*60:2*\motosizey)$);
 	\draw[\kv{col},\kv{width}](motocentrocasco)circle(2*\motosizey);
 	}{ %se dobbiamo ruotare la moto
 		\begin{rotazione}[#2]{\kv{ang}} \moto[#1,ang=]{#2} \end{rotazione}
@@ -1593,6 +1609,7 @@
 		col/.initial,
 		width/.initial = thick, % può essere thin, thick, ...
 		side/.initial = ->, % può essere settato a <- se vogliamo ribaltare la bicicletta
+		mirror/.initial = false, mirror/.default = true, % se specificata flippa l'immagine
 		w/.initial = 1.6, % la lunghezza della bicicletta
 		h/.initial = 2, % l'altezza della bicicletta (col ciclista)
 		x/.initial, % equivalente a w
@@ -1606,11 +1623,13 @@
 		{x}{w}
 		{y}{h}
 		{s}{scale}
-	\ifkeyequal{side}{->}{\def\biciflipper{+1}}{\def\biciflipper{-1}}
+	\ifkeyequal{side}{->}
+		{\ifkeyequal{mirror}{false}{\def\bicimirrorper{+1}}{\def\bicimirrorper{-1}}}
+		{\ifkeyequal{mirror}{true}{\def\bicimirrorper{+1}}{\def\bicimirrorper{-1}}}
 	\tikzdef{\bicisizey}{\kv{s}*\kv{y}/20};
-	\tikzdef{\bicisizex}{\biciflipper*\bicisizey};
-	\coordinate(bicicentroruotaposteriore)at($(#2)+(-0.5*\biciflipper*\kv{s}*\kv{x}+3*\bicisizex,+3*\bicisizey)$);
-	\coordinate(bicicentroruotaanteriore)at($(#2)+(+0.5*\biciflipper*\kv{s}*\kv{x}-3*\bicisizex,+3*\bicisizey)$);
+	\tikzdef{\bicisizex}{\bicimirrorper*\bicisizey};
+	\coordinate(bicicentroruotaposteriore)at($(#2)+(-0.5*\bicimirrorper*\kv{s}*\kv{x}+3*\bicisizex,+3*\bicisizey)$);
+	\coordinate(bicicentroruotaanteriore)at($(#2)+(+0.5*\bicimirrorper*\kv{s}*\kv{x}-3*\bicisizex,+3*\bicisizey)$);
 	\draw[\kv{col},\kv{width}](bicicentroruotaposteriore)circle(3*\bicisizey);
 	\draw[\kv{col},\kv{width}](bicicentroruotaanteriore)circle(3*\bicisizey);
 	\coordinate(bicicatena)at($(bicicentroruotaposteriore)+(4*\bicisizex,0)$);

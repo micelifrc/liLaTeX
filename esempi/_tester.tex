@@ -3,18 +3,24 @@
 \newcommand{\TipoDoc}{empty}
 \input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
 
+\newcommand{\flipper}[4][]{
+	\tikzset{keyfld/.cd,
+		col/.initial,
+		col/.default = blue,
+	} \setkeyfld{#1};
+	\ifkeyempty{col}
+	{\node(#2)at(#3){#4};}
+	{\node[\kv{col}](#2)at($(#3)+(0,-1)$){#4};}
+}
+
 \begin{document}
 
 \begin{immagine}[violet]
-\griglia[col=pink,s=0.1,width=ultra thin]{1}{3}{3}{4.5};
-\grigliaO{10}{5};
-\bici[col=Green,side=->]{2,0};
-\camion[col=blue,side=<-]{7,0};
-\auto[col=red,side=<-]{7,3};
-\moto[side=<-]{2,3};
-
-\punto[lbl=$a$,col=red]{0,-3};
-\punto[lbl=a,col=Green,lbl style=rm]{2,-3};
+\punto[lbl=$\ra$,col=red]{0,-3};
+\punto[lbl=a,col=Green]{2,-3};
+\flipper{A}{4,-3}{$A$};
+\flipper[col]{B}{5,-3}{$B$};
+\flipper[col=Green]{C}{6,-3}{$C$};
 \end{immagine}
 
 \end{document}
