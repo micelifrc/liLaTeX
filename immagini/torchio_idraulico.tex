@@ -1,0 +1,31 @@
+\documentclass[crop]{standalone}
+\newcommand{\TipoDoc}{immagine}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\begin{document}
+
+\begin{immagine}
+\tikzdef\aLtorchio{0.3} % coefficiente a dell'ellisse a sinistra
+\tikzdef\aRtorchio{0.5} % coefficiente a dell'ellisse a destra
+\tikzdef\bLtorchio{\aLtorchio/3} % coefficiente b dell'ellisse a sinistra
+\tikzdef\bRtorchio{\aRtorchio/3} % coefficiente b dell'ellisse a destra
+\tikzdef\hpistoni{0.5}
+\coordinate (topLtuboU) at (-2,3); % centro dell'ellisse in alto a sinistra
+\coordinate (topRtuboU) at (+2,2); % centro dell'ellisse in alto a destra
+\coordinate (botLtuboU) at ($(topLtuboU)+(0,-\hpistoni)$); % centro dell'ellisse in basso a sinistra
+\coordinate (botRtuboU) at ($(topRtuboU)+(0,-\hpistoni)$); % centro dell'ellisse in basso a destra
+\coordinate (botleftLtuboU) at ($(botLtuboU)+(-\aLtorchio,0)$);
+\coordinate (botrightLtuboU) at ($(botLtuboU)+(+\aLtorchio,0)$);
+\coordinate (botleftRtuboU) at ($(botRtuboU)+(-\aRtorchio,0)$);
+\coordinate (botrightRtuboU) at ($(botRtuboU)+(+\aRtorchio,0)$);
+\fill[cyan!20, rounded corners=1mm] (botleftLtuboU) -- (botleftLtuboU|-0,0) -- (botrightRtuboU|-0,0) -- (botrightRtuboU) -- (botleftRtuboU) -- (botleftRtuboU|-0,0.5) -- (botrightLtuboU|-0,0.5) -- (botrightLtuboU) -- (botleftLtuboU);
+\fill[cyan!20] (botleftLtuboU) rectangle ++(2*\aLtorchio,-0.11) (botleftRtuboU) rectangle ++(2*\aRtorchio,-0.11);
+\fill[black!70] (botleftLtuboU) rectangle ($(topLtuboU)+(\aLtorchio,0)$);
+\fill[black!70] (botleftRtuboU) rectangle ($(topRtuboU)+(\aRtorchio,0)$);
+\draw[fill=black!70]  (topLtuboU) ellipse (\aLtorchio cm and \bLtorchio cm) (botLtuboU) ellipse (\aLtorchio cm and \bLtorchio cm);
+\draw[fill=black!70]  (topRtuboU) ellipse (\aRtorchio cm and \bRtorchio cm) (botRtuboU) ellipse (\aRtorchio cm and \bRtorchio cm);
+\draw[rounded corners=1mm] ($(topLtuboU)+(-\aLtorchio,0)$) -- (botleftLtuboU|-0,0) -- (botrightRtuboU|-0,0) -- ($(topRtuboU)+(+\aRtorchio,0)$) ($(topLtuboU)+(+\aLtorchio,0)$) -- (botrightLtuboU|-0,0.5) -- (botleftRtuboU|-0,0.5) -- ($(topRtuboU)+(-\aRtorchio,0)$);
+\draw (topLtuboU) ellipse (\aLtorchio cm and \bLtorchio cm) (topRtuboU) ellipse (\aRtorchio cm and \bRtorchio cm);
+\end{immagine}
+
+\end{document}

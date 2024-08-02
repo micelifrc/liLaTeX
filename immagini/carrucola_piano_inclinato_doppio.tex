@@ -1,0 +1,27 @@
+\documentclass[crop]{standalone}
+\newcommand{\TipoDoc}{immagine}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\begin{document}
+
+\begin{immagine}
+\tikzdef\angpiL{30}
+\tikzdef\angpiR{45}
+\tikzdef\Rcarr{1}
+\coordinate (Npi) at (0,4);
+\intrette{Wpi}{Npi}{$(Npi)+(+\angpiL:-1)$}{0,0}{-1,0};
+\intrette{Epi}{Npi}{$(Npi)+(-\angpiR:1)$}{0,0}{+1,0};
+\fill[gray!10] (Npi)--(Epi)--(Wpi)--cycle;
+\angolo[col=Green,lbl=$\angpiL^\circ$,fill,lbl dist=0.35]{Epi}{Wpi}{Npi};
+\angolo[col=Green,lbl=$\angpiR^\circ$,fill,lbl dist=0.35]{Npi}{Epi}{Wpi};
+\draw[very thick] (Npi)--(Wpi)--(Epi)--cycle;
+\coordinate (centroCarr) at ($(Npi)+(0,0.1*\Rcarr)$);
+\draw[thin] ($(centroCarr)+(90-\angpiR:0.8*\Rcarr)$) --++ (-\angpiR:2) node (topBoxR){} ($(centroCarr)+(90+\angpiL:0.8*\Rcarr)$) --++ (180+\angpiL:5) node (topBoxL){};
+\proj{HpiL}{topBoxL}{Npi}{Wpi};
+\proj{HpiR}{topBoxR}{Npi}{Epi};
+\cassa[lbl=$\mathbf{m_1}$, col fill=orange!25]{HpiL}{-1.5}{1}{\angpiL};
+\cassa[lbl=$\mathbf{m_2}$, col fill=green!25]{HpiR}{1.5}{1}{-\angpiR};
+\carrucola{centroCarr}{\Rcarr};
+\end{immagine}
+
+\end{document}

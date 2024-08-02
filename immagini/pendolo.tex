@@ -1,0 +1,20 @@
+\documentclass[crop]{standalone}
+\newcommand{\TipoDoc}{immagine}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\begin{document}
+
+\begin{immagine}
+\tikzdef\ang{35}
+\tikzdef\L{2}
+\coordinate (F) at (0,0);
+\coordinate (C) at ($(F)+(-90-\ang:\L)$);
+\coordinate (S) at ($(F)+(0,-\L)$);
+\angolo[lbl=$\ang^\circ$, lbl dist=0.3, col=Green, fill]{C}{F}{S};
+\draw ($(F)+(-4,0)$) --++ (4*2,0);
+\draw[gray, dashed] (F) -- (S);
+\draw[thick] (F) -- (C);
+\draw[fill=red] (C) circle (0.15);
+\end{immagine}
+
+\end{document}

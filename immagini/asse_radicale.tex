@@ -1,0 +1,20 @@
+\documentclass[crop]{standalone}
+\newcommand{\TipoDoc}{immagine}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\begin{document}
+
+\begin{immagine}
+\punto[col=red, lbl=$O_1$, name=Ou]{0,0};
+\punto[col=blue, lbl=$O_2$, name=Od]{5,1};
+\tikzdef\Runo{3}
+\tikzdef\Rdue{4}
+\draw[red] (Ou) circle (\Runo);
+\draw[blue] (Od) circle (\Rdue);
+\interCC{A}{B}{Ou}{\Runo}{Od}{\Rdue};
+\retta[col=violet, lbl=$s$, draw length=1]{B}{A};
+\pntl[violet]{A}{0}{A};
+\pntl[violet]{B}{0}{B};
+\end{immagine}
+
+\end{document}

@@ -1,0 +1,18 @@
+\documentclass[crop]{standalone}
+\newcommand{\TipoDoc}{immagine}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\begin{document}
+
+\begin{immagine}
+\tikzdef\h{2} % l'altezza della freccia
+\tikzdef\R{6} % il raggio dello specchio
+\tikzdef\angspecchio{28} % fino a che angolo dobbiamo disegnare lo specchio
+\draw[fill=Green!30] ($(-7.5,0)+(-0.1*\h,0)$) --++ (0,0.75*\h) --++ (-0.1*\h,0) --++ (0.2*\h,0.25*\h) --++ (0.2*\h,-0.25*\h) --++ (-0.1*\h,0) --++ (0,-0.75*\h) --++(-0.2*\h,0);
+\griglia[step=0.5]{-8}{8}{-3}{3};
+\draw[thin] (-8,0)--(8,0);
+\pntl{O}{-90}{-\R,0};
+\arcocirc[thick,cyan]{O}{$(O)+(-\angspecchio:\R)$}{$(O)+(\angspecchio:\R)$};
+\end{immagine}
+
+\end{document}

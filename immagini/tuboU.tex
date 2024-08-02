@@ -1,0 +1,32 @@
+\documentclass[crop]{standalone}
+\newcommand{\TipoDoc}{immagine}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\begin{document}
+
+\begin{immagine}
+\tikzdef\aLtuboU{0.3} % coefficiente a dell'ellisse a sinistra
+\tikzdef\aRtuboU{0.5} % coefficiente a dell'ellisse a destra
+\tikzdef\bLtuboU{\aLtuboU/3} % coefficiente b dell'ellisse a sinistra
+\tikzdef\bRtuboU{\aRtuboU/3} % coefficiente b dell'ellisse a destra
+\coordinate (topLtuboU) at (-2,3); % centro dell'ellisse in alto a sinistra
+\coordinate (topRtuboU) at (+2,3); % centro dell'ellisse in alto a destra
+\coordinate (liqtopLtuboU) at (-2,2.5); % centro dell'ellisse in mezzo a sinistra
+\coordinate (liqtopRtuboU) at (+2,2.2); % centro dell'ellisse in mezzo a destra
+\coordinate (liqbotLtuboU) at (-2,1); % centro dell'ellisse in basso a sinistra
+\coordinate (liqbotRtuboU) at (+2,1); % centro dell'ellisse in basso a destra
+\coordinate (liqbotleftLtuboU) at ($(liqbotLtuboU)+(-\aLtuboU,0)$);
+\coordinate (liqbotrightLtuboU) at ($(liqbotLtuboU)+(+\aLtuboU,0)$);
+\coordinate (liqbotleftRtuboU) at ($(liqbotRtuboU)+(-\aRtuboU,0)$);
+\coordinate (liqbotrightRtuboU) at ($(liqbotRtuboU)+(+\aRtuboU,0)$);
+\fill[cyan!20, rounded corners=1mm] (liqbotleftLtuboU) -- (liqbotleftLtuboU|-0,0) -- (liqbotrightRtuboU|-0,0) -- (liqbotrightRtuboU) -- (liqbotleftRtuboU) -- (liqbotleftRtuboU|-0,0.5) -- (liqbotrightLtuboU|-0,0.5) -- (liqbotrightLtuboU) -- (liqbotleftLtuboU);
+\fill[cyan!20] (liqbotleftLtuboU) rectangle ++(2*\aLtuboU,-0.11) (liqbotleftRtuboU) rectangle ++(2*\aRtuboU,-0.11);
+\fill[pink!60] (liqbotleftLtuboU) rectangle ($(liqtopLtuboU)+(\aLtuboU,0)$);
+\fill[yellow!60] (liqbotleftRtuboU) rectangle ($(liqtopRtuboU)+(\aRtuboU,0)$);
+\draw[dotted, fill=pink!60]  (liqtopLtuboU) ellipse (\aLtuboU cm and \bLtuboU cm) (liqbotLtuboU) ellipse (\aLtuboU cm and \bLtuboU cm);
+\draw[dotted, fill=yellow!60]  (liqtopRtuboU) ellipse (\aRtuboU cm and \bRtuboU cm) (liqbotRtuboU) ellipse (\aRtuboU cm and \bRtuboU cm);
+\draw[rounded corners=1mm] ($(topLtuboU)+(-\aLtuboU,0)$) -- (liqbotleftLtuboU|-0,0) -- (liqbotrightRtuboU|-0,0) -- ($(topRtuboU)+(+\aRtuboU,0)$) ($(topLtuboU)+(+\aLtuboU,0)$) -- (liqbotrightLtuboU|-0,0.5) -- (liqbotleftRtuboU|-0,0.5) -- ($(topRtuboU)+(-\aRtuboU,0)$);
+\draw (topLtuboU) ellipse (\aLtuboU cm and \bLtuboU cm) (topRtuboU) ellipse (\aRtuboU cm and \bRtuboU cm);
+\end{immagine}
+
+\end{document}

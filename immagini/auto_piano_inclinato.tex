@@ -1,0 +1,18 @@
+\documentclass[crop]{standalone}
+\newcommand{\TipoDoc}{immagine}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\begin{document}
+
+\begin{immagine}
+\tikzdef\angpi{30}
+\coordinate (verticepi) at (0,0);
+\coordinate (NEpi) at ($(verticepi)+(\angpi:10)$);
+\coordinate (Epi) at (NEpi|-verticepi);
+\fill[gray!10] (Epi)--(verticepi)--(NEpi)--cycle;
+\angolo[col=Green,lbl=$\angpi^\circ$,fill,lbl dist=0.35]{Epi}{verticepi}{NEpi};
+\draw[very thick] (Epi)--(verticepi)--(NEpi)--cycle;
+\auto[col=red,ang=\angpi]{$(verticepi)+(\angpi:3)$};
+\end{immagine}
+
+\end{document}

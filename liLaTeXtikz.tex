@@ -798,23 +798,27 @@
 	\tikzset{keyfld/.cd,
 		col/.initial,
 		col draw/.initial, % il colore con cui si disegna l'angolo
-		r/.initial = 0.4, % il lato del segmento del quadratino
+		s/.initial = 0.3, % il lato del segmento del quadratino
+		r/.initial, % uguale a s
 		width/.initial, % può essere thin, thick, ...
 		pattern/.initial, % può essere solid, dashed, dotted, ...
 		arrow/.initial, % può essere ->, <-, <-> (o lasciata vuota)
 		fill/.initial = false, fill/.default = true, % può essere true o false
 		col fill/.initial, % il colore del filling
-		opacity/.initial = 30, % un numero fra 0 e 1 ch indica l'intensità della colorazione
+		opacity/.initial = 30, % un numero fra 0 e 1 che indica l'intensità della colorazione
 	} \setkeyfld{#1};
-	\setkeyvalueifempty{col draw}{\kv{col}};
+	\copykeyvaluesifempty
+		{col draw}{col}
+		{r}{s}
 	\ifkeyempty{col fill}{}{\setkeyvalue{fill}{true}};
-	\ifkeyequal{fill}{true}{\setkeyvalueifempty{col fill}{\kv{col}}}{};
-	\coordinate (angolorettoPuntoA) at (#2);
+	\ifkeyequal{fill}{true}{\setkeyvalueifempty{col fill}{\kv{col}!\kv{opacity}}}{};
 	\coordinate (angolorettoPuntoB) at (#3);
-	\coordinate (angolorettoPuntoC) at (#4);
+	\verso[\kv{r}]{angolorettoPuntoA}{angolorettoPuntoB}{#2};
+	\verso[\kv{r}]{angolorettoPuntoC}{angolorettoPuntoB}{#4};
+	\sumvett{angolorettoPuntoD}{angolorettoPuntoB}{angolorettoPuntoA}{angolorettoPuntoC};
 	\ifkeyequal{fill}{true}
-		{\tkzMarkRightAngle[size=\kv{r},\kv{width},\kv{pattern},fill=\kv{col fill},opacity=\kv{opacity}*0.01](angolorettoPuntoA,angolorettoPuntoB,angolorettoPuntoC)}{}
-	\tkzMarkRightAngle[size=\kv{r},draw=\kv{col draw},\kv{width},\kv{pattern},\kv{arrow}](angolorettoPuntoA,angolorettoPuntoB,angolorettoPuntoC)
+		{\fill[\kv{col fill}] (angolorettoPuntoB) rectangle (angolorettoPuntoD);}{}
+	\draw[\kv{col draw},\kv{width},\kv{pattern},\kv{arrow}] (angolorettoPuntoA) -- (angolorettoPuntoD) -- (angolorettoPuntoC);
 }
 
 
@@ -1487,9 +1491,10 @@
 		{x}{w}
 		{y}{h}
 		{s}{scale}
-	\ifkeyequal{side}{->}
-		{\ifkeyequal{mirror}{false}{\def\automirrorper{+1}}{\def\automirrorper{-1}}}
-		{\ifkeyequal{mirror}{true}{\def\automirrorper{+1}}{\def\automirrorper{-1}}}
+	\ifkeyequal{mirror}{true}{
+		\ifkeyequal{side}{->}{\setkeyvalue{side}{<-}}{\setkeyvalue{side}{->}}
+	}{}
+	\ifkeyequal{side}{->}{\def\automirrorper{+1}}{\def\automirrorper{-1}}
 	\tikzdef{\autosizex}{\automirrorper*\kv{s}*\kv{x}/30};
 	\tikzdef{\autosizey}{\kv{s}*\kv{y}/20};
 	% ruote
@@ -1513,7 +1518,8 @@
 	%carrozzeria
 	\draw[\kv{col},\kv{width},rounded corners=\kv{s}*0.5mm] (autoruotaposteriorefront) -- (autoruotaanterioreback)  (autoruotaanteriorefront) -- (autobottomfront) -- ($(#2)+(15*\autosizex,5*\autosizey)$) --++ (0,2*\autosizey) --++ (-6*\autosizex,3*\autosizey) --++ (0,10*\autosizey) -- ($(#2)+(-15*\autosizex,20*\autosizey)$) -- (autobottomback) -- (autoruotaposterioreback);
 	}{ %se dobbiamo ruotare l'auto
-		\begin{rotazione}[#2]{\kv{ang}} \auto[#1,ang=]{#2} \end{rotazione}
+		\coordinate (centrorotazione) at (#2);
+		\begin{rotazione}[centrorotazione]{\kv{ang}} \auto[#1,ang=]{centrorotazione} \end{rotazione}
 	}
 }
 
@@ -1537,9 +1543,10 @@
 		{x}{w}
 		{y}{h}
 		{s}{scale}
-	\ifkeyequal{side}{->}
-		{\ifkeyequal{mirror}{false}{\def\camionmirrorper{+1}}{\def\camionmirrorper{-1}}}
-		{\ifkeyequal{mirror}{true}{\def\camionmirrorper{+1}}{\def\camionmirrorper{-1}}}
+	\ifkeyequal{mirror}{true}{
+		\ifkeyequal{side}{->}{\setkeyvalue{side}{<-}}{\setkeyvalue{side}{->}}
+	}{}
+	\ifkeyequal{side}{->}{\def\camionmirrorper{+1}}{\def\camionmirrorper{-1}}
 	\tikzdef{\camionsizex}{\camionmirrorper*\kv{s}*\kv{x}/60};
 	\tikzdef{\camionsizey}{\kv{s}*\kv{y}/30};
 	% ruote
@@ -1564,7 +1571,8 @@
 	\draw[\kv{col},\kv{width}] (camionruotaposteriorefront) -- (camionruotaanterioreback)  (camionruotaanteriorefront) -- (camionbottomfront) -- ($(#2)+(30*\camionsizex,6*\camionsizey)$) --++ (-\camionsizex,0)  (camionruotaposterioreback) -- (camionbottomback) --++ (0,9*\camionsizey) --++ (45*\camionsizex,0) --++ (0,17.4*\camionsizey) --++ (-43.5*\camionsizex,0) --++ (0,-17.4*\camionsizey);
 	\draw[\kv{col},\kv{width},rounded corners=\kv{s}*0.5mm] ($(#2)+(29*\camionsizex,6*\camionsizey)$) --++ (0,6*\camionsizey) --++ (-3*\camionsizex,0) --++ (0,12*\camionsizey) --++ (-11*\camionsizex,0);
 	}{ %se dobbiamo ruotare il camion
-		\begin{rotazione}[#2]{\kv{ang}} \camion[#1,ang=]{#2} \end{rotazione}
+		\coordinate (centrorotazione) at (#2);
+		\begin{rotazione}[centrorotazione]{\kv{ang}} \camion[#1,ang=]{centrorotazione} \end{rotazione}
 	}
 }
 
@@ -1588,9 +1596,10 @@
 		{x}{w}
 		{y}{h}
 		{s}{scale}
-	\ifkeyequal{side}{->}
-		{\ifkeyequal{mirror}{false}{\def\motomirrorper{+1}}{\def\motomirrorper{-1}}}
-		{\ifkeyequal{mirror}{true}{\def\motomirrorper{+1}}{\def\motomirrorper{-1}}}
+	\ifkeyequal{mirror}{true}{
+		\ifkeyequal{side}{->}{\setkeyvalue{side}{<-}}{\setkeyvalue{side}{->}}
+	}{}
+	\ifkeyequal{side}{->}{\def\motomirrorper{+1}}{\def\motomirrorper{-1}}
 	\tikzdef{\motosizex}{\motomirrorper*\kv{s}*\kv{x}/20};
 	\tikzdef{\motosizey}{\kv{s}*\kv{y}/15};
 	\coordinate (motocentroruotaposteriore) at ($(#2)+(-10*\motosizex+\motomirrorper*2*\motosizey,2*\motosizey)$);
@@ -1610,7 +1619,8 @@
 	\draw[\kv{col},\kv{width}] ($(motocentrocasco)+(90-\motomirrorper*60:2*\motosizey)$) -- ($(motocentrocasco)+(0,\motosizey)$) -- ($(motocentrocasco)+(0,-\motosizey)$) -- ($(motocentrocasco)+(-90+\motomirrorper*60:2*\motosizey)$);
 	\draw[\kv{col},\kv{width}](motocentrocasco) circle (2*\motosizey);
 	}{ %se dobbiamo ruotare la moto
-		\begin{rotazione}[#2]{\kv{ang}} \moto[#1,ang=]{#2} \end{rotazione}
+		\coordinate (centrorotazione) at (#2);
+		\begin{rotazione}[centrorotazione]{\kv{ang}} \moto[#1,ang=]{centrorotazione} \end{rotazione}
 	}
 }
 
@@ -1634,9 +1644,10 @@
 		{x}{w}
 		{y}{h}
 		{s}{scale}
-	\ifkeyequal{side}{->}
-		{\ifkeyequal{mirror}{false}{\def\bicimirrorper{+1}}{\def\bicimirrorper{-1}}}
-		{\ifkeyequal{mirror}{true}{\def\bicimirrorper{+1}}{\def\bicimirrorper{-1}}}
+	\ifkeyequal{mirror}{true}{
+		\ifkeyequal{side}{->}{\setkeyvalue{side}{<-}}{\setkeyvalue{side}{->}}
+	}{}
+	\ifkeyequal{side}{->}{\def\bicimirrorper{+1}}{\def\bicimirrorper{-1}}
 	\tikzdef{\bicisizey}{\kv{s}*\kv{y}/20};
 	\tikzdef{\bicisizex}{\bicimirrorper*\bicisizey};
 	\coordinate (bicicentroruotaposteriore) at ($(#2)+(-0.5*\bicimirrorper*\kv{s}*\kv{x}+3*\bicisizex,+3*\bicisizey)$);
@@ -1654,6 +1665,7 @@
 	\draw[\kv{col},\kv{width}] (bicicatena) --++ (2*\bicisizex,5*\bicisizey) --++ (-3*\bicisizex,2*\bicisizey) --++ (-1.6*\bicisizex,0) --++ (2.5*\bicisizex,6*\bicisizey) node (bicicollo){}  ++  (-0.5*\bicisizex,-\bicisizey) -- ($(bicifrontpoint)+(\bicisizex,+0.75*\bicisizey)$);
 	\draw[\kv{col},\kv{width}] ($(bicicollo)+(0,2*\bicisizey)$) circle (2*\bicisizey);
 	}{ %se dobbiamo ruotare la bici
-		\begin{rotazione}[#2]{\kv{ang}} \bici[#1,ang=]{#2} \end{rotazione}
+		\coordinate (centrorotazione) at (#2);
+		\begin{rotazione}[centrorotazione]{\kv{ang}} \bici[#1,ang=]{centrorotazione} \end{rotazione}
 	}
 }

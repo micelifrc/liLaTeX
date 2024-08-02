@@ -1,0 +1,565 @@
+% compila due volte
+\documentclass[italian, a4paper]{article}
+\newcommand{\TipoDoc}{libro}
+\newcommand{\FontSize}{11}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+\usepackage{fancyvrb} % per Verbatim (per mettere il box attorno)
+
+\title{Immagini d'esempio per il pacchetto \texttt{liLaTeXtikz}}
+\author{Federico Miceli}
+\date{estate 2024}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Qui sono contenute alcune immagini d'esempio realizzate col pacchetto \texttt{liLaTeXtikz} precedute dal codice con cui sono state generate.
+\end{abstract}
+
+\tableofcontents
+
+\newpage\section{Asse Radicale}
+
+\begin{Verbatim}
+\punto[col=red, lbl=$O_1$, name=Ou]{0,0};
+\punto[col=blue, lbl=$O_2$, name=Od]{5,1};
+\tikzdef\Runo{3}
+\tikzdef\Rdue{4}
+\draw[red] (Ou) circle (\Runo);
+\draw[blue] (Od) circle (\Rdue);
+\interCC{A}{B}{Ou}{\Runo}{Od}{\Rdue};
+\retta[col=violet, lbl=$s$, draw length=1]{B}{A};
+\pntl[violet]{A}{0}{A};
+\pntl[violet]{B}{0}{B};
+\end{Verbatim}
+
+\begin{immagine}
+\punto[col=red, lbl=$O_1$, name=Ou]{0,0};
+\punto[col=blue, lbl=$O_2$, name=Od]{5,1};
+\tikzdef\Runo{3}
+\tikzdef\Rdue{4}
+\draw[red] (Ou) circle (\Runo);
+\draw[blue] (Od) circle (\Rdue);
+\interCC{A}{B}{Ou}{\Runo}{Od}{\Rdue};
+\retta[col=violet, lbl=$s$, draw length=1]{B}{A};
+\pntl[violet]{A}{0}{A};
+\pntl[violet]{B}{0}{B};
+\end{immagine}
+
+\newpage\section{Tangenti alla Circonferenza}
+
+\begin{Verbatim}
+\tikzdef\R{3}
+\pntl[red]{O}{-90}{0,0};
+\draw[red] (O) circle (\R);
+\pntl{P}{30}{5,2};
+\tangentiPC{A}{B}{P}{O}{\R};
+\semiretta[col=gray, draw length=1]{P}{A};
+\semiretta[col=gray, draw length=1]{P}{B};
+\pntl{A}{0}{A};
+\pntl{B}{90}{B};
+\end{Verbatim}
+
+\begin{immagine}
+\tikzdef\R{3}
+\pntl[red]{O}{-90}{0,0};
+\draw[red] (O) circle (\R);
+\pntl{P}{30}{5,2};
+\tangentiPC{A}{B}{P}{O}{\R};
+\semiretta[col=gray, draw length=1]{P}{A};
+\semiretta[col=gray, draw length=1]{P}{B};
+\pntl{A}{0}{A};
+\pntl{B}{90}{B};
+\end{immagine}
+
+\newpage\section{Trapezio rettangolo con diagonale perpendicolare al lato obliquo}
+
+\begin{Verbatim}
+\tikzdef\trapR{4}
+\pntl{A}{-120}{-\trapR,0};
+\pntl{B}{-60}{+\trapR,0};
+\pntl{C}{+60}{55:\trapR};
+\pntl{D}{+120}{C-|A};
+\angoloretto[col=red]{B}{A}{D};
+\angoloretto[col=red]{B}{C}{A};
+\draw (A)--(B)--(C)--(D)--(A);
+\draw[dashed] (A)--(C);
+\end{Verbatim}
+
+\begin{immagine}
+\tikzdef\trapR{4}
+\pntl{A}{-120}{-\trapR,0};
+\pntl{B}{-60}{+\trapR,0};
+\pntl{C}{+60}{55:\trapR};
+\pntl{D}{+120}{C-|A};
+\angoloretto[col=red]{B}{A}{D};
+\angoloretto[col=red]{B}{C}{A};
+\draw (A)--(B)--(C)--(D)--(A);
+\draw[dashed] (A)--(C);
+\end{immagine}
+
+\newpage\section{Pendolo}
+
+\begin{Verbatim}
+\tikzdef\ang{35}
+\tikzdef\L{2}
+\coordinate (F) at (0,0);
+\coordinate (C) at ($(F)+(-90-\ang:\L)$);
+\coordinate (S) at ($(F)+(0,-\L)$);
+\angolo[lbl=$\ang^\circ$, lbl dist=0.3, col=Green, fill]{C}{F}{S};
+\draw ($(F)+(-4,0)$) --++ (4*2,0);
+\draw[gray, dashed] (F) -- (S);
+\draw[thick] (F) -- (C);
+\draw[fill=red] (C) circle (0.15);
+\end{Verbatim}
+
+\begin{immagine}
+\tikzdef\ang{35}
+\tikzdef\L{2}
+\coordinate (F) at (0,0);
+\coordinate (C) at ($(F)+(-90-\ang:\L)$);
+\coordinate (S) at ($(F)+(0,-\L)$);
+\angolo[lbl=$\ang^\circ$, lbl dist=0.3, col=Green, fill]{C}{F}{S};
+\draw ($(F)+(-4,0)$) --++ (4*2,0);
+\draw[gray, dashed] (F) -- (S);
+\draw[thick] (F) -- (C);
+\draw[fill=red] (C) circle (0.15);
+\end{immagine}
+
+\newpage\section{Sfera e Molla}
+
+\begin{Verbatim}
+\molla{0,0.3}{1.5,0.3};
+\draw (0,0)--(10,0);
+\draw[very thick] (0,0)--(0,0.6);
+\tikzdef\Rsfera{0.4}
+\sfera[teal]{8,\Rsfera}{\Rsfera};
+\end{Verbatim}
+
+\begin{immagine}
+\molla{0,0.3}{1.5,0.3};
+\draw (0,0)--(10,0);
+\draw[very thick] (0,0)--(0,0.6);
+\tikzdef\Rsfera{0.4}
+\sfera[teal]{8,\Rsfera}{\Rsfera};
+\end{immagine}
+
+\riga
+
+\begin{Verbatim}
+\draw (-2,0)--(+2,0);
+\molla{0,0}{0,1.5};
+\tikzdef\Rsfera{0.2}
+\sfera[teal]{0,1.5+\Rsfera}{\Rsfera};
+\end{Verbatim}
+
+\begin{immagine}
+\draw (-2,0)--(+2,0);
+\molla{0,0}{0,1.5};
+\tikzdef\Rsfera{0.2}
+\sfera[teal]{0,1.5+\Rsfera}{\Rsfera};
+\end{immagine}
+
+\riga
+
+\begin{Verbatim}
+\draw[thick] (0,4) -- (0,3) arc (180:270:3) --++ (8,0) coordinate (Est);
+\draw[very thick] (Est) --++ (0,0.6);
+\molla{$(Est)+(0,0.3)$}{$(Est)+(-1,0.3)$};
+\cassa[lbl=$\mathbf{m}$, col fill=blue!20]{0,4}{0.7}{-1}{0};
+\end{Verbatim}
+
+\begin{immagine}
+\draw[thick] (0,4) -- (0,3) arc (180:270:3) --++ (8,0) coordinate (Est);
+\draw[very thick] (Est) --++ (0,0.6);
+\molla{$(Est)+(0,0.3)$}{$(Est)+(-1,0.3)$};
+\cassa[lbl=$\mathbf{m}$, col fill=blue!20]{0,4}{0.7}{-1}{0};
+\end{immagine}
+
+\newpage\section{Automobili}
+
+\begin{Verbatim}
+\draw (0,0) -- (15,0);
+\auto[col=red]{3,0};
+\auto[col=black, mirror]{12,0};
+\graffa[lbl=$600\,\SI{m}$]{3,0}{12,0};
+\end{Verbatim}
+
+\begin{immagine}
+\draw (0,0) -- (15,0);
+\auto[col=red]{3,0};
+\auto[col=black, mirror]{12,0};
+\graffa[lbl=$600\,\SI{m}$]{3,0}{12,0};
+\end{immagine}
+
+\riga
+
+\begin{Verbatim}
+\tikzdef\angpi{30}
+\coordinate (verticepi) at (0,0);
+\coordinate (NEpi) at ($(verticepi)+(\angpi:10)$);
+\coordinate (Epi) at (NEpi|-verticepi);
+\fill[gray!10] (Epi)--(verticepi)--(NEpi)--cycle;
+\angolo[col=Green,lbl=$\angpi^\circ$,fill,lbl dist=0.35]{Epi}{verticepi}{NEpi};
+\draw[very thick] (Epi)--(verticepi)--(NEpi)--cycle;
+\auto[col=red,ang=\angpi]{$(verticepi)+(\angpi:3)$};
+\end{Verbatim}
+
+\begin{immagine}
+\tikzdef\angpi{30}
+\coordinate (verticepi) at (0,0);
+\coordinate (NEpi) at ($(verticepi)+(\angpi:10)$);
+\coordinate (Epi) at (NEpi|-verticepi);
+\fill[gray!10] (Epi)--(verticepi)--(NEpi)--cycle;
+\angolo[col=Green,lbl=$\angpi^\circ$,fill,lbl dist=0.35]{Epi}{verticepi}{NEpi};
+\draw[very thick] (Epi)--(verticepi)--(NEpi)--cycle;
+\auto[col=red,ang=\angpi]{$(verticepi)+(\angpi:3)$};
+\end{immagine}
+
+\newpage\section{Macchina di Atwood}
+
+\begin{Verbatim}
+\coordinate (centroCarr) at (0,0);
+\tikzdef\Rcarr{1}
+\draw[thin] ($(centroCarr)+(-0.9*\Rcarr,0)$)--++(0,-1) node (carrTopL){};
+\draw[thin] ($(centroCarr)+(+0.9*\Rcarr,0)$)--++(0,-2) node (carrTopR){};
+\cassa[col fill=cyan!25, lbl=$\mathbf{m_1}$]{$(carrTopL)+(-0.4*\Rcarr,0)$}{0.4*2*\Rcarr}{-1.2}{0};
+\cassa[col fill=orange!25, lbl=$\mathbf{m_2}$]{$(carrTopR)+(-0.3*\Rcarr,0)$}{0.3*2*\Rcarr}{-1}{0};
+\carrucola{centroCarr}{\Rcarr};
+\end{Verbatim}
+
+\begin{immagine}
+\coordinate (centroCarr) at (0,0);
+\tikzdef\Rcarr{1}
+\draw[thin] ($(centroCarr)+(-0.9*\Rcarr,0)$)--++(0,-1) node (carrTopL){};
+\draw[thin] ($(centroCarr)+(+0.9*\Rcarr,0)$)--++(0,-2) node (carrTopR){};
+\cassa[col fill=cyan!25, lbl=$\mathbf{m_1}$]{$(carrTopL)+(-0.4*\Rcarr,0)$}{0.4*2*\Rcarr}{-1.2}{0};
+\cassa[col fill=orange!25, lbl=$\mathbf{m_2}$]{$(carrTopR)+(-0.3*\Rcarr,0)$}{0.3*2*\Rcarr}{-1}{0};
+\carrucola{centroCarr}{\Rcarr};
+\end{immagine}
+
+\newpage\section{Scatola su Piano Inclinato con Carrucola}
+
+\begin{Verbatim}
+\tikzdef\angpi{30}
+\tikzdef\Rcarr{1}
+\coordinate (verticepi) at (0,0);
+\coordinate (NEpi) at ($(verticepi)+(\angpi:10)$);
+\coordinate (Epi) at (NEpi|-verticepi);
+\fill[gray!10] (Epi)--(verticepi)--(NEpi)--cycle;
+\angolo[col=Green,lbl=$\angpi^\circ$,fill,lbl dist=0.35]{Epi}{verticepi}{NEpi};
+\draw[very thick] (Epi)--(verticepi)--(NEpi)--cycle;
+\coordinate (centroCarr) at ($(NEpi)+(40:0.1*\Rcarr)$);
+\draw[thin] ($(centroCarr)+(0.8*\Rcarr,0)$)--++(0,-2) node (topBoxR){};
+\draw[thin] ($(centroCarr)+(90+\angpi:0.8*\Rcarr)$)--++(180+\angpi:5) node (topBoxL){};
+\proj{Hpi}{topBoxL}{verticepi}{NEpi};
+\cassa[lbl=$\mathbf{m_1}$, col fill=red!25]{Hpi}{-1.5}{1}{\angpi};
+\cassa[lbl=$\mathbf{m_2}$, col fill=green!25]{$(topBoxR)+(-0.3,0)$}{0.3*2}{-1}{0};
+\carrucola{centroCarr}{\Rcarr};
+\end{Verbatim}
+
+\begin{immagine}
+\tikzdef\angpi{30}
+\tikzdef\Rcarr{1}
+\coordinate (verticepi) at (0,0);
+\coordinate (NEpi) at ($(verticepi)+(\angpi:10)$);
+\coordinate (Epi) at (NEpi|-verticepi);
+\fill[gray!10] (Epi)--(verticepi)--(NEpi)--cycle;
+\angolo[col=Green,lbl=$\angpi^\circ$,fill,lbl dist=0.35]{Epi}{verticepi}{NEpi};
+\draw[very thick] (Epi)--(verticepi)--(NEpi)--cycle;
+\coordinate (centroCarr) at ($(NEpi)+(40:0.1*\Rcarr)$);
+\draw[thin] ($(centroCarr)+(0.8*\Rcarr,0)$)--++(0,-2) node (topBoxR){};
+\draw[thin] ($(centroCarr)+(90+\angpi:0.8*\Rcarr)$)--++(180+\angpi:5) node (topBoxL){};
+\proj{Hpi}{topBoxL}{verticepi}{NEpi};
+\cassa[lbl=$\mathbf{m_1}$, col fill=red!25]{Hpi}{-1.5}{1}{\angpi};
+\cassa[lbl=$\mathbf{m_2}$, col fill=green!25]{$(topBoxR)+(-0.3,0)$}{0.3*2}{-1}{0};
+\carrucola{centroCarr}{\Rcarr};
+\end{immagine}
+
+\newpage\section{Scatole su Piano Inclinato Doppio con Carrucola}
+
+\begin{Verbatim}
+\tikzdef\angpiL{30}
+\tikzdef\angpiR{45}
+\tikzdef\Rcarr{1}
+\coordinate (Npi) at (0,4);
+\intrette{Wpi}{Npi}{$(Npi)+(+\angpiL:-1)$}{0,0}{-1,0};
+\intrette{Epi}{Npi}{$(Npi)+(-\angpiR:1)$}{0,0}{+1,0};
+\fill[gray!10] (Npi)--(Epi)--(Wpi)--cycle;
+\angolo[col=Green,lbl=$\angpiL^\circ$,fill,lbl dist=0.35]{Epi}{Wpi}{Npi};
+\angolo[col=Green,lbl=$\angpiR^\circ$,fill,lbl dist=0.35]{Npi}{Epi}{Wpi};
+\draw[very thick] (Npi)--(Wpi)--(Epi)--cycle;
+\coordinate (centroCarr) at ($(Npi)+(0,0.1*\Rcarr)$);
+\draw[thin] ($(centroCarr)+(90-\angpiR:0.8*\Rcarr)$) --++ (-\angpiR:2) node (topBoxR){};
+\draw[thin] ($(centroCarr)+(90+\angpiL:0.8*\Rcarr)$) --++ (180+\angpiL:5) node (topBoxL){};
+\proj{HpiL}{topBoxL}{Npi}{Wpi};
+\proj{HpiR}{topBoxR}{Npi}{Epi};
+\cassa[lbl=$\mathbf{m_1}$, col fill=orange!25]{HpiL}{-1.5}{1}{\angpiL};
+\cassa[lbl=$\mathbf{m_2}$, col fill=green!25]{HpiR}{1.5}{1}{-\angpiR};
+\carrucola{centroCarr}{\Rcarr};
+\end{Verbatim}
+
+\begin{immagine}
+\tikzdef\angpiL{30}
+\tikzdef\angpiR{45}
+\tikzdef\Rcarr{1}
+\coordinate (Npi) at (0,4);
+\intrette{Wpi}{Npi}{$(Npi)+(+\angpiL:-1)$}{0,0}{-1,0};
+\intrette{Epi}{Npi}{$(Npi)+(-\angpiR:1)$}{0,0}{+1,0};
+\fill[gray!10] (Npi)--(Epi)--(Wpi)--cycle;
+\angolo[col=Green,lbl=$\angpiL^\circ$,fill,lbl dist=0.35]{Epi}{Wpi}{Npi};
+\angolo[col=Green,lbl=$\angpiR^\circ$,fill,lbl dist=0.35]{Npi}{Epi}{Wpi};
+\draw[very thick] (Npi)--(Wpi)--(Epi)--cycle;
+\coordinate (centroCarr) at ($(Npi)+(0,0.1*\Rcarr)$);
+\draw[thin] ($(centroCarr)+(90-\angpiR:0.8*\Rcarr)$) --++ (-\angpiR:2) node (topBoxR){};
+\draw[thin] ($(centroCarr)+(90+\angpiL:0.8*\Rcarr)$) --++ (180+\angpiL:5) node (topBoxL){};
+\proj{HpiL}{topBoxL}{Npi}{Wpi};
+\proj{HpiR}{topBoxR}{Npi}{Epi};
+\cassa[lbl=$\mathbf{m_1}$, col fill=orange!25]{HpiL}{-1.5}{1}{\angpiL};
+\cassa[lbl=$\mathbf{m_2}$, col fill=green!25]{HpiR}{1.5}{1}{-\angpiR};
+\carrucola{centroCarr}{\Rcarr};
+\end{immagine}
+
+\newpage\section{Torchio Idraulico}
+
+\begin{Verbatim}
+\tikzdef\aLtorchio{0.3} % coefficiente a dell'ellisse a sinistra
+\tikzdef\aRtorchio{0.5} % coefficiente a dell'ellisse a destra
+\tikzdef\bLtorchio{\aLtorchio/3} % coefficiente b dell'ellisse a sinistra
+\tikzdef\bRtorchio{\aRtorchio/3} % coefficiente b dell'ellisse a destra
+\tikzdef\hpistoni{0.5}
+\coordinate (topLtuboU) at (-2,3); % centro dell'ellisse in alto a sinistra
+\coordinate (topRtuboU) at (+2,2); % centro dell'ellisse in alto a destra
+\coordinate (botLtuboU) at ($(topLtuboU)+(0,-\hpistoni)$);
+\coordinate (botRtuboU) at ($(topRtuboU)+(0,-\hpistoni)$);
+\coordinate (botleftLtuboU) at ($(botLtuboU)+(-\aLtorchio,0)$);
+\coordinate (botrightLtuboU) at ($(botLtuboU)+(+\aLtorchio,0)$);
+\coordinate (botleftRtuboU) at ($(botRtuboU)+(-\aRtorchio,0)$);
+\coordinate (botrightRtuboU) at ($(botRtuboU)+(+\aRtorchio,0)$);
+\fill[cyan!20, rounded corners=1mm] (botleftLtuboU) -- (botleftLtuboU|-0,0) --
+    (botrightRtuboU|-0,0) -- (botrightRtuboU) -- (botleftRtuboU) -- (botleftRtuboU|-0,0.5) --
+    (botrightLtuboU|-0,0.5) -- (botrightLtuboU) -- (botleftLtuboU);
+\fill[cyan!20] (botleftLtuboU) rectangle ++(2*\aLtorchio,-0.11)
+    (botleftRtuboU) rectangle ++(2*\aRtorchio,-0.11);
+\fill[black!70] (botleftLtuboU) rectangle ($(topLtuboU)+(\aLtorchio,0)$);
+\fill[black!70] (botleftRtuboU) rectangle ($(topRtuboU)+(\aRtorchio,0)$);
+\draw[fill=black!70]  (topLtuboU) ellipse (\aLtorchio cm and \bLtorchio cm)
+    (botLtuboU) ellipse (\aLtorchio cm and \bLtorchio cm);
+\draw[fill=black!70]  (topRtuboU) ellipse (\aRtorchio cm and \bRtorchio cm)
+    (botRtuboU) ellipse (\aRtorchio cm and \bRtorchio cm);
+\draw[rounded corners=1mm] ($(topLtuboU)+(-\aLtorchio,0)$) --
+    (botleftLtuboU|-0,0) -- (botrightRtuboU|-0,0) -- ($(topRtuboU)+(+\aRtorchio,0)$)
+    ($(topLtuboU)+(+\aLtorchio,0)$) --
+    (botrightLtuboU|-0,0.5) -- (botleftRtuboU|-0,0.5) -- ($(topRtuboU)+(-\aRtorchio,0)$);
+\draw (topLtuboU) ellipse (\aLtorchio cm and \bLtorchio cm)
+    (topRtuboU) ellipse (\aRtorchio cm and \bRtorchio cm);
+\end{Verbatim}
+
+\begin{immagine}
+\tikzdef\aLtorchio{0.3} % coefficiente a dell'ellisse a sinistra
+\tikzdef\aRtorchio{0.5} % coefficiente a dell'ellisse a destra
+\tikzdef\bLtorchio{\aLtorchio/3} % coefficiente b dell'ellisse a sinistra
+\tikzdef\bRtorchio{\aRtorchio/3} % coefficiente b dell'ellisse a destra
+\tikzdef\hpistoni{0.5}
+\coordinate (topLtuboU) at (-2,3); % centro dell'ellisse in alto a sinistra
+\coordinate (topRtuboU) at (+2,2); % centro dell'ellisse in alto a destra
+\coordinate (botLtuboU) at ($(topLtuboU)+(0,-\hpistoni)$); % centro dell'ellisse in basso a sinistra
+\coordinate (botRtuboU) at ($(topRtuboU)+(0,-\hpistoni)$); % centro dell'ellisse in basso a destra
+\coordinate (botleftLtuboU) at ($(botLtuboU)+(-\aLtorchio,0)$);
+\coordinate (botrightLtuboU) at ($(botLtuboU)+(+\aLtorchio,0)$);
+\coordinate (botleftRtuboU) at ($(botRtuboU)+(-\aRtorchio,0)$);
+\coordinate (botrightRtuboU) at ($(botRtuboU)+(+\aRtorchio,0)$);
+\fill[cyan!20, rounded corners=1mm] (botleftLtuboU) -- (botleftLtuboU|-0,0) -- (botrightRtuboU|-0,0) -- (botrightRtuboU) -- (botleftRtuboU) -- (botleftRtuboU|-0,0.5) -- (botrightLtuboU|-0,0.5) -- (botrightLtuboU) -- (botleftLtuboU);
+\fill[cyan!20] (botleftLtuboU) rectangle ++(2*\aLtorchio,-0.11) (botleftRtuboU) rectangle ++(2*\aRtorchio,-0.11);
+\fill[black!70] (botleftLtuboU) rectangle ($(topLtuboU)+(\aLtorchio,0)$);
+\fill[black!70] (botleftRtuboU) rectangle ($(topRtuboU)+(\aRtorchio,0)$);
+\draw[fill=black!70]  (topLtuboU) ellipse (\aLtorchio cm and \bLtorchio cm) (botLtuboU) ellipse (\aLtorchio cm and \bLtorchio cm);
+\draw[fill=black!70]  (topRtuboU) ellipse (\aRtorchio cm and \bRtorchio cm) (botRtuboU) ellipse (\aRtorchio cm and \bRtorchio cm);
+\draw[rounded corners=1mm] ($(topLtuboU)+(-\aLtorchio,0)$) -- (botleftLtuboU|-0,0) -- (botrightRtuboU|-0,0) -- ($(topRtuboU)+(+\aRtorchio,0)$) ($(topLtuboU)+(+\aLtorchio,0)$) -- (botrightLtuboU|-0,0.5) -- (botleftRtuboU|-0,0.5) -- ($(topRtuboU)+(-\aRtorchio,0)$);
+\draw (topLtuboU) ellipse (\aLtorchio cm and \bLtorchio cm) (topRtuboU) ellipse (\aRtorchio cm and \bRtorchio cm);
+\end{immagine}
+
+\newpage\section{Tubo a U}
+
+\begin{Verbatim}
+\tikzdef\aLtuboU{0.3} % coefficiente a dell'ellisse a sinistra
+\tikzdef\aRtuboU{0.5} % coefficiente a dell'ellisse a destra
+\tikzdef\bLtuboU{\aLtuboU/3} % coefficiente b dell'ellisse a sinistra
+\tikzdef\bRtuboU{\aRtuboU/3} % coefficiente b dell'ellisse a destra
+\coordinate (topLtuboU) at (-2,3); % centro dell'ellisse in alto a sinistra
+\coordinate (topRtuboU) at (+2,3); % centro dell'ellisse in alto a destra
+\coordinate (liqtopLtuboU) at (-2,2.5); % centro dell'ellisse in mezzo a sinistra
+\coordinate (liqtopRtuboU) at (+2,2.2); % centro dell'ellisse in mezzo a destra
+\coordinate (liqbotLtuboU) at (-2,1); % centro dell'ellisse in basso a sinistra
+\coordinate (liqbotRtuboU) at (+2,1); % centro dell'ellisse in basso a destra
+\coordinate (liqbotleftLtuboU) at ($(liqbotLtuboU)+(-\aLtuboU,0)$);
+\coordinate (liqbotrightLtuboU) at ($(liqbotLtuboU)+(+\aLtuboU,0)$);
+\coordinate (liqbotleftRtuboU) at ($(liqbotRtuboU)+(-\aRtuboU,0)$);
+\coordinate (liqbotrightRtuboU) at ($(liqbotRtuboU)+(+\aRtuboU,0)$);
+\fill[cyan!20, rounded corners=1mm] (liqbotleftLtuboU) -- (liqbotleftLtuboU|-0,0) --
+    (liqbotrightRtuboU|-0,0) -- (liqbotrightRtuboU) -- (liqbotleftRtuboU) --
+    (liqbotleftRtuboU|-0,0.5) -- (liqbotrightLtuboU|-0,0.5) --
+    (liqbotrightLtuboU) -- (liqbotleftLtuboU);
+\fill[cyan!20] (liqbotleftLtuboU) rectangle ++(2*\aLtuboU,-0.11)
+    (liqbotleftRtuboU) rectangle ++(2*\aRtuboU,-0.11);
+\fill[pink!60] (liqbotleftLtuboU) rectangle ($(liqtopLtuboU)+(\aLtuboU,0)$);
+\fill[yellow!60] (liqbotleftRtuboU) rectangle ($(liqtopRtuboU)+(\aRtuboU,0)$);
+\draw[dotted, fill=pink!60] (liqtopLtuboU) ellipse (\aLtuboU cm and \bLtuboU cm)
+    (liqbotLtuboU) ellipse (\aLtuboU cm and \bLtuboU cm);
+\draw[dotted, fill=yellow!60]  (liqtopRtuboU) ellipse (\aRtuboU cm and \bRtuboU cm)
+    (liqbotRtuboU) ellipse (\aRtuboU cm and \bRtuboU cm);
+\draw[rounded corners=1mm] ($(topLtuboU)+(-\aLtuboU,0)$) -- (liqbotleftLtuboU|-0,0) --
+    (liqbotrightRtuboU|-0,0) -- ($(topRtuboU)+(+\aRtuboU,0)$)
+    ($(topLtuboU)+(+\aLtuboU,0)$) -- (liqbotrightLtuboU|-0,0.5) --
+    (liqbotleftRtuboU|-0,0.5) -- ($(topRtuboU)+(-\aRtuboU,0)$);
+\draw (topLtuboU) ellipse (\aLtuboU cm and \bLtuboU cm)
+    (topRtuboU) ellipse (\aRtuboU cm and \bRtuboU cm);
+\end{Verbatim}
+
+\begin{immagine}
+\tikzdef\aLtuboU{0.3} % coefficiente a dell'ellisse a sinistra
+\tikzdef\aRtuboU{0.5} % coefficiente a dell'ellisse a destra
+\tikzdef\bLtuboU{\aLtuboU/3} % coefficiente b dell'ellisse a sinistra
+\tikzdef\bRtuboU{\aRtuboU/3} % coefficiente b dell'ellisse a destra
+\coordinate (topLtuboU) at (-2,3); % centro dell'ellisse in alto a sinistra
+\coordinate (topRtuboU) at (+2,3); % centro dell'ellisse in alto a destra
+\coordinate (liqtopLtuboU) at (-2,2.5); % centro dell'ellisse in mezzo a sinistra
+\coordinate (liqtopRtuboU) at (+2,2.2); % centro dell'ellisse in mezzo a destra
+\coordinate (liqbotLtuboU) at (-2,1); % centro dell'ellisse in basso a sinistra
+\coordinate (liqbotRtuboU) at (+2,1); % centro dell'ellisse in basso a destra
+\coordinate (liqbotleftLtuboU) at ($(liqbotLtuboU)+(-\aLtuboU,0)$);
+\coordinate (liqbotrightLtuboU) at ($(liqbotLtuboU)+(+\aLtuboU,0)$);
+\coordinate (liqbotleftRtuboU) at ($(liqbotRtuboU)+(-\aRtuboU,0)$);
+\coordinate (liqbotrightRtuboU) at ($(liqbotRtuboU)+(+\aRtuboU,0)$);
+\fill[cyan!20, rounded corners=1mm] (liqbotleftLtuboU) -- (liqbotleftLtuboU|-0,0) -- (liqbotrightRtuboU|-0,0) -- (liqbotrightRtuboU) -- (liqbotleftRtuboU) -- (liqbotleftRtuboU|-0,0.5) -- (liqbotrightLtuboU|-0,0.5) -- (liqbotrightLtuboU) -- (liqbotleftLtuboU);
+\fill[cyan!20] (liqbotleftLtuboU) rectangle ++(2*\aLtuboU,-0.11) (liqbotleftRtuboU) rectangle ++(2*\aRtuboU,-0.11);
+\fill[pink!60] (liqbotleftLtuboU) rectangle ($(liqtopLtuboU)+(\aLtuboU,0)$);
+\fill[yellow!60] (liqbotleftRtuboU) rectangle ($(liqtopRtuboU)+(\aRtuboU,0)$);
+\draw[dotted, fill=pink!60]  (liqtopLtuboU) ellipse (\aLtuboU cm and \bLtuboU cm) (liqbotLtuboU) ellipse (\aLtuboU cm and \bLtuboU cm);
+\draw[dotted, fill=yellow!60]  (liqtopRtuboU) ellipse (\aRtuboU cm and \bRtuboU cm) (liqbotRtuboU) ellipse (\aRtuboU cm and \bRtuboU cm);
+\draw[rounded corners=1mm] ($(topLtuboU)+(-\aLtuboU,0)$) -- (liqbotleftLtuboU|-0,0) -- (liqbotrightRtuboU|-0,0) -- ($(topRtuboU)+(+\aRtuboU,0)$) ($(topLtuboU)+(+\aLtuboU,0)$) -- (liqbotrightLtuboU|-0,0.5) -- (liqbotleftRtuboU|-0,0.5) -- ($(topRtuboU)+(-\aRtuboU,0)$);
+\draw (topLtuboU) ellipse (\aLtuboU cm and \bLtuboU cm) (topRtuboU) ellipse (\aRtuboU cm and \bRtuboU cm);
+\end{immagine}
+
+\newpage\section{Specchi Sferici}
+
+\begin{Verbatim}
+\tikzdef\h{2} % l'altezza della freccia
+\tikzdef\R{6} % il raggio dello specchio
+\tikzdef\angspecchio{28} % fino a che angolo dobbiamo disegnare lo specchio
+\draw[fill=Green!30] ($(-7.5,0)+(-0.1*\h,0)$) --++ (0,0.75*\h) --++ (-0.1*\h,0) --++
+    (0.2*\h,0.25*\h) --++ (0.2*\h,-0.25*\h) --++ (-0.1*\h,0) --++ (0,-0.75*\h) --++(-0.2*\h,0);
+\griglia[step=0.5]{-8}{8}{-3}{3};
+\draw[thin] (-8,0)--(8,0);
+\pntl{O}{-90}{-\R,0};
+\arcocirc[thick,cyan]{O}{$(O)+(-\angspecchio:\R)$}{$(O)+(\angspecchio:\R)$};
+\end{Verbatim}
+
+\begin{immagine}
+\tikzdef\h{2} % l'altezza della freccia
+\tikzdef\R{6} % il raggio dello specchio
+\tikzdef\angspecchio{28} % fino a che angolo dobbiamo disegnare lo specchio
+\draw[fill=Green!30] ($(-7.5,0)+(-0.1*\h,0)$) --++ (0,0.75*\h) --++ (-0.1*\h,0) --++ (0.2*\h,0.25*\h) --++ (0.2*\h,-0.25*\h) --++ (-0.1*\h,0) --++ (0,-0.75*\h) --++(-0.2*\h,0);
+\griglia[step=0.5]{-8}{8}{-3}{3};
+\draw[thin] (-8,0)--(8,0);
+\pntl{O}{-90}{-\R,0};
+\arcocirc[thick,cyan]{O}{$(O)+(-\angspecchio:\R)$}{$(O)+(\angspecchio:\R)$};
+\end{immagine}
+
+\riga
+
+\begin{Verbatim}
+\tikzdef\h{1.5} % l'altezza della freccia
+\tikzdef\R{6} % il raggio dello specchio
+\tikzdef\angspecchio{28} % fino a che angolo dobbiamo disegnare lo specchio
+\draw[fill=Green!30] ($(-6,0)+(-0.1*\h,0)$) --++ (0,0.75*\h) --++ (-0.1*\h,0) --++
+    (0.2*\h,0.25*\h) --++ (0.2*\h,-0.25*\h) --++ (-0.1*\h,0) --++ (0,-0.75*\h) --++(-0.2*\h,0);
+\griglia[step=0.5]{-8}{8}{-3}{3};
+\draw[thin] (-8,0)--(8,0);
+\pntl{O}{-90}{\R,0};
+\arcocirc[thick,cyan]{O}{$(O)+(180-\angspecchio:\R)$}{$(O)+(180+\angspecchio:\R)$};
+\end{Verbatim}
+
+\begin{immagine}
+\tikzdef\h{1.5} % l'altezza della freccia
+\tikzdef\R{6} % il raggio dello specchio
+\tikzdef\angspecchio{28} % fino a che angolo dobbiamo disegnare lo specchio
+\draw[fill=Green!30] ($(-6,0)+(-0.1*\h,0)$) --++ (0,0.75*\h) --++ (-0.1*\h,0) --++ (0.2*\h,0.25*\h) --++ (0.2*\h,-0.25*\h) --++ (-0.1*\h,0) --++ (0,-0.75*\h) --++(-0.2*\h,0);
+\griglia[step=0.5]{-8}{8}{-3}{3};
+\draw[thin] (-8,0)--(8,0);
+\pntl{O}{-90}{\R,0};
+\arcocirc[thick,cyan]{O}{$(O)+(180-\angspecchio:\R)$}{$(O)+(180+\angspecchio:\R)$};
+\end{immagine}
+
+\newpage\section{Lente Sferica Convergente}
+
+\begin{Verbatim}
+\tikzdef\h{2} % l'altezza della freccia
+\tikzdef\f{3} % dove posizionare i fuochi (non serve che sia davvero in linea con R)
+\tikzdef\R{9} % il raggio della lente
+\tikzdef\w{0.8} % lo spessore della lente (al centro)
+\tikzdef\anglente{15} % fino a che angolo dobbiamo disegnare la lente
+\draw[thick,cyan,fill=cyan!20] ($(\R-0.5*\w,0)+(180-\anglente:\R)$)
+    arc (180-\anglente:180+\anglente:\R) -- ($(-\R+0.5*\w,0)+(-\anglente:\R)$)
+    arc (-\anglente:\anglente:\R) -- ($(\R-0.5*\w,0)+(180-\anglente:\R)$);
+\draw[fill=Green!30] ($(-7.5,0)+(-0.1*\h,0)$) --++ (0,0.75*\h) --++ (-0.1*\h,0) --++
+    (0.2*\h,0.25*\h) --++ (0.2*\h,-0.25*\h) --++ (-0.1*\h,0) --++ (0,-0.75*\h) --++(-0.2*\h,0);
+\griglia[step=0.5]{-8}{8}{-3}{3};
+\draw[thick,dashed] (0,-3)--(0,3);
+\draw[thin] (-8,0)--(8,0);
+\pntl{F}{-90}{-\f,0}; % in realtà i fuochi non dovrebbero essere qui
+\pntl{F}{-90}{+\f,0};
+\end{Verbatim}
+
+\begin{immagine}
+\tikzdef\h{2} % l'altezza della freccia
+\tikzdef\f{3} % dove posizionare i fuochi (non serve che sia davvero in linea con R)
+\tikzdef\R{9} % il raggio della lente
+\tikzdef\w{0.8} % lo spessore della lente (al centro)
+\tikzdef\anglente{15} % fino a che angolo dobbiamo disegnare la lente
+\draw[thick,cyan,fill=cyan!20] ($(\R-0.5*\w,0)+(180-\anglente:\R)$) arc (180-\anglente:180+\anglente:\R) -- ($(-\R+0.5*\w,0)+(-\anglente:\R)$) arc (-\anglente:\anglente:\R) -- ($(\R-0.5*\w,0)+(180-\anglente:\R)$);
+\draw[fill=Green!30] ($(-7.5,0)+(-0.1*\h,0)$) --++ (0,0.75*\h) --++ (-0.1*\h,0) --++
+    (0.2*\h,0.25*\h) --++ (0.2*\h,-0.25*\h) --++ (-0.1*\h,0) --++ (0,-0.75*\h) --++(-0.2*\h,0);
+\griglia[step=0.5]{-8}{8}{-3}{3};
+\draw[thick,dashed] (0,-3)--(0,3);
+\draw[thin] (-8,0)--(8,0);
+\pntl{F}{-90}{-\f,0}; % in realtà i fuochi non dovrebbero essere qui
+\pntl{F}{-90}{+\f,0};
+\end{immagine}
+
+\newpage\section{Lente Sferica Divergente}
+
+\begin{Verbatim}
+\tikzdef\h{1.5} % l'altezza della freccia
+\tikzdef\f{3} % dove posizionare i fuochi (non serve che sia davvero in linea con R)
+\tikzdef\R{9} % il raggio della lente
+\tikzdef\w{0.3} % lo spessore della lente (al centro)
+\tikzdef\anglente{15} % fino a che angolo dobbiamo disegnare la lente
+\draw[thick,cyan,fill=cyan!20] ($(\R+0.5*\w,0)+(180-\anglente:\R)$) 
+    arc (180-\anglente:180+\anglente:\R) -- ($(-\R-0.5*\w,0)+(-\anglente:\R)$)
+    arc (-\anglente:\anglente:\R) -- ($(\R+0.5*\w,0)+(180-\anglente:\R)$);
+\draw[fill=Green!30] ($(-6,0)+(-0.1*\h,0)$) --++ (0,0.75*\h) --++ (-0.1*\h,0) --++
+    (0.2*\h,0.25*\h) --++ (0.2*\h,-0.25*\h) --++ (-0.1*\h,0) --++ (0,-0.75*\h) --++(-0.2*\h,0);
+\griglia[step=0.5]{-8}{8}{-3}{3};
+\draw[thick,dashed] (0,-3)--(0,3);
+\draw[thin] (-8,0)--(8,0);
+\pntl{F}{-90}{-\f,0}; % in realtà i fuochi non dovrebbero essere qui
+\pntl{F}{-90}{+\f,0};
+\end{Verbatim}
+
+\begin{immagine}
+\tikzdef\h{1.5} % l'altezza della freccia
+\tikzdef\f{3} % dove posizionare i fuochi (non serve che sia davvero in linea con R)
+\tikzdef\R{9} % il raggio della lente
+\tikzdef\w{0.3} % lo spessore della lente (al centro)
+\tikzdef\anglente{15} % fino a che angolo dobbiamo disegnare la lente
+\draw[thick,cyan,fill=cyan!20] ($(\R+0.5*\w,0)+(180-\anglente:\R)$) arc (180-\anglente:180+\anglente:\R) -- ($(-\R-0.5*\w,0)+(-\anglente:\R)$) arc (-\anglente:\anglente:\R) -- ($(\R+0.5*\w,0)+(180-\anglente:\R)$);
+\draw[fill=Green!30] ($(-6,0)+(-0.1*\h,0)$) --++ (0,0.75*\h) --++ (-0.1*\h,0) --++ (0.2*\h,0.25*\h) --++ (0.2*\h,-0.25*\h) --++ (-0.1*\h,0) --++ (0,-0.75*\h) --++(-0.2*\h,0);
+\griglia[step=0.5]{-8}{8}{-3}{3};
+\draw[thick,dashed] (0,-3)--(0,3);
+\draw[thin] (-8,0)--(8,0);
+\pntl{F}{-90}{-\f,0}; % in realtà i fuochi non dovrebbero essere qui
+\pntl{F}{-90}{+\f,0};
+\end{immagine}
+
+\end{document}

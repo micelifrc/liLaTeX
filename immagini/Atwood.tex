@@ -1,0 +1,16 @@
+\documentclass[crop]{standalone}
+\newcommand{\TipoDoc}{immagine}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\begin{document}
+
+\begin{immagine}
+\coordinate (centroCarr) at (0,0);
+\tikzdef\Rcarr{1}
+\draw[thin] ($(centroCarr)+(-0.9*\Rcarr,0)$)--++(0,-1) node (carrTopL){} ($(centroCarr)+(+0.9*\Rcarr,0)$)--++(0,-2) node (carrTopR){};
+\cassa[col fill=cyan!25, lbl=$\mathbf{m_1}$]{$(carrTopL)+(-0.4*\Rcarr,0)$}{0.4*2*\Rcarr}{-1.2}{0};
+\cassa[col fill=orange!25, lbl=$\mathbf{m_2}$]{$(carrTopR)+(-0.3*\Rcarr,0)$}{0.3*2*\Rcarr}{-1}{0};
+\carrucola{centroCarr}{\Rcarr};
+\end{immagine}
+
+\end{document}

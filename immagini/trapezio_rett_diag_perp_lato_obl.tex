@@ -1,0 +1,19 @@
+\documentclass[crop]{standalone}
+\newcommand{\TipoDoc}{immagine}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\begin{document}
+
+\begin{immagine}
+\tikzdef\trapR{4}
+\pntl{A}{-120}{-\trapR,0};
+\pntl{B}{-60}{+\trapR,0};
+\pntl{C}{+60}{55:\trapR};
+\pntl{D}{+120}{C-|A};
+\angoloretto[col=red]{B}{A}{D};
+\angoloretto[col=red]{B}{C}{A};
+\draw (A)--(B)--(C)--(D)--(A);
+\draw[dashed] (A)--(C);
+\end{immagine}
+
+\end{document}

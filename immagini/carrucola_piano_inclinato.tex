@@ -1,0 +1,24 @@
+\documentclass[crop]{standalone}
+\newcommand{\TipoDoc}{immagine}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\begin{document}
+
+\begin{immagine}
+\tikzdef\angpi{30}
+\tikzdef\Rcarr{1}
+\coordinate (verticepi) at (0,0);
+\coordinate (NEpi) at ($(verticepi)+(\angpi:10)$);
+\coordinate (Epi) at (NEpi|-verticepi);
+\fill[gray!10] (Epi)--(verticepi)--(NEpi)--cycle;
+\angolo[col=Green,lbl=$\angpi^\circ$,fill,lbl dist=0.35]{Epi}{verticepi}{NEpi};
+\draw[very thick] (Epi)--(verticepi)--(NEpi)--cycle;
+\coordinate (centroCarr) at ($(NEpi)+(40:0.1*\Rcarr)$);
+\draw[thin] ($(centroCarr)+(0.8*\Rcarr,0)$)--++(0,-2) node (topBoxR){} ($(centroCarr)+(90+\angpi:0.8*\Rcarr)$)--++(180+\angpi:5) node (topBoxL){};
+\proj{Hpi}{topBoxL}{verticepi}{NEpi};
+\cassa[lbl=$\mathbf{m_1}$, col fill=red!25]{Hpi}{-1.5}{1}{\angpi};
+\cassa[lbl=$\mathbf{m_2}$, col fill=green!25]{$(topBoxR)+(-0.3,0)$}{0.3*2}{-1}{0};
+\carrucola{centroCarr}{\Rcarr};
+\end{immagine}
+
+\end{document}

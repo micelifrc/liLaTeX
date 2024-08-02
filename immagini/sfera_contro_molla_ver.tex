@@ -1,0 +1,14 @@
+\documentclass[crop]{standalone}
+\newcommand{\TipoDoc}{immagine}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\begin{document}
+
+\begin{immagine}
+\draw (-2,0)--(+2,0);
+\molla{0,0}{0,1.5};
+\tikzdef\Rsfera{0.2}
+\sfera[teal]{0,1.5+\Rsfera}{\Rsfera};
+\end{immagine}
+
+\end{document}

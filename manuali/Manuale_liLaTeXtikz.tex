@@ -1110,11 +1110,13 @@ con le seguenti keys:
 \item \key{r} ha valori di default e significati diversi per i due comandi:
 \begin{itemize}[nolistsep]
 \item \ttt{\key{r} := \keyval{0.6}} rappresenta il raggio dell'angolo per \ttt{\bs angolo};
-\item \ttt{\key{r} := \keyval{0.4}} rappresenta il lato del quadratino per \ttt{\bs angoloretto}.
+\item \ttt{\key{r} := \key{s} := \keyval{0.3}} rappresenta il lato del quadratino per \ttt{\bs angoloretto}.
 \end{itemize}
 \item \key{lbl}, \ttt{\key{lbl dist} := \keyval{0.2}}, \key{lbl size}, \ttt{\key{lbl col} = \key{col lbl}}, \ttt{\key{mark} := \keyval{none}} come descritti in sezione \ref{keysec} sono disponibili solo per \ttt{\bs angolo} (non per \ttt{\bs angoloretto}).
 \item L'opzione \keyop{fill}, se specificata, riempie l'interno dell'angolo (che altrimenti viene lasciato vuoto).
 \end{itemize}
+
+\textbf{Nota:} se il label di un angolo è, ad esempio, $30^\circ$, si suggerisce di porre \ttt{\key{lbl dist} := \keyval{0.35}}.
 
 Vediamo un semplice esempio di utilizzo di questi comandi:
 

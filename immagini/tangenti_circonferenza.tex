@@ -1,0 +1,19 @@
+\documentclass[crop]{standalone}
+\newcommand{\TipoDoc}{immagine}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\begin{document}
+
+\begin{immagine}
+\tikzdef\R{3}
+\pntl[red]{O}{-90}{0,0};
+\draw[red] (O) circle (\R);
+\pntl{P}{30}{5,2};
+\tangentiPC{A}{B}{P}{O}{\R};
+\semiretta[col=gray, draw length=1]{P}{A};
+\semiretta[col=gray, draw length=1]{P}{B};
+\pntl{A}{0}{A};
+\pntl{B}{90}{B};
+\end{immagine}
+
+\end{document}

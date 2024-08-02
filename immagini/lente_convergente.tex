@@ -1,0 +1,22 @@
+\documentclass[crop]{standalone}
+\newcommand{\TipoDoc}{immagine}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\begin{document}
+
+\begin{immagine}
+\tikzdef\h{2} % l'altezza della freccia
+\tikzdef\f{3} % dove posizionare i fuochi (non serve che sia davvero in linea con R)
+\tikzdef\R{9} % il raggio della lente
+\tikzdef\w{0.8} % lo spessore della lente (al centro)
+\tikzdef\anglente{15} % fino a che angolo dobbiamo disegnare la lente
+\draw[thick,cyan,fill=cyan!20] ($(\R-0.5*\w,0)+(180-\anglente:\R)$) arc (180-\anglente:180+\anglente:\R) -- ($(-\R+0.5*\w,0)+(-\anglente:\R)$) arc (-\anglente:\anglente:\R) -- ($(\R-0.5*\w,0)+(180-\anglente:\R)$);
+\draw[fill=Green!30] ($(-7.5,0)+(-0.1*\h,0)$) --++ (0,0.75*\h) --++ (-0.1*\h,0) --++ (0.2*\h,0.25*\h) --++ (0.2*\h,-0.25*\h) --++ (-0.1*\h,0) --++ (0,-0.75*\h) --++(-0.2*\h,0);
+\griglia[step=0.5]{-8}{8}{-3}{3};
+\draw[thick,dashed] (0,-3)--(0,3);
+\draw[thin] (-8,0)--(8,0);
+\pntl{F}{-90}{-\f,0}; % in realtà i fuochi non dovrebbero essere qui
+\pntl{F}{-90}{+\f,0};
+\end{immagine}
+
+\end{document}

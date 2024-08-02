@@ -1,0 +1,14 @@
+\documentclass[crop]{standalone}
+\newcommand{\TipoDoc}{immagine}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\begin{document}
+
+\begin{immagine}
+\draw[thick] (0,4) -- (0,3) arc (180:270:3) --++ (8,0) coordinate (Est);
+\draw[very thick] (Est) --++ (0,0.6);
+\molla{$(Est)+(0,0.3)$}{$(Est)+(-1,0.3)$};
+\cassa[lbl=$\mathbf{m}$, col fill=blue!20]{0,4}{0.7}{-1}{0};
+\end{immagine}
+
+\end{document}
