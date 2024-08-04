@@ -1057,6 +1057,10 @@ Volendo esiste anche il comando \ttt{\bs parabolaVPPy}, identico a \ttt{\bs para
 
 \comando{\bs parabolaVPPx[\opzioni]\{\blue{V}\}\{\blue{$P_1$}\}\{\blue{$P_2$}\};}
 
+È anche possibile disegnare un arco di parabola di estremi $A$ e $B$ e il cui vertice $V$ ha ordinata $y_V$ (l'ascissa viene automaticamente determinata all'interno dell'intervallo $[x_A,x_B]$). In questo caso non serve specificare l'ascissa $x_V$ del vertice. Serve però che il valore $y_V$ non sia compreso fra i valori $y_A$ e $y_B$. Per disegnare questo ramo di parabola usiamo il comando
+
+\comando{\bs parabolayVPP[\opzioni]\{\blue{$y_V$}\}\{\blue{$A$}\}\{\blue{$B$}\};}
+
 Volendo possiamo anche disegnare una parabola partendo dalla sua equazione canonica $y=ax^2+bx+c$. Per farlo, dobbiamo anche specificare il range $x\in[x_1,x_2]$ per cui vogliamo disegnare la parabola:
 
 \comando{\bs parabolaeq[\opzioni]\{\blue{$x_1:x_2$}\}\{\blue{a}\}\{\blue{b}\}\{\blue{c}\};}
@@ -1322,6 +1326,46 @@ Vediamo un semplice esempio:
 \casetta{2,0};
 \uomo[col=blue]{4,0};
 \donna[mirror,col=red]{5,0};
+\end{immagine}
+\fi
+
+\newpage\subsection{Il tavolo}
+Ci sono anche due comandi per disegnare un tavolo. Il comando
+
+\comando{\bs tavolo[\keys]\{\blue{centro base}\}\{\blue{larghezza}\}\{\blue{altezza}\};}
+
+disegna un tavolo con le caratteristiche specificate. A volte vogliamo però disegnare solo una porzione di tavolo. In questi casi possiamo usare il comando
+
+\comando{\bs mezzotavolo[\keys]\{\blue{base}\}\{\blue{larghezza}\}\{\blue{altezza}\};}
+
+In questo caso, con \blue{base} si intende il punto della base in cui il tavolo viene tagliato.
+
+Per entrambi i comandi le \keys\ disponibili sono:
+\begin{itemize}[nolistsep]
+\item \ttt{\key{col} := \keyval{Brown}}, \key{width}, \key{pattern} coi significati illustrati nella sezione \ref{keysec}.
+\item \ttt{\key{col vetro} := \keyval{cyan}} il colore della parte in vetro.
+\item \ttt{\key{col fill} := \keyval{Brown!40}} è il colore del filling. Può essere rimosso con l'opzione \keyop{no fill}. Il filling per la parte di vetro viene invece realizzato in \ttt{\keyval{col vetro}!40}.
+\item \key{h top} specifica l'altezza per la parte superiore (quella orizzontale) del tavolo.
+\item \key{w gambe} è la larghezza delle gambe del tavolo.
+\item \ttt{\key{side} := \keyval{->}} e \keyop{mirror}, coi significati illustrati nella sezione \ref{keysec}, sono disponibili solo per il comando \ttt{\bs mezzotavolo}.
+\end{itemize}
+
+Vediamo un semplice esempio:
+
+\begin{Verbatim}[frame=single]
+\griglia{0}{15}{0}{3};
+\mezzotavolo[col=red,col vetro=green]{0,0}{4}{3};
+\mezzotavolo[mirror]{15,0}{3}{2};
+\tavolo{8,0}{6}{3};
+\end{Verbatim}
+\vspace*{-4mm}
+
+\ifnum\showslowimmagini=1
+\begin{immagine}
+\griglia{0}{15}{0}{3};
+\mezzotavolo[col=red,col vetro=green]{0,0}{4}{3};
+\mezzotavolo[mirror]{15,0}{3}{2};
+\tavolo{8,0}{6}{3};
 \end{immagine}
 \fi
 

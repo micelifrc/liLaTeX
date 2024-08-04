@@ -1,0 +1,18 @@
+\documentclass[crop]{standalone}
+\newcommand{\TipoDoc}{immagine}
+\input{C:/Users/themi/Desktop/LaTex/liLaTeX/liLaTeX.tex}
+
+\begin{document}
+
+\begin{immagine}
+\tikzdef\R{0.2}
+\griglia{0}{15}{0}{4};
+\mezzotavolo{0,0}{5}{3-\R};
+\draw[dashed,blue] (5,3) parabola (7,0);
+\sfera[blue]{5,3}{\R};
+\mezzotavolo[mirror]{15,0}{3}{2-\R};
+\parabolayVPP[dashed,red]{3}{12,2}{9,0};
+\sfera[red]{12,2}{\R};
+\end{immagine}
+
+\end{document}

@@ -1105,6 +1105,19 @@
 	\draw[#1] (#2) parabola (#4);
 }
 
+% \parabola[opzioni]{y_V}{A}{B} disegna un arco di parabola di estremi A e B e il cui vertice, compreso fra P1 e P2, deve avere ordinata y_V
+\newcommand*{\parabolayVPP}[4][]{
+	\tikzdef\parabolayVPPyV{#2}
+	\extractcoordpair{\parabolayVPPxA}{\parabolayVPPyA}{#3}
+	\extractcoordpair{\parabolayVPPxB}{\parabolayVPPyB}{#4}
+	\tikzdef\parabolayVPPsqrtDyA{sqrt(abs(\parabolayVPPyV-\parabolayVPPyA))}
+	\tikzdef\parabolayVPPsqrtDyB{sqrt(abs(\parabolayVPPyV-\parabolayVPPyB))}
+	\tikzdef\parabolayVPPratio{\parabolayVPPsqrtDyA/(\parabolayVPPsqrtDyA+\parabolayVPPsqrtDyB)}
+	\medio[\parabolayVPPratio]{parabolayVPPmedio}{#3}{#4};
+	\coordinate (parabolayVPPertice) at (parabolayVPPmedio|-0,\parabolayVPPyV);
+	\parabolaVPPy[#1]{parabolayVPPertice}{#3}{#4};
+}
+
 % \parabolaVPPx[opzioni]{V}{P1}{P2} è analogo a \parabolaVPPy per parabole con l'asse di simmetria parallelo all'asse x
 \newcommand*{\parabolaVPPx}[4][]{
 	\coordinate (parabolaVPPxPuno) at (#3);
@@ -1388,6 +1401,66 @@
 	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.1*\kv{x},0.55*\kv{y})$) rectangle++ (-0.2*\kv{x},0.12*\kv{y})  ($(#2)+(-0.2*\kv{x},0.55*\kv{y})$) --++ (0,0.12*\kv{y}); % finestra in alto a sinistra
 	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.4*\kv{x},0.8*\kv{y})$) --++ (0,-0.8*\kv{y}) --++ (0.8*\kv{x},0) --++ (0,0.8*\kv{y}); % corpo
 	\draw[\kv{col},\kv{width},\kv{pattern}] ($(#2)+(-0.5*\kv{x},0.8*\kv{y})$) --++ (0.5*\kv{x},0.2*\kv{y}) --++ (0.5*\kv{x},-0.2*\kv{y}) --++ (-\kv{x},0); % tetto
+}
+
+% \tavolo[keys]{centro base}{lunghezza x}{lunghezza y} disegna un tavolo
+\newcommand*{\tavolo}[4][]{
+	\tikzset{keyfld/.cd,
+		col/.initial = Brown,
+		col fill/.initial = Brown!40,
+		col vetro/.initial = cyan,
+		no fill/.initial = false, no fill/.default = true, % se specificata evita di fillare l'immagine
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		h top/.initial, % l'altezza della parte superiore del tavolo
+		w gambe/.initial, % la larghezza delle gambe inferiore del tavolo
+	} \setkeyfld{#1};
+	\tikzdef\xtavolo{#3}
+	\tikzdef\ytavolo{#4}
+	\tikzdef\htoptavolo{min(\ytavolo/5,0.5)}
+	\setkeyvalueifempty{h top}{\htoptavolo}
+	\tikzdef\wgambetavolo{min(\xtavolo/10,0.4)}
+	\setkeyvalueifempty{w gambe}{\wgambetavolo}
+	\tikzdef\dxgambetavolo{min((\xtavolo-2*(\kv{w gambe}+0.1))/5,0.3)}
+	\ifkeyequal{no fill}{false}{
+		\fill[\kv{col fill}] ($(#2)+(\xtavolo/2-0.1,\ytavolo-0.2*\kv{h top})$) --++ (0,-0.8*\kv{h top}) --++ (-\dxgambetavolo,0) --++ (-0.15*\kv{w gambe},-\ytavolo+\kv{h top}) --++ (-0.7*\kv{w gambe},0) --++ (-0.15*\kv{w gambe},+\ytavolo-\kv{h top}) --++ (-\xtavolo+0.2+2*\dxgambetavolo+2*\kv{w gambe},0) --++ (-0.15*\kv{w gambe},-\ytavolo+\kv{h top}) --++ (-0.7*\kv{w gambe},0) --++ (-0.15*\kv{w gambe},+\ytavolo-\kv{h top}) --++ (-\dxgambetavolo,0) --++ (0,+0.8*\kv{h top}); % la parte di legno
+		\fill[\kv{col vetro}!40] ($(#2)+(\xtavolo/2,\ytavolo)$) rectangle++ (-\xtavolo,-0.2*\kv{h top}); % la parte di vetro
+	}{}
+	\draw[\kv{width},\kv{pattern},\kv{col}] ($(#2)+(\xtavolo/2-0.1,\ytavolo-0.2*\kv{h top})$) --++ (0,-0.8*\kv{h top}) --++ (-\dxgambetavolo,0) --++ (-0.15*\kv{w gambe},-\ytavolo+\kv{h top}) --++ (-0.7*\kv{w gambe},0) --++ (-0.15*\kv{w gambe},+\ytavolo-\kv{h top}) --++ (-\xtavolo+0.2+2*\dxgambetavolo+2*\kv{w gambe},0) --++ (-0.15*\kv{w gambe},-\ytavolo+\kv{h top}) --++ (-0.7*\kv{w gambe},0) --++ (-0.15*\kv{w gambe},+\ytavolo-\kv{h top}) --++ (-\dxgambetavolo,0) --++ (0,+0.8*\kv{h top}); % la parte di legno
+	\draw[\kv{width},\kv{pattern},\kv{col vetro}] ($(#2)+(\xtavolo/2,\ytavolo)$) rectangle++ (-\xtavolo,-0.2*\kv{h top}); % la parte di vetro
+}
+
+% \mezzotavolo[keys]{punto base tagliato}{lunghezza x}{lunghezza y} disegna un tavolo
+\newcommand*{\mezzotavolo}[4][]{
+	\tikzset{keyfld/.cd,
+		col/.initial = Brown,
+		col fill/.initial = Brown!40,
+		col vetro/.initial = cyan,
+		no fill/.initial = false, no fill/.default = true, % se specificata evita di fillare l'immagine
+		width/.initial, % può essere thin, thick, ...
+		pattern/.initial, % può essere solid, dashed, dotted, ...
+		h top/.initial, % l'altezza della parte superiore del tavolo
+		w gambe/.initial, % la larghezza delle gambe inferiore del tavolo
+		side/.initial = ->, % da che lato orientare il tavolo
+		mirror/.initial = false, mirror/.default = true, % se specificata flippa l'immagine
+	} \setkeyfld{#1};
+	\ifkeyequal{mirror}{true}{
+		\ifkeyequal{side}{->}{\setkeyvalue{side}{<-}}{\setkeyvalue{side}{->}}
+	}{}
+	\ifkeyequal{side}{->}{\tikzdef\tavolomirror{+1}}{\tikzdef\tavolomirror{-1}}
+	\tikzdef\xtavolo{#3}
+	\tikzdef\ytavolo{#4}
+	\tikzdef\htoptavolo{min(\ytavolo/5,0.5)}
+	\setkeyvalueifempty{h top}{\htoptavolo}
+	\tikzdef\wgambetavolo{min(\xtavolo/5,0.4)}
+	\setkeyvalueifempty{w gambe}{\wgambetavolo}
+	\tikzdef\dxgambetavolo{min((\xtavolo-(\kv{w gambe}+0.1))/2.5,0.3)}
+	\ifkeyequal{no fill}{false}{
+		\fill[\kv{col fill}] ($(#2)+(\tavolomirror*\xtavolo-\tavolomirror*0.1,\ytavolo-0.2*\kv{h top})$) --++ (0,-0.8*\kv{h top}) --++ (-\tavolomirror*\dxgambetavolo,0) --++ (-\tavolomirror*0.15*\kv{w gambe},-\ytavolo+\kv{h top}) --++ (-\tavolomirror*0.7*\kv{w gambe},0) --++ (-\tavolomirror*0.15*\kv{w gambe},+\ytavolo-\kv{h top}) --++ (-\tavolomirror*\xtavolo+\tavolomirror*0.1+\tavolomirror*\dxgambetavolo+\tavolomirror*\kv{w gambe},0) --++ (0,+0.8*\kv{h top}); % la parte di legno
+		\fill[\kv{col vetro}!40] ($(#2)+(0,\ytavolo)$) --++ (\tavolomirror*\xtavolo,0) --++ (0,-0.2*\kv{h top}) --++ (-\tavolomirror*\xtavolo,0); % la parte di vetro
+	}{}
+	\draw[\kv{width},\kv{pattern},\kv{col}] ($(#2)+(\tavolomirror*\xtavolo-\tavolomirror*0.1,\ytavolo-0.2*\kv{h top})$) --++ (0,-0.8*\kv{h top}) --++ (-\tavolomirror*\dxgambetavolo,0) --++ (-\tavolomirror*0.15*\kv{w gambe},-\ytavolo+\kv{h top}) --++ (-\tavolomirror*0.7*\kv{w gambe},0) --++ (-\tavolomirror*0.15*\kv{w gambe},+\ytavolo-\kv{h top}) --++ (-\tavolomirror*\xtavolo+\tavolomirror*0.1+\tavolomirror*\dxgambetavolo+\tavolomirror*\kv{w gambe},0) ++ (0,+0.8*\kv{h top}); % la parte di legno
+	\draw[\kv{width},\kv{pattern},\kv{col vetro}] ($(#2)+(0,\ytavolo)$) --++ (\tavolomirror*\xtavolo,0) --++ (0,-0.2*\kv{h top}) --++ (-\tavolomirror*\xtavolo,0); % la parte di vetro
 }
 
 % \uomo[keys]{pos} disegna un omino stilizzato. pos è il centro della sua base
